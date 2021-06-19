@@ -52,6 +52,16 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>1.28</version>
               </dependency>
+              <dependency>
+                <groupId>com.vladsch.flexmark</groupId>
+                <artifactId>flexmark</artifactId>
+                <version>0.62.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vladsch.flexmark</groupId>
+                <artifactId>flexmark-profile-pegdown</artifactId>
+                <version>0.62.2</version>
+            </dependency>
             </dependencies>
           </plugin>
         </plugins>

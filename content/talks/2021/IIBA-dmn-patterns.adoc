@@ -1,8 +1,7 @@
-= Fourth Post
-Jonathan Bullock
-2013-10-17
-:jbake-type: post
-:jbake-status: published
+= IIBA DMN Patterns
+Matteo Mortari
+2021-06-01
+:jbake-type: talk
 :jbake-tags: blog, asciidoc
 :idprefix:
 
