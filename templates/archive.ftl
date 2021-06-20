@@ -1,7 +1,7 @@
 <#include "header.ftl">
 
 	<#include "menu.ftl">
-	
+<section class="my-2 py-5 container">
 	<div class="page-header">
 		<h1>Archive</h1>
 	</div>
@@ -23,5 +23,5 @@
 		<#assign last_month = content.date?string("MMMM yyyy")>
 		</#list>
 	</ul>
-	
+</section>
 <#include "footer.ftl">

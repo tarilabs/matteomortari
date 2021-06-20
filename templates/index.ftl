@@ -1,36 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Matteo Mortari Software Engineer">
-    <title>Matteo Mortari, Software Engineer</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
-
-    <style>
-.blog-header {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
-}
-.bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .bd-placeholder-img-lg {
-    font-size: 3.5rem;
-  }
-}
-    </style>
-
-    
-  </head>
-  <body>
+<#include "header.ftl">
     
 <header>
   <div class="navbar fixed-top navbar-dark bg-dark shadow-lg">
@@ -69,7 +37,7 @@
         ), url('${content.preview}');
         background-repeat: no-repeat; background-position: center center; background-size: cover;">
           <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">${content.title}</h2>
+            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><a href="${content.uri}" class="text-reset text-decoration-none">${content.title}</a></h2>
             <ul class="d-flex list-unstyled mt-auto">
               <li class="me-auto">
                 <#if content.icon??><i class="${content.icon}"></i><#else><i class="bi-youtube"></i></#if>
@@ -183,11 +151,10 @@ Feel free to contact me:
       <h1 class="blog-header pb-4 mb-4 fst-italic border-bottom">From the Blog</h1>
       <h3 class="blog-header"><a href="${post.uri}" class="text-reset text-decoration-none"><#escape x as x?xml>${post.title}</#escape></a></h3>
       <p class="text-muted"">${post.date?string("dd MMMM yyyy")}</p>
-      <p>${post.body}</p> 
-      <a href="${post.uri}" class="text-decoration-none">
+      <p>${post.body?replace("<[\\w/][^>]*>", "", "r")?replace("\\s+", " ", "r")?truncate(500, "...")}<br/><a href="${post.uri}" class="text-decoration-none">
         Continue reading
         <i class="bi-chevron-right"></i>
-      </a>
+      </a></p> 
     </div>
   </div>
   <div class="row mb-2">
@@ -195,11 +162,10 @@ Feel free to contact me:
     <div class="col-md-6">
 		<h3 class="blog-header"><a href="${post.uri}" class="text-reset text-decoration-none"><#escape x as x?xml>${post.title}</#escape></a></h3>
 		<p class="text-muted"">${post.date?string("dd MMMM yyyy")}</p>
-		<p>${post.body}</p> 
-		<a href="${post.uri}" class="text-decoration-none">
+		<p>${post.body?replace("<[\\w/][^>]*>", "", "r")?replace("\\s+", " ", "r")?truncate(500, "...")}<br/><a href="${post.uri}" class="text-decoration-none">
 		  Continue reading
 		  <i class="bi-chevron-right"></i>
-		</a>
+		</a></p> 
     </div>
 	</#list>
   </div>
@@ -211,23 +177,4 @@ Feel free to contact me:
 </section>
 
 
-</main>
-
-<footer class="text-muted py-5">
-  <div class="container">
-    <p class="float-end mb-1">
-      <a href="#">Back to top</a>
-    </p>
-    <p>&copy; Matteo Mortari. All rights reserved
-      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
-      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
-      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
-      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
-    </p>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
-  </body>
-</html>
+<#include "footer.ftl">
