@@ -1,0 +1,9 @@
+- title: "Drools"
+  description: "I contribute the Drools DMN Engine, used in the Red Hat Decision Manager and the Red Hat Process Automation Manager"
+  preview : "https://design.jboss.org/jbossrules/logo/final/drools_logo_450px.png"
+  href : "https://drools.org"
+
+- title: "Kogito"
+  description: "I contribute DMN support on Kogito, a cloud-native business automation platform for building intelligent applications"
+  preview : "https://kogito.kie.org/assets/images/kogito_logo_rgb_color_horizontal_default_450px.png"
+  href : "https://kogito.kie.org"

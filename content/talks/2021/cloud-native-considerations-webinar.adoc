@@ -1,0 +1,17 @@
+= Cloud native considerations webinar
+Matteo Mortari
+2021-06-18
+:jbake-type: talk
+:jbake-tags: DMN, webinar, talk
+:jbake-preview: talks/2021/cloud-native-considerations-webinar.png
+:jbake-icon: bi-file-earmark-slides-fill
+
+## Cloud-native environment considerations for decision makers—a webinar series
+
+In this 3-webinar series, we’ll explore several considerations around cloud-native application development, design, and operations. The webinars in this series include:
+
+- Choose your cloud-native path—an executive checklist
+- Cloud-native, event-driven design for high-value use cases
+- How explainable, predictive decision making can help us trust our AI models
+
+https://www.redhat.com/en/events/webinar/cloud-native-environment-considerations-decision-makers%E2%80%94webinar-series

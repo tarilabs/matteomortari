@@ -3,7 +3,7 @@
 	<#include "menu.ftl">
 	
 	<div class="page-header">
-		<h1>Blog Archive</h1>
+		<h1>Archive</h1>
 	</div>
 	
 	<!--<ul>-->
@@ -19,7 +19,7 @@
 			<ul>
 		</#if>
 		
-		<li>${content.date?string("dd")} - <a href="${content.uri}"><#escape x as x?xml>${content.title}</#escape></a></li>
+		<li>${content.date?string("dd")} - [${content.type}] - <a href="${content.uri}"><#escape x as x?xml>${content.title}</#escape></a></li>
 		<#assign last_month = content.date?string("MMMM yyyy")>
 		</#list>
 	</ul>

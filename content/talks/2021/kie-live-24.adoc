@@ -1,0 +1,11 @@
+= Kie Live #24
+Matteo Mortari
+2021-02-09
+:jbake-type: talk
+:jbake-tags: DMN, webinar, talk
+:jbake-youtubeid: 5HSdDQzG0wE
+:jbake-preview: https://img.youtube.com/vi/5HSdDQzG0wE/hqdefault.jpg
+
+## KieLive#24: DMN: squeeze the most out these features
+
+Decision Management is an important pillar of Business Automation and a key aspect of all Digital Transformation initiatives. DMN as an open standard is a very effective enabler of decision management both from a methodological but also pragmatic perspective, since the execution semantic is defined in the specification itself. We will delve into some key aspects of DMN in order to understand their characteristics, their advantages and limitations, and their best application in a cloud-native context too. This session is intended to provide interesting insights both to Business Analysts and Developers/Coders.
