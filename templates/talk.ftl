@@ -18,6 +18,5 @@
 
 	<p>${content.body}</p>
 
-	<hr />
 </section>
 <#include "footer.ftl">

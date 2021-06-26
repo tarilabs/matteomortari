@@ -56,7 +56,7 @@
     <div class="row">
       <div class="col">
         <p class="text-end">
-          <a href="#" class="text-decoration-none">
+          <a href="archive.html" class="text-decoration-none">
             More Talks
             <i class="bi-chevron-right"></i>
           </a>
@@ -132,7 +132,7 @@ Feel free to contact me:
     </div>
     </#list>
   </div>
-  <div class="row py-5">
+  <!-- <div class="row py-5">
     <div class="col">
       <p class="text-end">
         <a href="#" class="text-decoration-none">
@@ -141,7 +141,7 @@ Feel free to contact me:
         </a>
       </p>
     </div>
-  </div>
+  </div> -->
 </div>
 
 <section class="py-5 container" id="blog">
