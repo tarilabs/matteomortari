@@ -1,0 +1,19 @@
+= IBM SkillsBuild Reignite 2020
+Matteo Mortari
+2020-12-09
+:jbake-type: talk
+:jbake-tags: DMN, webinar, talk, italian
+:jbake-preview: talks/2020/ibm-skillsbuild-reignite.png
+
+## Modellare un requisito eseguibile: automazione dell’intelligenza artificiale, nei processi di business e decisionali, attraverso standard aperti
+
+Al cuore di ogni iniziativa di Digital Transformation c’è un aggiornamento dei processi aziendali, che vengono profondamente trasformati per dare vita a nuove forme di interazione con clienti, fornitori e dipendenti. Digitalizzare i processi in ottica cloud-native porta alla semplificazione e disintermediazione, ma non per questo bisogna rinunciare al controllo e alla visibilità grazie a strumenti in grado di gestire i processi e, al contempo, offrire al business gli opportuni livelli di governo e automazione. Inoltre sono da tempo sono disponibili strumenti di intelligenza artificiale che non sono ancora sfruttati appieno nell’ambito dell’automazione. In questa presentazione vedremo come standard aperti quali DMN, BPMN2 e altri standard permettono l’effettiva automazione dei processi di business, le rispettive logiche decisionali e l’integrazione con ulteriori tecniche di intelligenza artificiale quali Machine Learning.
+
+http://ibm.biz/skillsbuildreignite
+
+## Speakers Bio
+
+Matteo Mortari is a Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.
+
+
+Daniele Zonca is the architect of Red Hat Decision Manager and TrustyAI initiative where he contributes to open source projects Drools and Kogito focusing in particular on predictive model runtime support (PMML), ML explainability, runtime tracing and decision monitoring. Before that he led the Big Data development team in one of the major European banks designing and implementing analytical engines.

@@ -10,11 +10,13 @@
 
 	<p><em>${content.date?string("dd MMMM yyyy")}</em></p>
 
-<#if (content.youtubeid)??>
 <div class="text-center">
+<#if (content.youtubeid)??>
 	<iframe style="width: 50%; height: 33vh;" src="https://www.youtube.com/embed/${content.youtubeid}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+<#elseif (content.preview)??>
+	<img src="../../${content.preview}" style="width: 50%"/>
 </#if>
+</div>
 
 	<p>${content.body}</p>
 

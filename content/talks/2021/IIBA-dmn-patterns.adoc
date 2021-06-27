@@ -4,7 +4,7 @@ Matteo Mortari
 :jbake-type: talk
 :jbake-tags: DMN, talk
 :jbake-youtubeid: 0hQEMMRVHjA
-:jbake-preview: talks/2021/IIBA-dmn-patterns.png
+:jbake-preview: talks/2021/iiba-dmn-patterns.png
 
 ## How to Capture Business Decisions using DMN: Introduction to Some Basic Patterns and Their Value
 

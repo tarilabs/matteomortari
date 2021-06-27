@@ -1,0 +1,13 @@
+= Interview Strumenta Process Automation
+Matteo Mortari
+2020-11-11
+:jbake-type: talk
+:jbake-tags: DMN, interview, talk
+:jbake-youtubeid: ji_8NFHxYVs
+:jbake-preview: https://img.youtube.com/vi/ji_8NFHxYVs/hqdefault.jpg
+
+## Interview with Matteo Mortari on process automation
+
+Matteo Mortari is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. In this interview, we try to find out more about his work in the process automation field.
+
+https://tomassetti.me/interview-with-matteo-mortari-on-process-automation

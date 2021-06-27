@@ -1,0 +1,19 @@
+= IIBA eXplainable Predictive Decisioning
+Matteo Mortari
+2020-12-01
+:jbake-type: talk
+:jbake-tags: DMN, webinar, talk
+:jbake-youtubeid: PyUBEFe1CCc
+:jbake-preview: https://img.youtube.com/vi/PyUBEFe1CCc/hqdefault.jpg
+
+## Why Is This Customer 'High Risk': How eXplainable Predictive Decisioning Can Help Us Trust Our AI
+
+The increased demand for transparent, explainable decision making, that is accurate, consistent and effective, has never been greater. Legislations like GDPR are just a result of increasing concerns about privacy, safety and transparency in general. While AI/ML solutions are great at making sense of high volumes of data, the reasoning process is usually quite opaque, sometimes leaving us baffled as to why it made a particular recommendation. 
+
+You will learn about the latest research in the field of eXplainable AI (XAI), an approach that combines AI/ML and traditional business rules to better understand the factors that contribute to an automated decision. Presenters will introduce you to the latest standards for representing decision logic, and will demonstrate an XAI solution built from open source components that will show how we can finally answer questions about why an automated decision was made.
+
+## Speakers Bio
+
+https://www.linkedin.com/in/matteomortari[Matteo Mortari] is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.
+
+Daniele Zonca is the architect of Red Hat Decision Manager and TrustyAI initiative where he contributes to open source projects Drools and Kogito focusing in particular on predictive model runtime support (PMML), ML explainability, runtime tracing and decision monitoring. Before that he led the Big Data development team in one of the major European banks designing and implementing analytical engines.
