@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" >
+    <meta content="&lt;!-- wp:paragraph {&quot;align&quot;:&quot;right&quot;} --&gt; presentation byBruce Silver, MethodAndStyle.comand Matteo Mortari, Red Hat &lt;!-- /wp:paragraph --&gt; &lt;!-- wp:paragraph --&gt; At this year&apos;s&amp;nbsp;Decision Camp ..." name="description"> 
+    <title>Making Executable DMN Modeling More Business-Friendly</title>
+    <link rel="canonical" href="https://blog.kie.org/2020/07/making-executable-dmn-modeling-more-business-friendly.html" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+.blog-header {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+}
+    </style>
+</head>
+<body>	
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-lg">
+    <div class="container">
+      <a href="/index.html" class="navbar-brand d-flex align-items-center">
+        <strong>matteomortari.com</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main><section class="my-2 py-5 container">
+	<div class="page-header">
+		<h1 class="blog-header">Making Executable DMN Modeling More Business-Friendly</h1>
+	</div>
+
+	<p><em>09 July 2020</em></p>
+
+	<!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right">presentation by<br>Bruce Silver, MethodAndStyle.com<br>and Matteo Mortari, Red Hat</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>At this year's&nbsp;<a rel="noreferrer noopener" href="https://decisioncamp2020.home.blog/program/#BruceSilver" target="_blank">Decision Camp 2020</a>, I had the opportunity to present with Bruce Silver a complete overview of the DMN Validation features, and some of the research areas we are working together on:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:core-embed/youtube {"url":"https:\/\/www.youtube.com\/watch?v=eQRDc6fq2yw","type":"video","providerNameSlug":"youtube","className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<div class="text-center">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/eQRDc6fq2yw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<!-- /wp:core-embed/youtube -->
+
+<!-- wp:paragraph -->
+<p>I hope this can be an helpful summary&nbsp;of what you should look at when considering Validation of a DMN model and decision tables, including some of the unique features that we offer there, together with all our partners like Trisotech too, and some of the experimental features we are researching to ease the work of the Business Analyst and decision modelers.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>While DMN is sometimes used simply to create “decision requirements” handed off to developers, the standard was designed for non-programmers to create executable decision models themselves. Although decision model design is nominally business-friendly, business users still struggle to create DMN models that are correct and complete. This can be partially explained by the lack of disciplined approach and application of engineering principles that come naturally to technical users, presenting an opportunity for vendors’ tools to assist them.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Decision tables are DMN’s most business-friendly feature, but business users have problems ensuring they are complete and consistent and difficulty applying the correct hit policy. Decision Table Analysis built into the DMN tool should be able to detect flaws like gaps in the rules, unintended overlaps, subsumption, and incorrect hit policy. We have developed such an algorithm and are incorporating it into multiple DMN tools.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Beyond completeness and consistency, the decision table logic must be correct, the output always matching the expected value. That is what test cases are for, but business users do not know how to use them or create test cases that fully test the logic. This again presents an opportunity for tool-based assistance.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Automated test case generation is not an easy problem. A decision table with N inputs, each of which has m possible values, requires m**N test cases for complete coverage. From the world of automated software testing, a method called Modified Condition/Decision Coverage (MC/DC) has been shown to provide excellent coverage with far fewer test cases. We have developed an algorithm for applying MC/DC to test case generation for DMN decision tables.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Keywords: DMN, Decision Tables, Hit Policy, Test Cases</p>
+<!-- /wp:paragraph -->
+
+
+</section>
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Matteo Mortari. All rights reserved
+      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
+      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
+      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
+      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
+</html>

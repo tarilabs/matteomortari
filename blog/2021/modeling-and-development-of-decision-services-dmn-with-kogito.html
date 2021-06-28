@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" >
+    <meta content="&lt;!-- wp:paragraph --&gt; I&apos;ve recorded the following &quot;developer notes&quot; as a support medium to demonstrate the progress and the current integration of several Kogito features. As I believe this could ..." name="description"> 
+    <title>Modeling and development of decision services: DMN with Kogito</title>
+    <link rel="canonical" href="https://blog.kie.org/2021/03/modeling-and-development-of-decision-services-dmn-with-kogito.html" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+.blog-header {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+}
+    </style>
+</head>
+<body>	
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-lg">
+    <div class="container">
+      <a href="/index.html" class="navbar-brand d-flex align-items-center">
+        <strong>matteomortari.com</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main><section class="my-2 py-5 container">
+	<div class="page-header">
+		<h1 class="blog-header">Modeling and development of decision services: DMN with Kogito</h1>
+	</div>
+
+	<p><em>02 March 2021</em></p>
+
+	<!-- wp:paragraph -->
+<p>I've recorded the following "developer notes" as a support medium to demonstrate the progress and the current integration of several Kogito features. As I believe this could be of interest to a wider audience to have a brief <strong>overview of the many capabilities of the Kogito platform for modeling and developing decision services with DMN,</strong> I am sharing them in this post.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Let us know if you find these useful and if you'd like to see more of this kind of video recordings!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>DMN with Kogito on Quarkus</h2>
+<!-- /wp:heading -->
+
+<div class="text-center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YISlYGIl-jY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<!-- wp:list -->
+<ul><li>Bootstrap a new project with Kogito Maven archetype</li><li>Author DMN model in VS Code DMN modeler tooling </li><li>Generate Swagger / OAS descriptors (development support)</li><li>Test DMN REST endpoints using JUnit ( + RestAssured )</li><li>Test DMN model using VS Code Test scenarios tooling </li><li>Inject listener use case</li><li>Test DMN on Quarkus service using Quarkus dev-mode locally</li><li>Generated REST API for DMN models with Swagger/OAS descriptors and internals</li><li>GraalVM Native Image / Mandrel native support </li></ul>
+<!-- /wp:list -->
+
+<!-- wp:heading -->
+<h2>DMN with Kogito on Spring Boot</h2>
+<!-- /wp:heading -->
+
+<div class="text-center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4q694kP7jbY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<!-- wp:list -->
+<ul><li>Bootstrap a new project with Kogito Maven archetype</li><li>Author DMN model in VS Code DMN modeler tooling </li><li>Generated Swagger / OAS descriptors (development support) and Test DMN SpringBoot service locally</li><li>Test DMN REST endpoints using JUnit ( + RestAssured )</li><li>Test DMN model using VS Code Test scenarios tooling </li></ul>
+<!-- /wp:list -->
+
+
+</section>
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Matteo Mortari. All rights reserved
+      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
+      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
+      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
+      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
+</html>

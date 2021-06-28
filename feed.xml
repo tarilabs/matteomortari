@@ -1,0 +1,990 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matteo Mortari, Software Engineer</title>
+    <link>https://matteomortari.com</link>
+    <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
+    <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
+    <language>en-gb</language>
+    <pubDate>Mon, 28 Jun 2021 21:08:56 +0000</pubDate>
+    <lastBuildDate>Mon, 28 Jun 2021 21:08:56 +0000</lastBuildDate>
+
+    <item>
+      <title>Cloud native considerations webinar</title>
+      <link>https://matteomortari.com/talks/2021/cloud-native-considerations-webinar.html</link>
+      <pubDate>Fri, 18 Jun 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2021/cloud-native-considerations-webinar.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_cloud_native_environment_considerations_for_decision_makersa_webinar_series&quot;&gt;Cloud-native environment considerations for decision makers—a webinar series&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this 3-webinar series, we’ll explore several considerations around cloud-native application development, design, and operations. The webinars in this series include:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Choose your cloud-native path—an executive checklist&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cloud-native, event-driven design for high-value use cases&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How explainable, predictive decision making can help us trust our AI models&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.redhat.com/en/events/webinar/cloud-native-environment-considerations-decision-makers%E2%80%94webinar-series&quot; class=&quot;bare&quot;&gt;https://www.redhat.com/en/events/webinar/cloud-native-environment-considerations-decision-makers%E2%80%94webinar-series&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>IIBA DMN Patterns</title>
+      <link>https://matteomortari.com/talks/2021/IIBA-dmn-patterns.html</link>
+      <pubDate>Thu, 20 May 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2021/IIBA-dmn-patterns.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_how_to_capture_business_decisions_using_dmn_introduction_to_some_basic_patterns_and_their_value&quot;&gt;How to Capture Business Decisions using DMN: Introduction to Some Basic Patterns and Their Value&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Businesses continuously make Business Decisions. Some of these decisions are strategic business decisions, but a lot are operational business decisions taken every day within every transaction. With the ever-increasing number of laws and regulations that may apply or regulate these operational business decisions, business analysts are more often called upon to document/specify how these business decisions are to be taken in order to provide transparency and to offer auditable traces of the actual decisions taken.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this insightful session, we will introduce how business analysts can use DMN to capture the requirements for operational business decisions, some of the recurring basic patterns in modeling these business decisions and will even show how to transform these decision models into actual executable business decision services.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>NEW model-specific DMN kie-server endpoints</title>
+      <link>https://matteomortari.com/blog/2021/new-model-specific-dmn-kie-server-endpoints.html</link>
+      <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/new-model-specific-dmn-kie-server-endpoints.html</guid>
+      	<description>
+	&lt;div class=&quot;text-center&quot;&gt;
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/e-YMVvPAEf0&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;&lt;em&gt;Modernising kie-server with new and more user-friendly DMN endpoints, better Swagger/OpenAPI documentation, easier JSON-based REST invocations; an intermediate step to help developers transitioning to service-oriented deployments such as a Kogito-based application.&lt;/em&gt;&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:heading --&gt;
+    &lt;h2&gt;In a nutshell:&lt;/h2&gt;
+    &lt;!-- /wp:heading --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;The current DMN kie-server endpoints are fully compliant with kie-server extension design architecture, and aligned with all other kie-server services and extensions; however, some aspects of the current &lt;em&gt;generic&lt;/em&gt; approach of kie-server sometimes are not very user-friendly for DMN evaluations, due to limitations of swagger documentation and the REST payloads requirements to follow the generic kie-server marshaller protocol. These aspects do apply to all kie-server services, including naturally DMN kie-server endpoints as well.&lt;br&gt;On other hand, experience shown that building manually the REST payload on Kogito for DMN evaluation is very easy for end-users, thanks to key features pertaining to DMN core capabilities.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;This &lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-6047&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;new feature (DROOLS-6047)&lt;/a&gt; extends DMN on kie-server with new endpoints, leveraging those core capabilities; the new DMN endpoints provide better Swagger documentation and can be more easily consumed by end-users, therefore contributing to modernising the kie-server platform while also making easier to eventually transition to a full Kogito-based application and deployment!&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:heading --&gt;
+    &lt;h2&gt;Why is this needed?&lt;/h2&gt;
+    &lt;!-- /wp:heading --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Currently on kie-server, the DMN service exposes 2 endpoints which are fully compliant with kie-server extension design architecture:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Retrieves DMN model for given container&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Evaluates decisions for given input&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;The current swagger documentation is agnostic to the actual model content of the knowledge asset, like for any other kie-server extension:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
+    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh6.googleusercontent.com/oxigk0UqjxH7mDJdq-qQ0Z3gNWoDE6x8SkjTc90fd3FjMjXkURajiFOV3jmWUyKtZuLaLH_TmmA6couiVz__OsxFrlh9AlXpEIq9uHv1EqEo9_GtwlCL0bqwEXbhSGRxeePVlz5g&quot; width=&quot;717&quot; height=&quot;456&quot;&gt;&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;This limited style of swagger documentation is &lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;em&gt;sometimes&lt;/em&gt;&lt;/span&gt; an undesirable side-effect to the &lt;em&gt;generic&lt;/em&gt; approach of kie-server extension design:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;all kie-server extensions receive as input a generic String, which is actually converted internally to the extension using the generic kie-server marshaller.&lt;br&gt;This causes the swagger documentation to not display anything meaningful for the request body besides Model==string, and the only helpful information can only be provided as a comment (“&lt;em&gt;DMN context to be used while evaluation decisions as DMNContextKS type&lt;/em&gt;”).&lt;br&gt;&lt;/li&gt;&lt;li&gt;all kie-server extensions return as output a &lt;code&gt;ServiceResponse&amp;lt;T&amp;gt;&lt;/code&gt;, where the Java’s generic T is extension-specific. Generating swagger documentation with Java generics is already limited, in this case the difficulty compounds because the actual content of T varies, by DMN model to model !&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;the DMN evaluation payload itself contains the coordinates of the model to be evaluated &lt;em&gt;and&lt;/em&gt; the model-specific input context, per the original implementation requirements; but this interconnection between model coordinates &lt;em&gt;values&lt;/em&gt; and input content &lt;em&gt;structure&lt;/em&gt;, is pragmatically impossible to be defined meaningfully with a Swagger or OpenAPI descriptor.&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;About the last point specifically, consider this example DMN payload:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:code --&gt;
+    &lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+       &quot;model-namespace&quot;: &quot;https://kiegroup.org/dmn/_FA9849E2-C92E-4E27-83BF-07A7428DC9C9&quot;,
+       &quot;model-name&quot;: &quot;Traffic Violation&quot;,
+       &quot;dmn-context&quot;: {
+           &quot;Driver&quot;: ...,
+           &quot;Violation&quot;: ...
+       }
+    }&lt;/code&gt;&lt;/pre&gt;
+    &lt;!-- /wp:code --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;because the &lt;em&gt;content&lt;/em&gt; of &lt;code&gt;dmn-context&lt;/code&gt; depends on the &lt;em&gt;values&lt;/em&gt; of &lt;code&gt;model-namespace&lt;/code&gt; and &lt;code&gt;model-name&lt;/code&gt; coordinates, there is no pragmatic way to define with Swagger/OpenAPI that &lt;code&gt;dmn-context&lt;/code&gt; must have the properties “Driver”, “Violation” for this traffic violation model, or property “Customer” for another DMN model.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Besides endpoint documentation limitations, experience proved that building &lt;em&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;manually from scratch&lt;/span&gt;&lt;/em&gt; the kie-server generic payload following the style of the kie-server generic marshaller is very difficult for most end-users (in fact we always advise to use the Kie Server Client API first, and not start from scratch, but this suggestion is often ignored anyway):&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;XML/JAXB format requires domain model pojo to be correctly annotated first, and building Java collection manually is quite tricky.&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;XML/XStream is a more natural format, still requires domain model pojo annotations, requires to respect the domain object FQN, but is yet another xml format while most end-users seem to prefer json instead.&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;JSON/Jackson would be the user preference nowadays, but requires to respect the domain object FQN which is very alien to json native users.&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Example. The correct way to marshall for Traffic Violation example, respecting the domain model defined in the kjar project, would be:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:code --&gt;
+    &lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+       &quot;model-namespace&quot;: &quot;https://kiegroup.org/dmn/_FA9849E2-C92E-4E27-83BF-07A7428DC9C9&quot;,
+       &quot;model-name&quot;: &quot;Traffic Violation&quot;,
+       &quot;dmn-context&quot;: {
+           &quot;Driver&quot;: { &lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;&quot;com.acme.Driver&quot; : {&lt;/span&gt;&lt;/strong&gt;
+               &quot;Points&quot;: 15
+           }},
+           &quot;Violation&quot;: { &lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;&quot;com.acme.Violation&quot; : {&lt;/span&gt;&lt;/strong&gt;
+               &quot;Type&quot;: &quot;speed&quot;,
+               &quot;Date&quot;: &quot;2020-10-01&quot;,
+               &quot;Actual Speed&quot;: 111,
+               &quot;Speed Limit&quot;: 100
+           }}
+       }
+    }&lt;/code&gt;&lt;/pre&gt;
+    &lt;!-- /wp:code --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Everything would be much more easier, while building the JSON body payload manually for DMN evaluation, if we could drop the &lt;em&gt;strict&lt;/em&gt; requirement to respect the generic kie-server marshalling format.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:heading --&gt;
+    &lt;h2&gt;NEW model-specific DMN kie-server endpoints&lt;/h2&gt;
+    &lt;!-- /wp:heading --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;We can now move past and beyond these limitations, thanks to the &lt;em&gt;next generation&lt;/em&gt; of DMN endpoints on kie-server, leveraging some new DMN core capabilities:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;programmatic generation of Swagger and OpenAPI (Swagger/OAS) metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;/li&gt;&lt;li&gt;consistent DMNContext build from JSON, based on DMN Model metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;to ultimately offer more user-friendly endpoints on kie-server for DMN evaluation!&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Following similar style to what is offered today via Kogito, summarized in this &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;blog post&lt;/a&gt;, we implemented the following new DMN endpoints on kie-server:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list {&quot;ordered&quot;:true} --&gt;
+    &lt;ol&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;strong&gt;/openapi.json&lt;/strong&gt; (|.yaml)&lt;br&gt;&lt;/code&gt;Retrieves Swagger/OAS for the DMN models&amp;nbsp;in the kjar project&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;Standard DMN XML but with&lt;span style=&quot;text-decoration: underline;&quot;&gt;out&lt;/span&gt; any decision logic, so this can be used as a descriptor of the DMN model (which are the inputs, which are the decisions), while using the same format of the DMN XSD instead.&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname&lt;strong&gt;}/{decisionServiceName}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/{decisionServiceName}/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;/li&gt;&lt;/ol&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;For the difference between “business-domain” and “dmnresult” variants of the rest endpoints, &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;reference the original blog post&lt;/a&gt; as also linked above.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Making reference to the Traffic Violation example model, this new capability can now offer on kie-server something similar to:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
+    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/xlHutscoULeSZNrfLyGAhwC82Z23J9f_Q9ToTKUhX_3An7K1Z8DEmLTHDm19UoUtGmGhbDIPxl04e1jsDnEP0k6YbIWjplU-eaLl1bWJJIyplmKVgdMa5lreuH3eO80_oCp4bOth&quot; width=&quot;717&quot; height=&quot;456&quot;&gt;&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;As we can see, both the input body payload and the response body payload offer Swagger/OAS schemas which are consistent with the &lt;em&gt;specific&lt;/em&gt; DMN model!&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;This is possible thanks to a convergence of factors:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:list --&gt;
+    &lt;ul&gt;&lt;li&gt;Because each REST POST endpoint for DMN evaluation is specific for DMN model in the REST Path, it is possible to offer Swagger/OAS definition which are DMN model-specific&lt;br&gt;e.g.: because &lt;code&gt;POST /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;traffic-violation&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;is a REST endpoint specific to the Traffic Violation model, both its input and output payload &lt;em&gt;can&lt;/em&gt; now be documented properly in the Swagger/OAS schema definitions.&lt;br&gt;&lt;/li&gt;&lt;li&gt;Because each Swagger/OAS definition is offered at kjar/kie-container level, it is possible to generate programmatically the schema definitions for the DMN models contained only in the specific container.&lt;br&gt;e.g.: because &lt;code&gt;GET /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;openapi.json&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;would offer only definitions for the DMN models inside “mykjar-project”.&lt;br&gt;This is thanks to the following DMN core capability: programmatic generation of Swagger/OAS metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;br&gt;&lt;/li&gt;&lt;li&gt;Because these endpoints are DMN evaluation specific and focusing on a natural and &lt;em&gt;idiomatic JSON usage&lt;/em&gt;, they do NOT require to follow the &lt;em&gt;generic&lt;/em&gt; kie-server marshalling format.&lt;br&gt;This is thanks to the following DMN core capability: consistent DMNContext build from JSON based on DMNModel metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;
+    &lt;!-- /wp:list --&gt;
+    
+    &lt;!-- wp:heading --&gt;
+    &lt;h2&gt;Any limitations?&lt;/h2&gt;
+    &lt;!-- /wp:heading --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Being a new set of endpoints, in addition to the currently existing ones, there is basically no impact on the already-existing DMN kie-server capabilities.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;As this proposed set of new endpoints are contained within a specific {containerId}, it also means that the openapi.json|.yaml swagger/OAS definition file is only kie-container specific.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;In turn, it means when accessing the swagger-ui client editor, user need to manually point to the container URL, for example something like:&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
+    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/bQw9Vx3SposkXY6xhA1HVG7GAN_UvsFr00gDQfOTwnbPYhv8vp9ff1bPNmrYHsKHdQrW9Dil_XkuReD7OWAZHRgyMKYwQLh1WUzMgRBNKbJvw9ql8MM6JbjnTbbLT1mQZOjTBLAk&quot; width=&quot;717&quot; height=&quot;151&quot;&gt;&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Finally, as this core capability do leverage Eclipse MicroProfile for OpenAPI Specification (OAS) and SmallRye-openapi-core, this requires making use of Swagger-UI and clients which are compatible with OpenAPI Specification version 3.0.3, onwards.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:heading --&gt;
+    &lt;h2&gt;Conclusions&lt;/h2&gt;
+    &lt;!-- /wp:heading --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;We believe this feature meaningfully &lt;em&gt;extends&lt;/em&gt; the current set of capabilities, by providing more user-friendly DMN endpoints on kie-server!&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Developers can make full use of this new feature to simplify existing REST call invocations, and as a stepping stone to eventually migrate to a Kogito-based application.&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+    
+    &lt;!-- wp:paragraph --&gt;
+    &lt;p&gt;Have you tried it yet?&lt;br&gt;Do you have any feedback?&lt;br&gt;Let us know in the comments below!&lt;/p&gt;
+    &lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Modeling and development of decision services: DMN with Kogito</title>
+      <link>https://matteomortari.com/blog/2021/modeling-and-development-of-decision-services-dmn-with-kogito.html</link>
+      <pubDate>Tue, 2 Mar 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/modeling-and-development-of-decision-services-dmn-with-kogito.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;I&apos;ve recorded the following &quot;developer notes&quot; as a support medium to demonstrate the progress and the current integration of several Kogito features. As I believe this could be of interest to a wider audience to have a brief &lt;strong&gt;overview of the many capabilities of the Kogito platform for modeling and developing decision services with DMN,&lt;/strong&gt; I am sharing them in this post.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Let us know if you find these useful and if you&apos;d like to see more of this kind of video recordings!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;DMN with Kogito on Quarkus&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;div class=&quot;text-center&quot;&gt;
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/YISlYGIl-jY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;&lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;&lt;li&gt;Generate Swagger / OAS descriptors (development support)&lt;/li&gt;&lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;&lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;&lt;li&gt;Inject listener use case&lt;/li&gt;&lt;li&gt;Test DMN on Quarkus service using Quarkus dev-mode locally&lt;/li&gt;&lt;li&gt;Generated REST API for DMN models with Swagger/OAS descriptors and internals&lt;/li&gt;&lt;li&gt;GraalVM Native Image / Mandrel native support &lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;DMN with Kogito on Spring Boot&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;div class=&quot;text-center&quot;&gt;
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/4q694kP7jbY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;&lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;&lt;li&gt;Generated Swagger / OAS descriptors (development support) and Test DMN SpringBoot service locally&lt;/li&gt;&lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;&lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Kie Live #24</title>
+      <link>https://matteomortari.com/talks/2021/kie-live-24.html</link>
+      <pubDate>Tue, 9 Feb 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2021/kie-live-24.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_kielive24_dmn_squeeze_the_most_out_these_features&quot;&gt;KieLive#24: DMN: squeeze the most out these features&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Decision Management is an important pillar of Business Automation and a key aspect of all Digital Transformation initiatives. DMN as an open standard is a very effective enabler of decision management both from a methodological but also pragmatic perspective, since the execution semantic is defined in the specification itself. We will delve into some key aspects of DMN in order to understand their characteristics, their advantages and limitations, and their best application in a cloud-native context too. This session is intended to provide interesting insights both to Business Analysts and Developers/Coders.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>Decision Camp Monthly session</title>
+      <link>https://matteomortari.com/talks/2021/decision-camp-monthly-session.html</link>
+      <pubDate>Tue, 19 Jan 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2021/decision-camp-monthly-session.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_kogito_cloud_native_business_automation&quot;&gt;Kogito: Cloud-native Business Automation&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Kogito is a new platform and framework capabilities based on Drools, jBPM and OptaPlanner, designed to bring our traditional, battle-tested business automation engines to the cloud.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We have rethought the architecture of our platform to enable Java and JVM developers to realize distributed business automation applications with ease.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Leveraging modern application development frameworks, such as Quarkus, we can integrate seamlessly into a large range of capabilities. In particular, Quarkus has shown how it is possible to push the boundaries of traditional Java frameworks to make them cloud-native, through the power of GraalVM’s native compilation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;After a quick introduction to Kogito we will show with practical examples how to build cloud-native event-driven business applications, to the point where applications can be even deployed in a serverless environment, through Knative. We will also show what challenges a distributed environment poses, and how we can deal with them effectively thanks to Kogito.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_speakers_bio&quot;&gt;Speakers Bio:&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/mariofusco&quot;&gt;Mario Fusco&lt;/a&gt; is a principal software engineer at Red Hat working as Drools project lead. He has a huge experience as Java developer having been involved in (and often leading) many enterprise level projects in several industries ranging from media companies to the financial sector. Among his interests there are also functional programming and Domain Specific Languages. By leveraging these 2 passions he created the open source library lambdaj with the purposes of providing an internal Java DSL for manipulating collections and allowing a bit of functional programming in Java. He is also a Java Champion and the co-author of “Modern Java in Action” published by Manning.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.linkedin.com/in/matteomortari&quot;&gt;Matteo Mortari&lt;/a&gt; is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>https://matteomortari.com/about.html</link>
+      <pubDate>Fri, 1 Jan 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">about.html</guid>
+      	<description>
+	
+My name is Matteo Mortari and I&apos;m a Software Engineer.
+&lt;br/&gt;&lt;br/&gt;
+I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning;
+I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.
+&lt;br/&gt;&lt;br/&gt;
+I enjoy traveling a lot, both for pleasure and business, which rewarded me already several chances to explore new places and meet new people worldwide.
+&lt;br/&gt;&lt;br/&gt;
+Feel free to contact me:
+&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;https://www.linkedin.com/in/matteomortari&quot; class=&quot;text-reset px-1&quot; style=&quot;font-size: xx-large;&quot;&gt;&lt;i class=&quot;bi bi-linkedin&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+&lt;a href=&quot;https://www.youtube.com/MatteoMortari&quot; class=&quot;text-reset px-1&quot; style=&quot;font-size: xx-large;&quot;&gt;&lt;i class=&quot;bi bi-youtube&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+&lt;a href=&quot;https://github.com/tarilabs&quot; class=&quot;text-reset px-1&quot; style=&quot;font-size: xx-large;&quot;&gt;&lt;i class=&quot;bi bi-github&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+&lt;!-- &lt;a href=&quot;https://twitter.com/tari_manga&quot; class=&quot;text-reset px-1&quot; style=&quot;font-size: xx-large;&quot;&gt;&lt;i class=&quot;bi bi-twitter&quot;&gt;&lt;/i&gt;&lt;/a&gt; --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>DecisionCAMP Monthly event on 2021-01-19</title>
+      <link>https://matteomortari.com/blog/2020/decisioncamp-monthly-event-on-2021-01-19.html</link>
+      <pubDate>Wed, 16 Dec 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2020/decisioncamp-monthly-event-on-2021-01-19.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;On 2021 January 19th, Mario and myself will present at the perpetual &lt;a href=&quot;https://dmcommunity.org/decisioncamp/monthly-online-sessions/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DecisionCAMP monthly events&lt;/a&gt;!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Since DecisionCAMP 2020 held virtually, the organizers have decided to institute a series of perpetual meetups, in addition to the annual conference; you can join the community following the instructions &lt;a href=&quot;https://dmcommunity.org/2020/07/02/the-first-online-decisioncamp-became-a-success/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Event Title&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p id=&quot;block-e2b23dd1-179f-49e8-940a-6c23aba4a452&quot;&gt;Kogito: Cloud-native Business Automation&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Event Abstract&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Kogito is a new platform and framework capabilities based on Drools, jBPM and OptaPlanner, designed to bring our traditional, battle-tested business automation engines to the cloud.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;We have rethought the architecture of our platform to enable Java and JVM developers to realize distributed business automation applications with ease.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Leveraging modern application development frameworks, such as Quarkus, we can integrate seamlessly into a large range of capabilities. In particular, Quarkus has shown how it is possible to push the boundaries of traditional Java frameworks to make them cloud-native, through the power of GraalVM’s native compilation.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;After a quick introduction to Kogito we will show with practical examples how to build cloud-native event-driven business applications, to the point where applications can be even deployed in a serverless environment, through Knative. We will also show what challenges a distributed environment poses, and how we can deal with them effectively thanks to Kogito.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Speaker bios&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/mariofusco&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Mario Fusco&lt;/a&gt; is a principal software engineer at Red Hat working as Drools project lead. He has a huge experience as Java developer having been involved in (and often leading) many enterprise level projects in several industries ranging from media companies to the financial sector. Among his interests there are also functional programming and Domain Specific Languages. By leveraging these 2 passions he created the open source library lambdaj with the purposes of providing an internal Java DSL for manipulating collections and allowing a bit of functional programming in Java. He is also a Java Champion and the co-author of “Modern Java in Action” published by Manning.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.linkedin.com/in/matteomortari?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Btm6JdlNqR4m1K%2FbLHcMvUA%3D%3D&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Matteo Mortari&lt;/a&gt; is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class=&quot;wp-block-separator&quot; /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;You can join the event by following the instructions &lt;a href=&quot;https://dmcommunity.org/decisioncamp/monthly-online-sessions/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>IBM SkillsBuild Reignite 2020</title>
+      <link>https://matteomortari.com/talks/2020/ibm-skillsbuild-reignite.html</link>
+      <pubDate>Wed, 9 Dec 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2020/ibm-skillsbuild-reignite.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_modellare_un_requisito_eseguibile_automazione_dellintelligenza_artificiale_nei_processi_di_business_e_decisionali_attraverso_standard_aperti&quot;&gt;Modellare un requisito eseguibile: automazione dell’intelligenza artificiale, nei processi di business e decisionali, attraverso standard aperti&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Al cuore di ogni iniziativa di Digital Transformation c’è un aggiornamento dei processi aziendali, che vengono profondamente trasformati per dare vita a nuove forme di interazione con clienti, fornitori e dipendenti. Digitalizzare i processi in ottica cloud-native porta alla semplificazione e disintermediazione, ma non per questo bisogna rinunciare al controllo e alla visibilità grazie a strumenti in grado di gestire i processi e, al contempo, offrire al business gli opportuni livelli di governo e automazione. Inoltre sono da tempo sono disponibili strumenti di intelligenza artificiale che non sono ancora sfruttati appieno nell’ambito dell’automazione. In questa presentazione vedremo come standard aperti quali DMN, BPMN2 e altri standard permettono l’effettiva automazione dei processi di business, le rispettive logiche decisionali e l’integrazione con ulteriori tecniche di intelligenza artificiale quali Machine Learning.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;http://ibm.biz/skillsbuildreignite&quot; class=&quot;bare&quot;&gt;http://ibm.biz/skillsbuildreignite&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_speakers_bio&quot;&gt;Speakers Bio&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Matteo Mortari is a Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Daniele Zonca is the architect of Red Hat Decision Manager and TrustyAI initiative where he contributes to open source projects Drools and Kogito focusing in particular on predictive model runtime support (PMML), ML explainability, runtime tracing and decision monitoring. Before that he led the Big Data development team in one of the major European banks designing and implementing analytical engines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>IIBA eXplainable Predictive Decisioning</title>
+      <link>https://matteomortari.com/talks/2020/iiba-explainable-predictive-decisioning.html</link>
+      <pubDate>Tue, 1 Dec 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2020/iiba-explainable-predictive-decisioning.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_why_is_this_customer_high_risk_how_explainable_predictive_decisioning_can_help_us_trust_our_ai&quot;&gt;Why Is This Customer &apos;High Risk&apos;: How eXplainable Predictive Decisioning Can Help Us Trust Our AI&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The increased demand for transparent, explainable decision making, that is accurate, consistent and effective, has never been greater. Legislations like GDPR are just a result of increasing concerns about privacy, safety and transparency in general. While AI/ML solutions are great at making sense of high volumes of data, the reasoning process is usually quite opaque, sometimes leaving us baffled as to why it made a particular recommendation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You will learn about the latest research in the field of eXplainable AI (XAI), an approach that combines AI/ML and traditional business rules to better understand the factors that contribute to an automated decision. Presenters will introduce you to the latest standards for representing decision logic, and will demonstrate an XAI solution built from open source components that will show how we can finally answer questions about why an automated decision was made.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_speakers_bio&quot;&gt;Speakers Bio&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.linkedin.com/in/matteomortari&quot;&gt;Matteo Mortari&lt;/a&gt; is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Daniele Zonca is the architect of Red Hat Decision Manager and TrustyAI initiative where he contributes to open source projects Drools and Kogito focusing in particular on predictive model runtime support (PMML), ML explainability, runtime tracing and decision monitoring. Before that he led the Big Data development team in one of the major European banks designing and implementing analytical engines.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>Interview Strumenta Process Automation</title>
+      <link>https://matteomortari.com/talks/2020/interview-strumenta-process-automation.html</link>
+      <pubDate>Wed, 11 Nov 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">talks/2020/interview-strumenta-process-automation.html</guid>
+      	<description>
+	&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;_interview_with_matteo_mortari_on_process_automation&quot;&gt;Interview with Matteo Mortari on process automation&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Matteo Mortari is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. In this interview, we try to find out more about his work in the process automation field.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;a href=&quot;https://tomassetti.me/interview-with-matteo-mortari-on-process-automation&quot; class=&quot;bare&quot;&gt;https://tomassetti.me/interview-with-matteo-mortari-on-process-automation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+	</description>
+    </item>
+    <item>
+      <title>DMN Validation updates: Kogito and migration to Executable Model</title>
+      <link>https://matteomortari.com/blog/2020/dmn-validation-updates-kogito-and-migration-to-executable-model.html</link>
+      <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2020/dmn-validation-updates-kogito-and-migration-to-executable-model.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In this article, we will describe some of the recent updates to the DMN Validation module (&lt;code&gt;kie-dmn-validation&lt;/code&gt;) and how the migration to make use of the Executable Model enabled a number of use-cases, such as porting the functionality on the Kogito platform.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:core-embed/youtube {&quot;url&quot;:&quot;https:\/\/youtu.be\/uAz6pVg0RFQ&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
+&lt;div class=&quot;text-center&quot;&gt;
+    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/uAz6pVg0RFQ&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;!-- /wp:core-embed/youtube --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The Drools DMN Engine provides static and semantic validation of DMN models:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;validation of DMN against specification XSDs&lt;br&gt;&lt;/li&gt;&lt;li&gt;static validation of DMN file&lt;ul&gt;&lt;li&gt;e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)&lt;/li&gt;&lt;li&gt;fun-fact: static validation is performed with… Drools rules!&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;compilation phase checks&lt;br&gt;&lt;/li&gt;&lt;li&gt;decision tables static analysis&lt;ul&gt;&lt;li&gt;implements &lt;a href=&quot;https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Method &amp;amp; Style checks&lt;/a&gt;&lt;/li&gt;&lt;li&gt;semantic checks&lt;/li&gt;&lt;li&gt;Hit Policy recommender&lt;/li&gt;&lt;li&gt;Experimental features such as the MC/DC test case generator&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of Drools rules to ensure the conformance requirements from the &lt;a href=&quot;https://www.omg.org/spec/DMN&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DMN specification&lt;/a&gt; itself are respected in the DMN model provided by the user.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Migrating the DMN Validation to make use of the Executable Model&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The migration required to fix some small corner cases in the executable model itself: I am extremely thankful to my colleagues Mario and especially Luca who supported me extensively in this migration, making it possible!&lt;br&gt;As any &lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://en.wikipedia.org/wiki/Eating_your_own_dog_food&quot; target=&quot;_blank&quot;&gt;dogfooding&lt;/a&gt; program (the DMN validation module makes use of DRL rules to describe DMN specification semantics), this has been helpful &lt;em&gt;also&lt;/em&gt; to highlight and overcome limitations early-on in the executable model itself when compared to the classic DRL mode of evaluation, to everyone&apos;s benefit! :)&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;This migration also offers right off the bat several additional advantages:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;now &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;uses the&amp;nbsp;&lt;em&gt;same default&lt;/em&gt;&amp;nbsp;as per any kjar project Maven-built for Drools rules&lt;br&gt;&lt;/li&gt;&lt;li&gt;several performance improvements;&lt;br&gt;for a basic example,&amp;nbsp;executing&amp;nbsp;the full &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;module tests now is cut in half (was 40s, now ~18s)&lt;br&gt;&lt;/li&gt;&lt;li&gt;it is an enabler: the &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;has been enabled also on Kogito, during code generation phase&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;DMN Validation on Kogito&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;By default now Kogito performs validation of DMN against specification XSDs and static validation of DMN file (pre-compilation phase semantic validations). Decision Table analysis on Kogito platform will be enabled in a future iteration.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;As a basic example: if you inadvertently violated the DMN specification by authoring a DMN model with two identical names in the nodes, you will be presented with a relevant DMN Validation message:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {&quot;id&quot;:6414,&quot;sizeSlug&quot;:&quot;large&quot;} --&gt;
+&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2020/09/Screenshot-2020-09-21-at-14.34.32-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-6414&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;You can always opt-out of DMN Validation by disabling it entirely by configuring with application.properties:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=DISABLED&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;or ignoring any error during the build by configuring instead:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=IGNORE&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Next Steps&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;As we expand the DMN Validation features (and the Kogito platform itself) please try it out and let us know your feedback!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;We believe the DMN Validation can better support you authoring DMN models more effectively.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>About DMN endpoints on Kogito</title>
+      <link>https://matteomortari.com/blog/2020/kogito-2840-about-dmn-endpoints-on-kogito.html</link>
+      <pubDate>Tue, 4 Aug 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2020/kogito-2840-about-dmn-endpoints-on-kogito.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part of &lt;a href=&quot;https://issues.redhat.com/browse/KOGITO-2840&quot;&gt;KOGITO-2840&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;For each DMN model in a Kogito application, a collection of REST endpoints is automatically code generated based on the content of the model.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;For each DMN model there will be:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;one REST “business-domain” endpoint to support the evaluation of the whole model&lt;/li&gt;&lt;li&gt;one REST “business-domain” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;and also analogous endpoints returning &lt;em&gt;classic&lt;/em&gt; &lt;code&gt;DMNResult&lt;/code&gt; comprising business domain context and helper messages and helper decision “pointers”:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;one REST “dmnresult” endpoint to support the evaluation of the whole model&lt;/li&gt;&lt;li&gt;one REST “dmnresult” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;and finally:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;one REST &lt;code&gt;GET&lt;/code&gt; to return the DMN xml &lt;em&gt;without&lt;/em&gt; decision-logic&lt;br&gt;This can be helpful for model introspection.&lt;br&gt;We are planning to eventually parametrise this endpoint with additional options for TrustyAI.&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;URL naming&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The naming of the endpoints is currently structured with the following convention:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;POST&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;GET&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Choosing between “business-domain” and dmnresult variant of the REST endpoints&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;If a client application is only concerned with a positive evaluation outcome, is not interested in parsing Info/Warn message(s) and only needs to get an http 5xx in case of Errors, might prefer to opt for using the “business-domain” variant. Especially the feature of singleton coercion of Decision Service result, mimicking the DMN modeling behaviour, might be helpful for single page application-like clients.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;If a client needs to parse also Info/Warn/Error messages in all the cases, it is best to prefer the dmnresult variant.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;API details of the “business-domain” endpoints&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The whole model endpoint needs as the input payload, all the Input Data of the model.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the whole model evaluation, that is the one composed of the actual resulting Decision values, the original input values, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The decision service endpoint needs as the input payload, all the requirements of the Decision Service.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the Decision Service evaluation, that is the one composed of the actual resulting Decision values, the original input requirements, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In the case the Decision Service is composed of a &lt;em&gt;single output decision&lt;/em&gt;, the output payload will be the resulting value of that specific Decision; this is to provide an equivalent at API level of a specification feature, when invoking the Decision Service in the model itself. This feature can be used for example to interact very easily from single page web applications, with a DMN Decision Service.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;For all these endpoints, in case of a DMN evaluation Error, a full DMNResult payload is returned along with a http 5xx error. In case of a DMN Info/Warn message, these will be returned along with the “business-domain” return rest payload, in the &lt;code&gt;X-Kogito-decision-messages&lt;/code&gt; extended http header, more as an helper than to be used for client-side business logic; this is based on the assumption that, in case when more refined client-side business logic is required, the client can actually use the “dmnresult” variant of the endpoints.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Examples&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In the following sections, some basic examples will be presented.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Endpoint: whole model&amp;nbsp;&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Given:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image --&gt;
+&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/yF069bevleZaXtS_PwGKNaN-Scz1j_R9XB7rbdMJSXcFKW9wRjPuXGAcwcoo5wdAtxYE2fSIbuor1w1tsrNztppSSSjm1LdVeqxB3vCD378Ulhh53JQcdIk6N9TlVtWQQ_nlEXq-&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;We notice the name of the DMN model is &lt;code&gt;Traffic Violation&lt;/code&gt;:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image --&gt;
+&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/97JmiRDDl3PkaZFwddgDZwqt57Q-p6Bo0r1erEUTBu-j6fZeLoVYUiQTdAuD-Uunaw71yRTnN2zOxpHUD2BS736lsYDyNDLJSaRBRPZp9WOMzaz-2Gdh0i4MpSbUEZ8Q5j5kDLIf&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation&lt;/code&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;input payload:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Violation&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Type&quot;: &quot;speed&quot;,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
+}&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;output:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
+  &quot;Violation&quot;: {
+    &quot;Type&quot;: &quot;speed&quot;,
+    &quot;Speed Limit&quot;: 100,
+    &quot;Actual Speed&quot;: 120
+  },
+  &quot;Driver&quot;: {
+    &quot;Points&quot;: 2
+  },
+  &quot;Fine&quot;: {
+    &quot;Points&quot;: 3,
+    &quot;Amount&quot;: 500
+  },
+  &quot;Should the driver be suspended?&quot;: &quot;No&quot;
+}&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Endpoint: decision service with singleton output decision&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Given:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image --&gt;
+&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/kOsYWVbk5wjjQkHuHbjgoyuEyZNMGhwY6jih6cDdV4wNxp9QBMNzGUYNRFajKurFJNUEAstYTYVuS2Ck5_rMvyYrjNeq-NDJLcF69pJ5XkmBVK8RJf5jmXv0nK2NYKGXkJeA3kcd&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;we notice the name of the decision service is &lt;code&gt;TrafficViolationDecisionService&lt;/code&gt;:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image --&gt;
+&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/OZ4uj7tKPunXaPvDELE8hzoN8wBreRws-8mDw4l88j80o2yadNGol4FYhuRYFhJTiLBcOClWf0w4isVwD8wJHaqVLudcy8pPi2Y2uOZ1gY1I7lsxqFlamuqxUv_w-G41CJnOKSkw&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;input payload:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Violation&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Type&quot;: &quot;speed&quot;,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
+}&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;output:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;&quot;No&quot;&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Endpoint: decision service with multiple output decision&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Now given instead:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image --&gt;
+&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/1nRZwDs77_9C3pw_zAEW3DDVq6ZTdJH9ENe9KnaOxPBp1AO0iqqfrY55dRI8do9g7JI1aUCyOdu_UJHfpMfj7svbuxfL4H9ggrf9VqKswmrsQrfODxZAJw9kgPyBKOz7_g9_fqKQ&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;input payload:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Violation&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Type&quot;: &quot;speed&quot;,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
+}&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;output:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:preformatted --&gt;
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Violation&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Type&quot;: &quot;speed&quot;,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Fine&quot;: {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 3,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Amount&quot;: 500
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Should the driver be suspended?&quot;: &quot;No&quot;
+}&lt;/pre&gt;
+&lt;!-- /wp:preformatted --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;We have seen the current design of DMN REST endpoints automatically generated in a Kogito application and how can be used to support several use-cases.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;We like to hear your feedback! Do you have some thoughts or question about this topic? Please make sure to let us know!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Making Executable DMN Modeling More Business-Friendly</title>
+      <link>https://matteomortari.com/blog/2020/making-executable-dmn-modeling-more-business-friendly.html</link>
+      <pubDate>Thu, 9 Jul 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2020/making-executable-dmn-modeling-more-business-friendly.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph {&quot;align&quot;:&quot;right&quot;} --&gt;
+&lt;p class=&quot;has-text-align-right&quot;&gt;presentation by&lt;br&gt;Bruce Silver, MethodAndStyle.com&lt;br&gt;and Matteo Mortari, Red Hat&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;At this year&apos;s&amp;nbsp;&lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://decisioncamp2020.home.blog/program/#BruceSilver&quot; target=&quot;_blank&quot;&gt;Decision Camp 2020&lt;/a&gt;, I had the opportunity to present with Bruce Silver a complete overview of the DMN Validation features, and some of the research areas we are working together on:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:core-embed/youtube {&quot;url&quot;:&quot;https:\/\/www.youtube.com\/watch?v=eQRDc6fq2yw&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
+&lt;div class=&quot;text-center&quot;&gt;
+    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/eQRDc6fq2yw&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;!-- /wp:core-embed/youtube --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;I hope this can be an helpful summary&amp;nbsp;of what you should look at when considering Validation of a DMN model and decision tables, including some of the unique features that we offer there, together with all our partners like Trisotech too, and some of the experimental features we are researching to ease the work of the Business Analyst and decision modelers.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;While DMN is sometimes used simply to create “decision requirements” handed off to developers, the standard was designed for non-programmers to create executable decision models themselves. Although decision model design is nominally business-friendly, business users still struggle to create DMN models that are correct and complete. This can be partially explained by the lack of disciplined approach and application of engineering principles that come naturally to technical users, presenting an opportunity for vendors’ tools to assist them.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Decision tables are DMN’s most business-friendly feature, but business users have problems ensuring they are complete and consistent and difficulty applying the correct hit policy. Decision Table Analysis built into the DMN tool should be able to detect flaws like gaps in the rules, unintended overlaps, subsumption, and incorrect hit policy. We have developed such an algorithm and are incorporating it into multiple DMN tools.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Beyond completeness and consistency, the decision table logic must be correct, the output always matching the expected value. That is what test cases are for, but business users do not know how to use them or create test cases that fully test the logic. This again presents an opportunity for tool-based assistance.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Automated test case generation is not an easy problem. A decision table with N inputs, each of which has m possible values, requires m**N test cases for complete coverage. From the world of automated software testing, a method called Modified Condition/Decision Coverage (MC/DC) has been shown to provide excellent coverage with far fewer test cases. We have developed an algorithm for applying MC/DC to test case generation for DMN decision tables.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Keywords: DMN, Decision Tables, Hit Policy, Test Cases&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Functional Programming in DMN: it FEELs like recursing my university studies again</title>
+      <link>https://matteomortari.com/blog/2020/functional-programming-in-dmn-it-feels-like-recursing-my-university-studies-again.html</link>
+      <pubDate>Tue, 14 Apr 2020 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2020/functional-programming-in-dmn-it-feels-like-recursing-my-university-studies-again.html</guid>
+      	<description>
+	In this post, I would like to share interesting insights about recursion support in DMN and highlights how specific properties of the FEEL language enable functional programming constructs to be modeled in DMN.&lt;br /&gt;&lt;br /&gt;We are going to start from a basic example, in order to demonstrate how the Business Friendliness nature of the FEEL language and DMN constructs, allow us to tame an otherwise commonly unpleasant problem: the definition of a recursive function. Then, we are going to adventure in FP land, and in the cradle of FEEL/DMN we will admire one of the best creatures of functional construct: the Y Combinator. At the end, we will find ourselves be asked the famous question again:&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-Ovsb3rRsdLY/XpV4DzewakI/AAAAAAAAcsA/meKW5eMVQuw4lS3-PsfpI-LKNBzBzRxiQCNcBGAsYHQ/s1600/image4.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;609&quot; data-original-width=&quot;1125&quot; height=&quot;173&quot; src=&quot;https://1.bp.blogspot.com/-Ovsb3rRsdLY/XpV4DzewakI/AAAAAAAAcsA/meKW5eMVQuw4lS3-PsfpI-LKNBzBzRxiQCNcBGAsYHQ/s320/image4.png&quot; width=&quot;320&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;Using the pure engineering approach, let’s dig into the matter right away!&lt;br /&gt;&lt;br /&gt;&lt;div&gt;&lt;h2&gt;Basic recursion example&lt;/h2&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;The &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Drools DMN open source engine&lt;/a&gt; allows recursion support in DMN Business Knowledge Model nodes. This enables modeling of recursive functions very easily and &lt;b&gt;it is our recommended approach&lt;/b&gt; when modeling recursive functions in DMN: allow the function to call itself by its name.&lt;br /&gt;&lt;br /&gt;Let’s take a look at a simple example: modeling the &lt;a href=&quot;https://en.wikipedia.org/wiki/Factorial&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;factorial&lt;/a&gt; function in DMN.&lt;br /&gt;&lt;br /&gt;We can use the &lt;a href=&quot;https://porcelli.me/announcement/tooling/online/bpmn/dmn/2020/03/12/online-new-editors.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Kogito DMN editor&lt;/a&gt; and define the DRD as follows:&lt;a href=&quot;https://1.bp.blogspot.com/-DtC2-_Svfkw/XpV5G5BF9KI/AAAAAAAAcsI/81lgASeZ3a4OYnYMyVHF0ewCxVH-HeGfwCNcBGAsYHQ/s1600/image3.png&quot; style=&quot;margin-left: 1em; margin-right: 1em; text-align: center;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;868&quot; data-original-width=&quot;1201&quot; height=&quot;462&quot; src=&quot;https://1.bp.blogspot.com/-DtC2-_Svfkw/XpV5G5BF9KI/AAAAAAAAcsI/81lgASeZ3a4OYnYMyVHF0ewCxVH-HeGfwCNcBGAsYHQ/s640/image3.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;With the “fac” Business Knowledge Model (in short, BKM) node defining the actual Factorial function recursively as:&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-7Ot9dJRr7mw/XpV5lx6wYLI/AAAAAAAAcsQ/tLPW-S0ZtiIRp5Jvqd3YQykPIHiTIuZEwCNcBGAsYHQ/s1600/image9.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;326&quot; data-original-width=&quot;532&quot; height=&quot;392&quot; src=&quot;https://1.bp.blogspot.com/-7Ot9dJRr7mw/XpV5lx6wYLI/AAAAAAAAcsQ/tLPW-S0ZtiIRp5Jvqd3YQykPIHiTIuZEwCNcBGAsYHQ/s640/image9.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;As we can notice, the function invokes itself as any other normal &lt;a href=&quot;https://www.google.com/search?q=recursion&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;recursive&lt;/a&gt; function, the only difference here is that it is defined as part of a DMN Boxed Expression; the name of this function is defined by the BKM node with the boxed expression construct “fac”, then the body of the function make reference and invokes itself as part of the FEEL expression “fac(n-1)”.&lt;br /&gt;&lt;br /&gt;We can use this BKM to calculate the actual result as passed by the Input Data node, as part of the “compute factorial” Decision, as:&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-RcPiU8L7Qug/XpV5sA1ZRVI/AAAAAAAAcsU/E08ZZwqCmyMeMaPVB3siTggs-1bYrYbbACNcBGAsYHQ/s1600/image2.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;330&quot; data-original-width=&quot;564&quot; height=&quot;374&quot; src=&quot;https://1.bp.blogspot.com/-RcPiU8L7Qug/XpV5sA1ZRVI/AAAAAAAAcsU/E08ZZwqCmyMeMaPVB3siTggs-1bYrYbbACNcBGAsYHQ/s640/image2.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;This works well and gives the expected results:&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;{&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;&amp;nbsp; &amp;nbsp; My number: 3&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;&amp;nbsp; &amp;nbsp; fac: function fac( n )&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;&amp;nbsp; &amp;nbsp; compute factorial: 6&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;}&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;About currying&lt;/span&gt;&lt;/h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;DMN and more importantly the FEEL language allow to define and invoke &lt;a href=&quot;https://en.wikipedia.org/wiki/Currying#Contrast_with_partial_function_application&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;curried&lt;/a&gt; functions.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;This allows us to write in FEEL something like:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;{ f : function(a) function(b) a + b, r : f(1)(2) }&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;where:&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;we defined a feel:context with 2 entries&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;the first entry is named “f” and defines a curried function: a function of one parameter “a” that, once invoked, will return a function of one parameter “b” that, once invoked, will return the sum of a+b&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;the latter entry named “r” which invokes the curried function with a=1 and b=2.&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Albeit this is potentially a weird looking FEEL expression, we are not surprised once executed r = 3.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We can do equivalently by using DMN Boxed Expression constructs:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-te_EmOZpMpA/XpV6_aZ6XRI/AAAAAAAAcsk/WPRoN2lB6-8dL1fEADyEuwsAGzOumku9gCNcBGAsYHQ/s1600/image7.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;629&quot; data-original-width=&quot;918&quot; height=&quot;438&quot; src=&quot;https://1.bp.blogspot.com/-te_EmOZpMpA/XpV6_aZ6XRI/AAAAAAAAcsk/WPRoN2lB6-8dL1fEADyEuwsAGzOumku9gCNcBGAsYHQ/s640/image7.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;This is a BKM node named “curried sum”; it is a DMN Invocable of one parameter “a” that, once invoked, will return a function of one parameter “b” that, once invoked, returns the sum of a+b.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Again, we are not surprised once executed&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;curried sum(1)(2) = 3&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Y Combinator: recursion without recursion support&lt;/span&gt;&lt;/h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Let’s go back for a moment to the earlier recursive function example; we overlooked the fact if it’s actually formally possible for a function to call itself by its name in DMN: the DMN specification does not explicitly support this, but it doesn’t explicitly forbid it either. In other terms, recursion support is not formally specified.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;What-if we still needed to define a recursive function, but we found the road was still under construction, missing that formal recursion support? We can use a functional device, called the “&lt;a href=&quot;https://youtu.be/9T8A89jgeTI&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Y Combinator&lt;/a&gt;” which allows anonymous functions to achieve recursion without relying on self-invocation by its own (unexisting) name.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Let’s look at an example; we can define the Y Combinator in DMN as follows:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-w8ACy3InpEY/XpV7-mjlEKI/AAAAAAAAcs0/J52_N9IuXSMRwWfe9tnQVCUcIP3YCavJQCNcBGAsYHQ/s1600/image1.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;629&quot; data-original-width=&quot;918&quot; height=&quot;438&quot; src=&quot;https://1.bp.blogspot.com/-w8ACy3InpEY/XpV7-mjlEKI/AAAAAAAAcs0/J52_N9IuXSMRwWfe9tnQVCUcIP3YCavJQCNcBGAsYHQ/s640/image1.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;It is potentially a weird looking function :) let’s assume this was defined for us, and we can just make use of it.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We can use it to re-define the factorial calculation as:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-wnZ5nkrZNos/XpV7PdWwmFI/AAAAAAAAcsw/nGSdAkHRTJ4RIzT3z1Af3T2GtqJzkxcaQCPcBGAYYCw/s1600/image5.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;629&quot; data-original-width=&quot;918&quot; height=&quot;438&quot; src=&quot;https://1.bp.blogspot.com/-wnZ5nkrZNos/XpV7PdWwmFI/AAAAAAAAcsw/nGSdAkHRTJ4RIzT3z1Af3T2GtqJzkxcaQCPcBGAYYCw/s640/image5.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We can notice the body of the “fac” function definition is overall the same; however, this is not any longer a function invoking itself by its name: there is no trace of a call to “fac(...)” in the body of the function!&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Naturally, there is still a form of recursion happening, but this time is leveraging the name of the parameters which are in scope of the closure: “f”.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;The result works as expected:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;fac(3) = 6&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We can take a look at another example, defining the Fibonacci sequence using the Y Combinator in DMN:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-9ZLCCXNYF1A/XpV8JcTgGFI/AAAAAAAAcs4/1ZkteeJJ2sUYWfAeev6YbtkkgznE81T4ACNcBGAsYHQ/s1600/image8.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;629&quot; data-original-width=&quot;918&quot; height=&quot;438&quot; src=&quot;https://1.bp.blogspot.com/-9ZLCCXNYF1A/XpV8JcTgGFI/AAAAAAAAcs4/1ZkteeJJ2sUYWfAeev6YbtkkgznE81T4ACNcBGAsYHQ/s640/image8.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We notice again there is no call to “fib(...)” in the function body, yet recursion for the calculation of the Fibonacci sequence is performed thanks to the use of the Y Combinator.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Once again, the result works as expected:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;fib(5) = [1, 1, 2, 3, 5]&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;For extra fun, we can re-define the Y Combinator using where possible the DMN Boxed Expression forms. This is an interesting exercise to see how closures are applied in their boxed variant. The Y Combinator definition could be refactored as:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-Fs6H16uviFE/XpV83HIwjuI/AAAAAAAActE/amoqRBw8IlcHnD-zAqTSK_Sp5yklUe0VQCNcBGAsYHQ/s1600/image6.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;895&quot; data-original-width=&quot;978&quot; height=&quot;584&quot; src=&quot;https://1.bp.blogspot.com/-Fs6H16uviFE/XpV83HIwjuI/AAAAAAAActE/amoqRBw8IlcHnD-zAqTSK_Sp5yklUe0VQCNcBGAsYHQ/s640/image6.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;and that would yield again the same expected and correct results.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;For (extra (extra fun)), we can re-define once more the Y Combinator in a single FEEL expression to calculate for instance the factorial of 4:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;{ Y: function(f) (function(x) x(x))(function(y) f(function(x) y(y)(x))), fac: Y(function(f) function(n) if n &amp;gt; 1 then n * f(n-1) else 1), fac4: fac(4) }.fac4&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;The result is unsurprisingly: 24.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;br /&gt;&lt;h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Conclusion&lt;/span&gt;&lt;/h2&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;In this post, we have seen a basic example of recursion in DMN, and how to leverage recursion support in the engine is very simple to use; &lt;b&gt;engine recursion support is the approach we recommend&lt;/b&gt; to achieve recursion DMN: give the function a name, and in the body of the function make use of that name to invoke itself. In the example, we have named the function “fac”, then we invoked “fac(...)” in the body of the function itself.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;This approach is very practical, easy to model in DMN and works just fine.&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;We have also seen how DMN and FEEL do indeed support curried function definition and invocation. FEEL is (also) a functional language; all these properties allow us to define in DMN and use the Y Combinator, a functional device to achieve recursion without recursion support!&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;I personally found these exercises very interesting to apply functional programming concepts in DMN, while at the same time making sure the engine worked as expected. I would like to say special thanks to my colleagues Edoardo Vacchi and Luca Molteni for their support while discussing the Y Combinator and Currying functions.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;Interested in DMN?&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;If you didn’t know about DMN before, you found this post interesting but looking for a gentle introduction to the DMN standard, we have just the right crash course on DMN, freely available for you at:&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;a href=&quot;http://learn-dmn-in-15-minutes.com/&quot;&gt;http://learn-dmn-in-15-minutes.com&lt;/a&gt;&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;You can find additional information on the Drools website &lt;/span&gt;&lt;a href=&quot;https://drools.org/learn/dmn.html&quot; style=&quot;font-family: inherit;&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;here&lt;/a&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;. Don’t hesitate to contact us for more information.&lt;/span&gt;&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;span style=&quot;font-family: &amp;quot;courier new&amp;quot; , &amp;quot;courier&amp;quot; , monospace;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Recent Drools DMN open source engine performance improvements</title>
+      <link>https://matteomortari.com/blog/2019/recent-drools-dmn-open-source-engine-performance-improvements.html</link>
+      <pubDate>Mon, 12 Aug 2019 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2019/recent-drools-dmn-open-source-engine-performance-improvements.html</guid>
+      	<description>
+	&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;We are always looking to improve the performance of the &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Drools DMN open source engine&lt;/a&gt;. We have recently reviewed a DMN use-case where the actual input population of Input Data nodes varied to some degree; this highlighted a suboptimal behavior of the engine, which we improved in recent releases. I would like to share our findings!&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;h2 style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;; font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Benchmark development&lt;/span&gt;&lt;/h2&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;As we started running a supporting benchmark for this use-case, especially when investigating the scenario of large DMN models with sparse-populated input data nodes, we noticed some strange results: the flamegraph data highlighted a substantial performance hit when logging messages, consuming very significant time in comparison to the application logic itself.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-l-LzjpebOKo/XVGE-M6ip5I/AAAAAAAAavo/gAFOLIV2PTE8FfdW41g0SU2eRxmfRR5EACLcBGAs/s1600/flamegraph.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;742&quot; data-original-width=&quot;1200&quot; height=&quot;393&quot; src=&quot;https://1.bp.blogspot.com/-l-LzjpebOKo/XVGE-M6ip5I/AAAAAAAAavo/gAFOLIV2PTE8FfdW41g0SU2eRxmfRR5EACLcBGAs/s640/flamegraph.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;This flamegraph highlight specifically that a large portion of time is consumed by stacktrace synthesis, artificially induced by the logging framework. The correction, in this case, was to tune the logging configuration to avoid this problem; specifically, we disabled a feature of the logging framework which is very convenient during debugging activities, enabling to quickly locate the original calling class and methods: unfortunately this feature come at the expense of synthesizing stacktraces, which originally contaminated the benchmark results. Lesson learned here: always check first if non-functional requirements are actually masking the real issue!&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;This was a necessary and propaedeutic step, before proceeding to investigate the use-case in more details.&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;h2&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;; font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Improving performance&lt;/span&gt;&lt;/h2&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Moving on and focusing now on DMN optimizations, we specifically developed a benchmark to be general enough, but also highlighting the use-case which was presented to us. This benchmark consists of a DMN model with many (500) decision nodes to be evaluated. Another parameter controls sparseness of input data nodes valorization for evaluation; ranging from a value of 1 where all inputs are populated, to 2 where only one out of two inputs is actually populated, etc.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;This specific benchmark proved to be a very instrumental tool to highlight some potential improvements.&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Setting the comparison baseline to Drools release 7.23.0.Final, the first optimization implemented with &lt;a href=&quot;https://issues.jboss.org/browse/DROOLS-4204&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;DROOLS-4204&lt;/a&gt; focused on improving context handling while evaluating FEEL expressions and demonstrated to offer a ~3x improvement, while further optimization implemented with &lt;a href=&quot;https://issues.jboss.org/browse/DROOLS-4266&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;DROOLS-4266&lt;/a&gt; focusing on specific case for decision table input clauses demonstrated an additional ~2x improvement on top of DROOLS-4204.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;We also collected these measurements in the following graphs.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-musedBeWBLs/XVGFwczABFI/AAAAAAAAavw/DAGvBeLMxGkK05yeT9VRG9jvvEgGv5WFQCLcBGAs/s1600/chart%2B%25283%2529.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;371&quot; data-original-width=&quot;600&quot; height=&quot;394&quot; src=&quot;https://1.bp.blogspot.com/-musedBeWBLs/XVGFwczABFI/AAAAAAAAavw/DAGvBeLMxGkK05yeT9VRG9jvvEgGv5WFQCLcBGAs/s640/chart%2B%25283%2529.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;; font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;This graph highlights the compounding improvements in the case of sparseness factor equal to 1, where all inputs are populated; this was a very important result, as in fact it did represent the &lt;b&gt;main&lt;/b&gt;, “happy path” scenario in the original use-case.&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;In other words, we achieved a ~6x improvement in comparison to running the same use-case on&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;7.23.0.Final. The lesson I learned here is to always strive for these kind of &lt;i&gt;compounding&lt;/i&gt; improvements when possible, as they really build on top of each other, for greater results!&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;For completeness, we repeated the analysis with sparseness factor equals to 2 (1 every 2 inputs is actually populate) and 50 (1 every 50 inputs is actually populated) with the following measurements:&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-maGVgo4ujlM/XVGGQTUK__I/AAAAAAAAav8/1WJnm4nDKrM0hCyU4kVatRSJJ-h9rdC9gCLcBGAs/s1600/chart%2B%25282%2529.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;371&quot; data-original-width=&quot;600&quot; height=&quot;394&quot; src=&quot;https://1.bp.blogspot.com/-maGVgo4ujlM/XVGGQTUK__I/AAAAAAAAav8/1WJnm4nDKrM0hCyU4kVatRSJJ-h9rdC9gCLcBGAs/s640/chart%2B%25282%2529.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;; font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Results show that the optimizations were also significant for sparseness factor equal to 2, but not as relevant improvements as this factor grows -- which is expected, as the impact of the decision nodes evaluations on the overall logic of execution become now less relevant.&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;For completeness, analysis was also performed with another, already existing benchmark for single decision table consisting of many rules rows:&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;div style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-vihCDOZEsc0/XVGGVhbVkNI/AAAAAAAAawA/yxQa64vTOhI-O9Zgi0g9t5MPwS0lZ4lCwCLcBGAs/s1600/chart%2B%25284%2529.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; data-original-height=&quot;371&quot; data-original-width=&quot;600&quot; height=&quot;394&quot; src=&quot;https://1.bp.blogspot.com/-vihCDOZEsc0/XVGGVhbVkNI/AAAAAAAAawA/yxQa64vTOhI-O9Zgi0g9t5MPwS0lZ4lCwCLcBGAs/s640/chart%2B%25284%2529.png&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Results show that these code changes considered as a whole, still offered a relevant improvement; although clearly not of the same &lt;i&gt;magnitude&lt;/i&gt; as for the original use-case. This was another important check to ensure that these improvements were not overfitting on the specific use-case.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;h2&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Conclusions&lt;/span&gt;&lt;/span&gt;&lt;/h2&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;Considering Drools release 7.23.0.Final as the baseline, and a reference benchmark consisting of a DMN model with many decision nodes to be evaluated, we implemented several optimizations that once combined demonstrated to offer a total of ~6x speed-up on that specific use case!&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;I hope this was an interesting post to highlight some of the dimensions were to look into to achieve better performances; let us know you thoughts and feedback.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;You can already benefit today from these Kie &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;DMN open source engine&lt;/a&gt; improvements in the most recent releases of Drools!&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;arial&amp;quot;;&quot;&gt;&lt;span style=&quot;font-size: 14.6667px; white-space: pre-wrap;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div dir=&quot;ltr&quot; style=&quot;line-height: 1.38; margin-bottom: 0pt; margin-top: 0pt;&quot;&gt;&lt;br /&gt;&lt;/div&gt;
+
+	</description>
+    </item>
+
+  </channel> 
+</rss>
