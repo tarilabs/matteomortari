@@ -6,9 +6,103 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Mon, 28 Jun 2021 21:12:45 +0000</pubDate>
-    <lastBuildDate>Mon, 28 Jun 2021 21:12:45 +0000</lastBuildDate>
+    <pubDate>Tue, 29 Jun 2021 16:44:25 +0000</pubDate>
+    <lastBuildDate>Tue, 29 Jun 2021 16:44:25 +0000</lastBuildDate>
 
+    <item>
+      <title>Intelligent Kafka message routing using Drools DMN Engine and Apache Camel</title>
+      <link>https://matteomortari.com/blog/2021/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html</link>
+      <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html</guid>
+      	<description>
+	&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In this post I want to share an interesting use-case of Healthcare message routing, which we implemented using the &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, in order to route and dispatch Patient&apos;s Admission-Discharge-Transfer message types to the required &lt;a href=&quot;https://kafka.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kafka topics&lt;/a&gt; and therefore queuing the message to the appropriate sub-system. I believe it is both a &lt;strong&gt;very pragmatic and interesting combination of technologies&lt;/strong&gt;, while it also shows &lt;strong&gt;a blueprint and generalised pattern&lt;/strong&gt; which can be easily replicated to other domains, in order to achieve &lt;strong&gt;intelligent message routing&lt;/strong&gt; for Apache Kafka for many other use-cases.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;You can see the tech demo in action in this video and further below for additional details:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:embed {&quot;url&quot;:&quot;https://youtu.be/tNe6QU1Yq8U&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;responsive&quot;:true,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
+&lt;div class=&quot;text-center&quot;&gt;
+    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/tNe6QU1Yq8U&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;!-- /wp:embed --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The use-case for this tech demo is about specific types of message in the Healthcare domain, which contains information about the Patient&apos;s Admission-Discharge-Transfer (ADT); these types of messages, depending on a set of rules, need to be dispatched to the appropriate Kafka topic(s). This way, further systems and applications downstream can connect to these queues and consume only the relevant messages of interest.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {&quot;id&quot;:11454,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
+&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-14.59.14-1024x575.png&quot; alt=&quot;&quot; class=&quot;wp-image-11454&quot;/&gt;&lt;figcaption&gt;EIP diagram for Intelligent Healthcare message routing&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;Rules are formalised by the domain expert&lt;/strong&gt;, in this case the Healthcare professional, who usually is &lt;strong&gt;not a software developer&lt;/strong&gt;, but is knowledgeable and interested in the data contained in the message itself. This makes it a perfect fit for DMN, as the rules can be easily encoded using a DMN Decision Table, so that the decision about the destination queue names can easily be represented in a graphical format --one of the many key advantages of the DMN Standard.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;img width=&quot;928px;&quot; height=&quot;315px;&quot; src=&quot;https://lh3.googleusercontent.com/5iBRuWOs4wKdwIxAGyMgdgb7Jh_pU26hTXODyip_A8UfCPfCCCtH0HZGlSzCxy4T7LWV4_M2u1BE4KkOJl5pveTcDLUOhjxJM6INyUQAX_rj0w_leKwFcEoUSeLsVOU3AWaW7aMlsos&quot;&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In the example screenshot, the domain expert is interested with the first rule in all ADT messages coming only from the application called &quot;MMS&quot;: these needs to be dispatched to the queue named &quot;MMSAllADT&quot; on Kafka. A second rule prescribe that ADT messages, again only from the application called &quot;MMS&quot;, but pertaining only to a Patient&apos;s discharge (reported as &quot;A03&quot; on HL7), shall also be dispatched to topic &quot;MMSDischarges&quot; on Kafka. For the purpose of simplicity of the demo, the table contains only 2 criteria; naturally this table can be easily extended to accomodate all the specific rules required, as the demonstration video also shows.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;The Enterprise Integration Pattern diagram can be revisited, now annotated with the actual technologies used:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {&quot;id&quot;:11455,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
+&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.04.28-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-11455&quot;/&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;For the purpose of this tech demo, the incoming message format is exchanged using the &lt;a href=&quot;http://www.hl7.org/implement/standards/product_section.cfm?section=13&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 v2 standard&lt;/a&gt;, and provided to a REST Endpoints, which may also serve as a &lt;a href=&quot;https://cds-hooks.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;CDS hook&lt;/a&gt;. Naturally this could be extended to use more modern standards in the same healthcare domain, such as &lt;a href=&quot;https://hl7.org/FHIR&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 FHIR&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;It is important to reiterate this&lt;strong&gt; &quot;Intelligent message routing&quot; blueprint&lt;/strong&gt; is very generic, therefore can be analogously architected &lt;strong&gt;on top of other business domains&lt;/strong&gt;, such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Financial_services&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;FSI&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Internet_of_things&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;IoT&lt;/a&gt;, etc.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Another advantage of this blueprint is the &lt;strong&gt;separation of concerns between the business domain logic and the integration code&lt;/strong&gt;; that is the separation between the rules formalised graphically by means of a DMN Decision Table to decide on which topic name the message shall be queued into, and the actual Apache Camel code implementing the integration between the different systems. This way, the business expert can focus on just and only the decision to be modelled using DMN, while the software developer can offer a very extensible and robust intelligent routing capability.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Taking a little look under the hood, we highlight how the software developer using the Camel DSL only needs to write a minimal amount of code:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {&quot;id&quot;:11458,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
+&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.23.02-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-11458&quot;/&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;I have highlighted visually where the Camel DSL integrates the Drools DMN Engine for the evaluation of the necessary business logic for the rules, in order to decide which Kafka topic(s) the message needs to be queued into, or eventually forwarded to a catch-all queue. This allow to maintain the set of rules and decisions using just and only the DMN model, separately from integration code.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In the video, three scenarios are demonstrated:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Scenario 1: Normal routing&lt;/strong&gt;&lt;br&gt;This is the standard operating mode.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Scenario 2: Failure mode&lt;/strong&gt;&lt;br&gt;This is highlighting the catch-all queue for messages which are not matching any of the prescribed rules of the domain expert&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Scenario 3: Add new rule&lt;/strong&gt;&lt;br&gt;One of the most important aspects we highlighted is the ability to update the rules for message dispatching, &lt;strong&gt;without touching a single line of code&lt;/strong&gt;, and this scenario demonstrates how this aspect is technically fully under the control of the domain expert. Naturally, in a real world scenario, several actors and procedures are involved before rolling-over the update on the Production system, going beyond the merely technical requirements; the demo focuses only on the pragmatical aspects.&lt;/li&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
+&lt;h3&gt;Conclusions&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In this technical demo, we have seen how we can easily integrate &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, to achieve Intelligent message routing on top of Apache Kafka. Specifically we have seen how to formalise the rules for the decision of the appropriate dispatch queue using DMN decision tables, so we can manage separately the business requirements from the actual integration code.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;What do you think of this use-case and this demo? Don&apos;t hesitate to let us know in the comments below!&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+	</description>
+    </item>
     <item>
       <title>Cloud native considerations webinar</title>
       <link>https://matteomortari.com/talks/2021/cloud-native-considerations-webinar.html</link>
