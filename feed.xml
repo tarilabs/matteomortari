@@ -6,8 +6,8 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Tue, 29 Jun 2021 16:44:25 +0000</pubDate>
-    <lastBuildDate>Tue, 29 Jun 2021 16:44:25 +0000</lastBuildDate>
+    <pubDate>Tue, 29 Jun 2021 16:54:10 +0000</pubDate>
+    <lastBuildDate>Tue, 29 Jun 2021 16:54:10 +0000</lastBuildDate>
 
     <item>
       <title>Intelligent Kafka message routing using Drools DMN Engine and Apache Camel</title>
@@ -137,9 +137,9 @@
     </item>
     <item>
       <title>IIBA DMN Patterns</title>
-      <link>https://matteomortari.com/talks/2021/IIBA-dmn-patterns.html</link>
+      <link>https://matteomortari.com/talks/2021/iiba-dmn-patterns.html</link>
       <pubDate>Thu, 20 May 2021 00:00:00 +0000</pubDate>
-      <guid isPermaLink="false">talks/2021/IIBA-dmn-patterns.html</guid>
+      <guid isPermaLink="false">talks/2021/iiba-dmn-patterns.html</guid>
       	<description>
 	&lt;div class=&quot;sect1&quot;&gt;
 &lt;h2 id=&quot;_how_to_capture_business_decisions_using_dmn_introduction_to_some_basic_patterns_and_their_value&quot;&gt;How to Capture Business Decisions using DMN: Introduction to Some Basic Patterns and Their Value&lt;/h2&gt;
