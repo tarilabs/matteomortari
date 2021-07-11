@@ -6,8 +6,8 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Tue, 29 Jun 2021 16:54:10 +0000</pubDate>
-    <lastBuildDate>Tue, 29 Jun 2021 16:54:10 +0000</lastBuildDate>
+    <pubDate>Sun, 11 Jul 2021 08:06:11 +0000</pubDate>
+    <lastBuildDate>Sun, 11 Jul 2021 08:06:11 +0000</lastBuildDate>
 
     <item>
       <title>Intelligent Kafka message routing using Drools DMN Engine and Apache Camel</title>
