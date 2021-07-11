@@ -10,12 +10,16 @@
 
 	<p><em>${content.date?string("dd MMMM yyyy")}</em></p>
 
-<div class="text-center">
+<div class="row justify-content-center text-center">
+<div class="col-lg-6">
 <#if (content.youtubeid)??>
-	<iframe style="width: 50%; height: 33vh;" src="https://www.youtube.com/embed/${content.youtubeid}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="ratio ratio-16x9">
+	<iframe src="https://www.youtube.com/embed/${content.youtubeid}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 <#elseif (content.preview)??>
-	<img src="../../${content.preview}" style="width: 50%"/>
+	<img src="../../${content.preview}" class="img-fluid" />
 </#if>
+</div>
 </div>
 
 	<p>${content.body}</p>
