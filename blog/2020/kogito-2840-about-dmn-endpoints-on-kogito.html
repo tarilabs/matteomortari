@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" >
-    <meta content="&lt;!-- wp:paragraph --&gt; This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work ..." name="description"> 
+    <meta content="This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part ..." name="description"> 
     <title>About DMN endpoints on Kogito</title>
     <link rel="canonical" href="https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -32,143 +32,63 @@
 
 	<p><em>04 August 2020</em></p>
 
-	<!-- wp:paragraph -->
-<p>This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part of <a href="https://issues.redhat.com/browse/KOGITO-2840">KOGITO-2840</a>.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading -->
-<h2>Introduction</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>For each DMN model in a Kogito application, a collection of REST endpoints is automatically code generated based on the content of the model.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>For each DMN model there will be:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li>one REST “business-domain” endpoint to support the evaluation of the whole model</li><li>one REST “business-domain” endpoint to support the evaluation for each Decision Service(s) in the model</li></ul>
-<!-- /wp:list -->
-
-<!-- wp:paragraph -->
-<p>and also analogous endpoints returning <em>classic</em> <code>DMNResult</code> comprising business domain context and helper messages and helper decision “pointers”:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li>one REST “dmnresult” endpoint to support the evaluation of the whole model</li><li>one REST “dmnresult” endpoint to support the evaluation for each Decision Service(s) in the model</li></ul>
-<!-- /wp:list -->
-
-<!-- wp:paragraph -->
-<p>and finally:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li>one REST <code>GET</code> to return the DMN xml <em>without</em> decision-logic<br>This can be helpful for model introspection.<br>We are planning to eventually parametrise this endpoint with additional options for TrustyAI.</li></ul>
-<!-- /wp:list -->
-
-<!-- wp:heading -->
-<h2>URL naming</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>The naming of the endpoints is currently structured with the following convention:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>POST</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li><code>{modelname}</code></li><li><code>{modelname}<strong>/</strong>{decisionServiceName}</code></li><li><code>{modelname}<strong>/dmnresult</strong></code></li><li><code>{modelname}<strong>/</strong>{decisionServiceName}<strong>/dmnresult</strong></code></li></ul>
-<!-- /wp:list -->
-
-<!-- wp:paragraph -->
-<p>GET</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li><code>{modelname}</code></li></ul>
-<!-- /wp:list -->
-
-<!-- wp:heading -->
-<h2>Choosing between “business-domain” and dmnresult variant of the REST endpoints</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>If a client application is only concerned with a positive evaluation outcome, is not interested in parsing Info/Warn message(s) and only needs to get an http 5xx in case of Errors, might prefer to opt for using the “business-domain” variant. Especially the feature of singleton coercion of Decision Service result, mimicking the DMN modeling behaviour, might be helpful for single page application-like clients.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>If a client needs to parse also Info/Warn/Error messages in all the cases, it is best to prefer the dmnresult variant.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading -->
-<h2>API details of the “business-domain” endpoints</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>The whole model endpoint needs as the input payload, all the Input Data of the model.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Once invoked, the output payload will be the resulting DMN context of the whole model evaluation, that is the one composed of the actual resulting Decision values, the original input values, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>The decision service endpoint needs as the input payload, all the requirements of the Decision Service.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Once invoked, the output payload will be the resulting DMN context of the Decision Service evaluation, that is the one composed of the actual resulting Decision values, the original input requirements, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>In the case the Decision Service is composed of a <em>single output decision</em>, the output payload will be the resulting value of that specific Decision; this is to provide an equivalent at API level of a specification feature, when invoking the Decision Service in the model itself. This feature can be used for example to interact very easily from single page web applications, with a DMN Decision Service.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>For all these endpoints, in case of a DMN evaluation Error, a full DMNResult payload is returned along with a http 5xx error. In case of a DMN Info/Warn message, these will be returned along with the “business-domain” return rest payload, in the <code>X-Kogito-decision-messages</code> extended http header, more as an helper than to be used for client-side business logic; this is based on the assumption that, in case when more refined client-side business logic is required, the client can actually use the “dmnresult” variant of the endpoints.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading -->
-<h2>Examples</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>In the following sections, some basic examples will be presented.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":3} -->
-<h3>Endpoint: whole model&nbsp;</h3>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>Given:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image -->
-<figure class="wp-block-image"><img src="https://lh4.googleusercontent.com/yF069bevleZaXtS_PwGKNaN-Scz1j_R9XB7rbdMJSXcFKW9wRjPuXGAcwcoo5wdAtxYE2fSIbuor1w1tsrNztppSSSjm1LdVeqxB3vCD378Ulhh53JQcdIk6N9TlVtWQQ_nlEXq-" alt="" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>We notice the name of the DMN model is <code>Traffic Violation</code>:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image -->
-<figure class="wp-block-image"><img src="https://lh5.googleusercontent.com/97JmiRDDl3PkaZFwddgDZwqt57Q-p6Bo0r1erEUTBu-j6fZeLoVYUiQTdAuD-Uunaw71yRTnN2zOxpHUD2BS736lsYDyNDLJSaRBRPZp9WOMzaz-2Gdh0i4MpSbUEZ8Q5j5kDLIf" alt="" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>endpoint: <code>localhost:8080/Traffic Violation</code></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>input payload:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
+	<p>This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part of <a href="https://issues.redhat.com/browse/KOGITO-2840">KOGITO-2840</a>.</p>   
+<h2>Introduction</h2>   
+<p>For each DMN model in a Kogito application, a collection of REST endpoints is automatically code generated based on the content of the model.</p>   
+<p>For each DMN model there will be:</p>   
+<ul>
+ <li>one REST “business-domain” endpoint to support the evaluation of the whole model</li>
+ <li>one REST “business-domain” endpoint to support the evaluation for each Decision Service(s) in the model</li>
+</ul>   
+<p>and also analogous endpoints returning <em>classic</em> <code>DMNResult</code> comprising business domain context and helper messages and helper decision “pointers”:</p>   
+<ul>
+ <li>one REST “dmnresult” endpoint to support the evaluation of the whole model</li>
+ <li>one REST “dmnresult” endpoint to support the evaluation for each Decision Service(s) in the model</li>
+</ul>   
+<p>and finally:</p>   
+<ul>
+ <li>one REST <code>GET</code> to return the DMN xml <em>without</em> decision-logic<br>This can be helpful for model introspection.<br>We are planning to eventually parametrise this endpoint with additional options for TrustyAI.</li>
+</ul>   
+<h2>URL naming</h2>   
+<p>The naming of the endpoints is currently structured with the following convention:</p>   
+<p>POST</p>   
+<ul>
+ <li><code>{modelname}</code></li>
+ <li><code>{modelname}<strong>/</strong>{decisionServiceName}</code></li>
+ <li><code>{modelname}<strong>/dmnresult</strong></code></li>
+ <li><code>{modelname}<strong>/</strong>{decisionServiceName}<strong>/dmnresult</strong></code></li>
+</ul>   
+<p>GET</p>   
+<ul>
+ <li><code>{modelname}</code></li>
+</ul>   
+<h2>Choosing between “business-domain” and dmnresult variant of the REST endpoints</h2>   
+<p>If a client application is only concerned with a positive evaluation outcome, is not interested in parsing Info/Warn message(s) and only needs to get an http 5xx in case of Errors, might prefer to opt for using the “business-domain” variant. Especially the feature of singleton coercion of Decision Service result, mimicking the DMN modeling behaviour, might be helpful for single page application-like clients.</p>   
+<p>If a client needs to parse also Info/Warn/Error messages in all the cases, it is best to prefer the dmnresult variant.</p>   
+<h2>API details of the “business-domain” endpoints</h2>   
+<p>The whole model endpoint needs as the input payload, all the Input Data of the model.</p>   
+<p>Once invoked, the output payload will be the resulting DMN context of the whole model evaluation, that is the one composed of the actual resulting Decision values, the original input values, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).</p>   
+<p>The decision service endpoint needs as the input payload, all the requirements of the Decision Service.</p>   
+<p>Once invoked, the output payload will be the resulting DMN context of the Decision Service evaluation, that is the one composed of the actual resulting Decision values, the original input requirements, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).</p>   
+<p>In the case the Decision Service is composed of a <em>single output decision</em>, the output payload will be the resulting value of that specific Decision; this is to provide an equivalent at API level of a specification feature, when invoking the Decision Service in the model itself. This feature can be used for example to interact very easily from single page web applications, with a DMN Decision Service.</p>   
+<p>For all these endpoints, in case of a DMN evaluation Error, a full DMNResult payload is returned along with a http 5xx error. In case of a DMN Info/Warn message, these will be returned along with the “business-domain” return rest payload, in the <code>X-Kogito-decision-messages</code> extended http header, more as an helper than to be used for client-side business logic; this is based on the assumption that, in case when more refined client-side business logic is required, the client can actually use the “dmnresult” variant of the endpoints.</p>   
+<h2>Examples</h2>   
+<p>In the following sections, some basic examples will be presented.</p>   
+<h3>Endpoint: whole model&nbsp;</h3>   
+<p>Given:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/yF069bevleZaXtS_PwGKNaN-Scz1j_R9XB7rbdMJSXcFKW9wRjPuXGAcwcoo5wdAtxYE2fSIbuor1w1tsrNztppSSSjm1LdVeqxB3vCD378Ulhh53JQcdIk6N9TlVtWQQ_nlEXq-" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>We notice the name of the DMN model is <code>Traffic Violation</code>:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/97JmiRDDl3PkaZFwddgDZwqt57Q-p6Bo0r1erEUTBu-j6fZeLoVYUiQTdAuD-Uunaw71yRTnN2zOxpHUD2BS736lsYDyNDLJSaRBRPZp9WOMzaz-2Gdh0i4MpSbUEZ8Q5j5kDLIf" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>endpoint: <code>localhost:8080/Traffic Violation</code></p>   
+<p>input payload:</p>   
 <pre class="wp-block-preformatted">{
 &nbsp;&nbsp;&nbsp;&nbsp;"Driver": {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Points": 2
@@ -178,14 +98,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Actual Speed": 120,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Speed Limit": 100
 &nbsp;&nbsp;&nbsp;&nbsp;}
-}</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:paragraph -->
-<p>output:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
+}</pre>   
+<p>output:</p>   
 <pre class="wp-block-preformatted">{
   "Violation": {
     "Type": "speed",
@@ -200,38 +114,22 @@
     "Amount": 500
   },
   "Should the driver be suspended?": "No"
-}</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:heading {"level":3} -->
-<h3>Endpoint: decision service with singleton output decision</h3>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>Given:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image -->
-<figure class="wp-block-image"><img src="https://lh5.googleusercontent.com/kOsYWVbk5wjjQkHuHbjgoyuEyZNMGhwY6jih6cDdV4wNxp9QBMNzGUYNRFajKurFJNUEAstYTYVuS2Ck5_rMvyYrjNeq-NDJLcF69pJ5XkmBVK8RJf5jmXv0nK2NYKGXkJeA3kcd" alt="" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>we notice the name of the decision service is <code>TrafficViolationDecisionService</code>:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image -->
-<figure class="wp-block-image"><img src="https://lh4.googleusercontent.com/OZ4uj7tKPunXaPvDELE8hzoN8wBreRws-8mDw4l88j80o2yadNGol4FYhuRYFhJTiLBcOClWf0w4isVwD8wJHaqVLudcy8pPi2Y2uOZ1gY1I7lsxqFlamuqxUv_w-G41CJnOKSkw" alt="" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>endpoint: <code>localhost:8080/Traffic Violation/TrafficViolationDecisionService</code></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>input payload:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
+}</pre>   
+<h3>Endpoint: decision service with singleton output decision</h3>   
+<p>Given:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/kOsYWVbk5wjjQkHuHbjgoyuEyZNMGhwY6jih6cDdV4wNxp9QBMNzGUYNRFajKurFJNUEAstYTYVuS2Ck5_rMvyYrjNeq-NDJLcF69pJ5XkmBVK8RJf5jmXv0nK2NYKGXkJeA3kcd" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>we notice the name of the decision service is <code>TrafficViolationDecisionService</code>:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/OZ4uj7tKPunXaPvDELE8hzoN8wBreRws-8mDw4l88j80o2yadNGol4FYhuRYFhJTiLBcOClWf0w4isVwD8wJHaqVLudcy8pPi2Y2uOZ1gY1I7lsxqFlamuqxUv_w-G41CJnOKSkw" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>endpoint: <code>localhost:8080/Traffic Violation/TrafficViolationDecisionService</code></p>   
+<p>input payload:</p>   
 <pre class="wp-block-preformatted">{
 &nbsp;&nbsp;&nbsp;&nbsp;"Driver": {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Points": 2
@@ -241,38 +139,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Actual Speed": 120,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Speed Limit": 100
 &nbsp;&nbsp;&nbsp;&nbsp;}
-}</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:paragraph -->
-<p>output:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
-<pre class="wp-block-preformatted">"No"</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:heading {"level":3} -->
-<h3>Endpoint: decision service with multiple output decision</h3>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>Now given instead:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image -->
-<figure class="wp-block-image"><img src="https://lh5.googleusercontent.com/1nRZwDs77_9C3pw_zAEW3DDVq6ZTdJH9ENe9KnaOxPBp1AO0iqqfrY55dRI8do9g7JI1aUCyOdu_UJHfpMfj7svbuxfL4H9ggrf9VqKswmrsQrfODxZAJw9kgPyBKOz7_g9_fqKQ" alt="" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>endpoint: <code>localhost:8080/Traffic Violation/TrafficViolationDecisionService</code></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>input payload:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
+}</pre>   
+<p>output:</p>   
+<pre class="wp-block-preformatted">"No"</pre>   
+<h3>Endpoint: decision service with multiple output decision</h3>   
+<p>Now given instead:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/1nRZwDs77_9C3pw_zAEW3DDVq6ZTdJH9ENe9KnaOxPBp1AO0iqqfrY55dRI8do9g7JI1aUCyOdu_UJHfpMfj7svbuxfL4H9ggrf9VqKswmrsQrfODxZAJw9kgPyBKOz7_g9_fqKQ" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>endpoint: <code>localhost:8080/Traffic Violation/TrafficViolationDecisionService</code></p>   
+<p>input payload:</p>   
 <pre class="wp-block-preformatted">{
 &nbsp;&nbsp;&nbsp;&nbsp;"Driver": {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Points": 2
@@ -282,14 +160,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Actual Speed": 120,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Speed Limit": 100
 &nbsp;&nbsp;&nbsp;&nbsp;}
-}</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:paragraph -->
-<p>output:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
+}</pre>   
+<p>output:</p>   
 <pre class="wp-block-preformatted">{
 &nbsp;&nbsp;&nbsp;&nbsp;"Violation": {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Type": "speed",
@@ -304,20 +176,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Amount": 500
 &nbsp;&nbsp;&nbsp;&nbsp;},
 &nbsp;&nbsp;&nbsp;&nbsp;"Should the driver be suspended?": "No"
-}</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:heading -->
-<h2>Conclusions</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>We have seen the current design of DMN REST endpoints automatically generated in a Kogito application and how can be used to support several use-cases.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
+}</pre>   
+<h2>Conclusions</h2>   
+<p>We have seen the current design of DMN REST endpoints automatically generated in a Kogito application and how can be used to support several use-cases.</p>   
 <p>We like to hear your feedback! Do you have some thoughts or question about this topic? Please make sure to let us know!</p>
-<!-- /wp:paragraph -->
 
 
 </section>

@@ -6,8 +6,8 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Sun, 11 Jul 2021 08:06:11 +0000</pubDate>
-    <lastBuildDate>Sun, 11 Jul 2021 08:06:11 +0000</lastBuildDate>
+    <pubDate>Tue, 13 Jul 2021 17:33:21 +0000</pubDate>
+    <lastBuildDate>Tue, 13 Jul 2021 17:33:21 +0000</lastBuildDate>
 
     <item>
       <title>Intelligent Kafka message routing using Drools DMN Engine and Apache Camel</title>
@@ -15,91 +15,52 @@
       <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2021/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html</guid>
       	<description>
-	&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In this post I want to share an interesting use-case of Healthcare message routing, which we implemented using the &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, in order to route and dispatch Patient&apos;s Admission-Discharge-Transfer message types to the required &lt;a href=&quot;https://kafka.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kafka topics&lt;/a&gt; and therefore queuing the message to the appropriate sub-system. I believe it is both a &lt;strong&gt;very pragmatic and interesting combination of technologies&lt;/strong&gt;, while it also shows &lt;strong&gt;a blueprint and generalised pattern&lt;/strong&gt; which can be easily replicated to other domains, in order to achieve &lt;strong&gt;intelligent message routing&lt;/strong&gt; for Apache Kafka for many other use-cases.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;You can see the tech demo in action in this video and further below for additional details:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:embed {&quot;url&quot;:&quot;https://youtu.be/tNe6QU1Yq8U&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;responsive&quot;:true,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
-&lt;div class=&quot;text-center&quot;&gt;
-    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/tNe6QU1Yq8U&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/div&gt;
-&lt;!-- /wp:embed --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The use-case for this tech demo is about specific types of message in the Healthcare domain, which contains information about the Patient&apos;s Admission-Discharge-Transfer (ADT); these types of messages, depending on a set of rules, need to be dispatched to the appropriate Kafka topic(s). This way, further systems and applications downstream can connect to these queues and consume only the relevant messages of interest.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image {&quot;id&quot;:11454,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
-&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-14.59.14-1024x575.png&quot; alt=&quot;&quot; class=&quot;wp-image-11454&quot;/&gt;&lt;figcaption&gt;EIP diagram for Intelligent Healthcare message routing&lt;/figcaption&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;&lt;strong&gt;Rules are formalised by the domain expert&lt;/strong&gt;, in this case the Healthcare professional, who usually is &lt;strong&gt;not a software developer&lt;/strong&gt;, but is knowledgeable and interested in the data contained in the message itself. This makes it a perfect fit for DMN, as the rules can be easily encoded using a DMN Decision Table, so that the decision about the destination queue names can easily be represented in a graphical format --one of the many key advantages of the DMN Standard.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;&lt;img width=&quot;928px;&quot; height=&quot;315px;&quot; src=&quot;https://lh3.googleusercontent.com/5iBRuWOs4wKdwIxAGyMgdgb7Jh_pU26hTXODyip_A8UfCPfCCCtH0HZGlSzCxy4T7LWV4_M2u1BE4KkOJl5pveTcDLUOhjxJM6INyUQAX_rj0w_leKwFcEoUSeLsVOU3AWaW7aMlsos&quot;&gt;&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In the example screenshot, the domain expert is interested with the first rule in all ADT messages coming only from the application called &quot;MMS&quot;: these needs to be dispatched to the queue named &quot;MMSAllADT&quot; on Kafka. A second rule prescribe that ADT messages, again only from the application called &quot;MMS&quot;, but pertaining only to a Patient&apos;s discharge (reported as &quot;A03&quot; on HL7), shall also be dispatched to topic &quot;MMSDischarges&quot; on Kafka. For the purpose of simplicity of the demo, the table contains only 2 criteria; naturally this table can be easily extended to accomodate all the specific rules required, as the demonstration video also shows.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The Enterprise Integration Pattern diagram can be revisited, now annotated with the actual technologies used:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image {&quot;id&quot;:11455,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
-&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.04.28-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-11455&quot;/&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;For the purpose of this tech demo, the incoming message format is exchanged using the &lt;a href=&quot;http://www.hl7.org/implement/standards/product_section.cfm?section=13&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 v2 standard&lt;/a&gt;, and provided to a REST Endpoints, which may also serve as a &lt;a href=&quot;https://cds-hooks.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;CDS hook&lt;/a&gt;. Naturally this could be extended to use more modern standards in the same healthcare domain, such as &lt;a href=&quot;https://hl7.org/FHIR&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 FHIR&lt;/a&gt;.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;It is important to reiterate this&lt;strong&gt; &quot;Intelligent message routing&quot; blueprint&lt;/strong&gt; is very generic, therefore can be analogously architected &lt;strong&gt;on top of other business domains&lt;/strong&gt;, such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Financial_services&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;FSI&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Internet_of_things&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;IoT&lt;/a&gt;, etc.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Another advantage of this blueprint is the &lt;strong&gt;separation of concerns between the business domain logic and the integration code&lt;/strong&gt;; that is the separation between the rules formalised graphically by means of a DMN Decision Table to decide on which topic name the message shall be queued into, and the actual Apache Camel code implementing the integration between the different systems. This way, the business expert can focus on just and only the decision to be modelled using DMN, while the software developer can offer a very extensible and robust intelligent routing capability.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Taking a little look under the hood, we highlight how the software developer using the Camel DSL only needs to write a minimal amount of code:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image {&quot;id&quot;:11458,&quot;sizeSlug&quot;:&quot;large&quot;,&quot;linkDestination&quot;:&quot;none&quot;} --&gt;
-&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.23.02-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-11458&quot;/&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;I have highlighted visually where the Camel DSL integrates the Drools DMN Engine for the evaluation of the necessary business logic for the rules, in order to decide which Kafka topic(s) the message needs to be queued into, or eventually forwarded to a catch-all queue. This allow to maintain the set of rules and decisions using just and only the DMN model, separately from integration code.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In the video, three scenarios are demonstrated:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Scenario 1: Normal routing&lt;/strong&gt;&lt;br&gt;This is the standard operating mode.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Scenario 2: Failure mode&lt;/strong&gt;&lt;br&gt;This is highlighting the catch-all queue for messages which are not matching any of the prescribed rules of the domain expert&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Scenario 3: Add new rule&lt;/strong&gt;&lt;br&gt;One of the most important aspects we highlighted is the ability to update the rules for message dispatching, &lt;strong&gt;without touching a single line of code&lt;/strong&gt;, and this scenario demonstrates how this aspect is technically fully under the control of the domain expert. Naturally, in a real world scenario, several actors and procedures are involved before rolling-over the update on the Production system, going beyond the merely technical requirements; the demo focuses only on the pragmatical aspects.&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Conclusions&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In this technical demo, we have seen how we can easily integrate &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, to achieve Intelligent message routing on top of Apache Kafka. Specifically we have seen how to formalise the rules for the decision of the appropriate dispatch queue using DMN decision tables, so we can manage separately the business requirements from the actual integration code.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
+	&lt;p&gt;In this post I want to share an interesting use-case of Healthcare message routing, which we implemented using the &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, in order to route and dispatch Patient&apos;s Admission-Discharge-Transfer message types to the required &lt;a href=&quot;https://kafka.apache.org&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kafka topics&lt;/a&gt; and therefore queuing the message to the appropriate sub-system. I believe it is both a &lt;strong&gt;very pragmatic and interesting combination of technologies&lt;/strong&gt;, while it also shows &lt;strong&gt;a blueprint and generalised pattern&lt;/strong&gt; which can be easily replicated to other domains, in order to achieve &lt;strong&gt;intelligent message routing&lt;/strong&gt; for Apache Kafka for many other use-cases.&lt;/p&gt;   
+&lt;p&gt;You can see the tech demo in action in this video and further below for additional details:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/tNe6QU1Yq8U&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;The use-case for this tech demo is about specific types of message in the Healthcare domain, which contains information about the Patient&apos;s Admission-Discharge-Transfer (ADT); these types of messages, depending on a set of rules, need to be dispatched to the appropriate Kafka topic(s). This way, further systems and applications downstream can connect to these queues and consume only the relevant messages of interest.&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-14.59.14-1024x575.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    EIP diagram for Intelligent Healthcare message routing 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;&lt;strong&gt;Rules are formalised by the domain expert&lt;/strong&gt;, in this case the Healthcare professional, who usually is &lt;strong&gt;not a software developer&lt;/strong&gt;, but is knowledgeable and interested in the data contained in the message itself. This makes it a perfect fit for DMN, as the rules can be easily encoded using a DMN Decision Table, so that the decision about the destination queue names can easily be represented in a graphical format --one of the many key advantages of the DMN Standard.&lt;/p&gt;   
+&lt;p class=&quot;text-center&quot;&gt;&lt;img src=&quot;https://lh3.googleusercontent.com/5iBRuWOs4wKdwIxAGyMgdgb7Jh_pU26hTXODyip_A8UfCPfCCCtH0HZGlSzCxy4T7LWV4_M2u1BE4KkOJl5pveTcDLUOhjxJM6INyUQAX_rj0w_leKwFcEoUSeLsVOU3AWaW7aMlsos&quot; class=&quot;img-fluid&quot;&gt;&lt;/p&gt;   
+&lt;p&gt;In the example screenshot, the domain expert is interested with the first rule in all ADT messages coming only from the application called &quot;MMS&quot;: these needs to be dispatched to the queue named &quot;MMSAllADT&quot; on Kafka. A second rule prescribe that ADT messages, again only from the application called &quot;MMS&quot;, but pertaining only to a Patient&apos;s discharge (reported as &quot;A03&quot; on HL7), shall also be dispatched to topic &quot;MMSDischarges&quot; on Kafka. For the purpose of simplicity of the demo, the table contains only 2 criteria; naturally this table can be easily extended to accomodate all the specific rules required, as the demonstration video also shows.&lt;/p&gt;   
+&lt;p&gt;The Enterprise Integration Pattern diagram can be revisited, now annotated with the actual technologies used:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.04.28-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;For the purpose of this tech demo, the incoming message format is exchanged using the &lt;a href=&quot;http://www.hl7.org/implement/standards/product_section.cfm?section=13&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 v2 standard&lt;/a&gt;, and provided to a REST Endpoints, which may also serve as a &lt;a href=&quot;https://cds-hooks.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;CDS hook&lt;/a&gt;. Naturally this could be extended to use more modern standards in the same healthcare domain, such as &lt;a href=&quot;https://hl7.org/FHIR&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 FHIR&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;It is important to reiterate this&lt;strong&gt; &quot;Intelligent message routing&quot; blueprint&lt;/strong&gt; is very generic, therefore can be analogously architected &lt;strong&gt;on top of other business domains&lt;/strong&gt;, such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Financial_services&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;FSI&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Internet_of_things&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;IoT&lt;/a&gt;, etc.&lt;/p&gt;   
+&lt;p&gt;Another advantage of this blueprint is the &lt;strong&gt;separation of concerns between the business domain logic and the integration code&lt;/strong&gt;; that is the separation between the rules formalised graphically by means of a DMN Decision Table to decide on which topic name the message shall be queued into, and the actual Apache Camel code implementing the integration between the different systems. This way, the business expert can focus on just and only the decision to be modelled using DMN, while the software developer can offer a very extensible and robust intelligent routing capability.&lt;/p&gt;   
+&lt;p&gt;Taking a little look under the hood, we highlight how the software developer using the Camel DSL only needs to write a minimal amount of code:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/Screenshot-2021-06-27-at-15.23.02-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;I have highlighted visually where the Camel DSL integrates the Drools DMN Engine for the evaluation of the necessary business logic for the rules, in order to decide which Kafka topic(s) the message needs to be queued into, or eventually forwarded to a catch-all queue. This allow to maintain the set of rules and decisions using just and only the DMN model, separately from integration code.&lt;/p&gt;   
+&lt;p&gt;In the video, three scenarios are demonstrated:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;strong&gt;Scenario 1: Normal routing&lt;/strong&gt;&lt;br&gt;This is the standard operating mode.&lt;/li&gt;
+ &lt;li&gt;&lt;strong&gt;Scenario 2: Failure mode&lt;/strong&gt;&lt;br&gt;This is highlighting the catch-all queue for messages which are not matching any of the prescribed rules of the domain expert&lt;/li&gt;
+ &lt;li&gt;&lt;strong&gt;Scenario 3: Add new rule&lt;/strong&gt;&lt;br&gt;One of the most important aspects we highlighted is the ability to update the rules for message dispatching, &lt;strong&gt;without touching a single line of code&lt;/strong&gt;, and this scenario demonstrates how this aspect is technically fully under the control of the domain expert. Naturally, in a real world scenario, several actors and procedures are involved before rolling-over the update on the Production system, going beyond the merely technical requirements; the demo focuses only on the pragmatical aspects.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h3&gt;Conclusions&lt;/h3&gt;   
+&lt;p&gt;In this technical demo, we have seen how we can easily integrate &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and &lt;a href=&quot;https://camel.apache.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, to achieve Intelligent message routing on top of Apache Kafka. Specifically we have seen how to formalise the rules for the decision of the appropriate dispatch queue using DMN decision tables, so we can manage separately the business requirements from the actual integration code.&lt;/p&gt;   
 &lt;p&gt;What do you think of this use-case and this demo? Don&apos;t hesitate to let us know in the comments below!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
 
 	</description>
     </item>
@@ -160,102 +121,57 @@
       <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2021/new-model-specific-dmn-kie-server-endpoints.html</guid>
       	<description>
-	&lt;div class=&quot;text-center&quot;&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/e-YMVvPAEf0&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+	&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+&lt;div class=&quot;col-lg-6&quot;&gt;
+    &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+    &lt;iframe src=&quot;https://www.youtube.com/embed/e-YMVvPAEf0&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;&lt;em&gt;Modernising kie-server with new and more user-friendly DMN endpoints, better Swagger/OpenAPI documentation, easier JSON-based REST invocations; an intermediate step to help developers transitioning to service-oriented deployments such as a Kogito-based application.&lt;/em&gt;&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:heading --&gt;
-    &lt;h2&gt;In a nutshell:&lt;/h2&gt;
-    &lt;!-- /wp:heading --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;The current DMN kie-server endpoints are fully compliant with kie-server extension design architecture, and aligned with all other kie-server services and extensions; however, some aspects of the current &lt;em&gt;generic&lt;/em&gt; approach of kie-server sometimes are not very user-friendly for DMN evaluations, due to limitations of swagger documentation and the REST payloads requirements to follow the generic kie-server marshaller protocol. These aspects do apply to all kie-server services, including naturally DMN kie-server endpoints as well.&lt;br&gt;On other hand, experience shown that building manually the REST payload on Kogito for DMN evaluation is very easy for end-users, thanks to key features pertaining to DMN core capabilities.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;This &lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-6047&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;new feature (DROOLS-6047)&lt;/a&gt; extends DMN on kie-server with new endpoints, leveraging those core capabilities; the new DMN endpoints provide better Swagger documentation and can be more easily consumed by end-users, therefore contributing to modernising the kie-server platform while also making easier to eventually transition to a full Kogito-based application and deployment!&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:heading --&gt;
-    &lt;h2&gt;Why is this needed?&lt;/h2&gt;
-    &lt;!-- /wp:heading --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Currently on kie-server, the DMN service exposes 2 endpoints which are fully compliant with kie-server extension design architecture:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Retrieves DMN model for given container&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Evaluates decisions for given input&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;The current swagger documentation is agnostic to the actual model content of the knowledge asset, like for any other kie-server extension:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
-    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh6.googleusercontent.com/oxigk0UqjxH7mDJdq-qQ0Z3gNWoDE6x8SkjTc90fd3FjMjXkURajiFOV3jmWUyKtZuLaLH_TmmA6couiVz__OsxFrlh9AlXpEIq9uHv1EqEo9_GtwlCL0bqwEXbhSGRxeePVlz5g&quot; width=&quot;717&quot; height=&quot;456&quot;&gt;&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;This limited style of swagger documentation is &lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;em&gt;sometimes&lt;/em&gt;&lt;/span&gt; an undesirable side-effect to the &lt;em&gt;generic&lt;/em&gt; approach of kie-server extension design:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;all kie-server extensions receive as input a generic String, which is actually converted internally to the extension using the generic kie-server marshaller.&lt;br&gt;This causes the swagger documentation to not display anything meaningful for the request body besides Model==string, and the only helpful information can only be provided as a comment (“&lt;em&gt;DMN context to be used while evaluation decisions as DMNContextKS type&lt;/em&gt;”).&lt;br&gt;&lt;/li&gt;&lt;li&gt;all kie-server extensions return as output a &lt;code&gt;ServiceResponse&amp;lt;T&amp;gt;&lt;/code&gt;, where the Java’s generic T is extension-specific. Generating swagger documentation with Java generics is already limited, in this case the difficulty compounds because the actual content of T varies, by DMN model to model !&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;the DMN evaluation payload itself contains the coordinates of the model to be evaluated &lt;em&gt;and&lt;/em&gt; the model-specific input context, per the original implementation requirements; but this interconnection between model coordinates &lt;em&gt;values&lt;/em&gt; and input content &lt;em&gt;structure&lt;/em&gt;, is pragmatically impossible to be defined meaningfully with a Swagger or OpenAPI descriptor.&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;About the last point specifically, consider this example DMN payload:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:code --&gt;
-    &lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+&lt;/div&gt;  
+&lt;p&gt;&lt;em&gt;Modernising kie-server with new and more user-friendly DMN endpoints, better Swagger/OpenAPI documentation, easier JSON-based REST invocations; an intermediate step to help developers transitioning to service-oriented deployments such as a Kogito-based application.&lt;/em&gt;&lt;/p&gt;   
+&lt;h2&gt;In a nutshell:&lt;/h2&gt;   
+&lt;p&gt;The current DMN kie-server endpoints are fully compliant with kie-server extension design architecture, and aligned with all other kie-server services and extensions; however, some aspects of the current &lt;em&gt;generic&lt;/em&gt; approach of kie-server sometimes are not very user-friendly for DMN evaluations, due to limitations of swagger documentation and the REST payloads requirements to follow the generic kie-server marshaller protocol. These aspects do apply to all kie-server services, including naturally DMN kie-server endpoints as well.&lt;br&gt;On other hand, experience shown that building manually the REST payload on Kogito for DMN evaluation is very easy for end-users, thanks to key features pertaining to DMN core capabilities.&lt;/p&gt;   
+&lt;p&gt;This &lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-6047&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;new feature (DROOLS-6047)&lt;/a&gt; extends DMN on kie-server with new endpoints, leveraging those core capabilities; the new DMN endpoints provide better Swagger documentation and can be more easily consumed by end-users, therefore contributing to modernising the kie-server platform while also making easier to eventually transition to a full Kogito-based application and deployment!&lt;/p&gt;   
+&lt;h2&gt;Why is this needed?&lt;/h2&gt;   
+&lt;p&gt;Currently on kie-server, the DMN service exposes 2 endpoints which are fully compliant with kie-server extension design architecture:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Retrieves DMN model for given container&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn&lt;/code&gt;&lt;br&gt;Evaluates decisions for given input&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;The current swagger documentation is agnostic to the actual model content of the knowledge asset, like for any other kie-server extension:&lt;/p&gt;   
+&lt;p class=&quot;has-text-align-center text-center&quot;&gt;&lt;img src=&quot;https://lh6.googleusercontent.com/oxigk0UqjxH7mDJdq-qQ0Z3gNWoDE6x8SkjTc90fd3FjMjXkURajiFOV3jmWUyKtZuLaLH_TmmA6couiVz__OsxFrlh9AlXpEIq9uHv1EqEo9_GtwlCL0bqwEXbhSGRxeePVlz5g&quot; class=&quot;img-fluid&quot;&gt;&lt;/p&gt;   
+&lt;p&gt;This limited style of swagger documentation is &lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;em&gt;sometimes&lt;/em&gt;&lt;/span&gt; an undesirable side-effect to the &lt;em&gt;generic&lt;/em&gt; approach of kie-server extension design:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;all kie-server extensions receive as input a generic String, which is actually converted internally to the extension using the generic kie-server marshaller.&lt;br&gt;This causes the swagger documentation to not display anything meaningful for the request body besides Model==string, and the only helpful information can only be provided as a comment (“&lt;em&gt;DMN context to be used while evaluation decisions as DMNContextKS type&lt;/em&gt;”).&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;all kie-server extensions return as output a &lt;code&gt;ServiceResponse&amp;lt;T&amp;gt;&lt;/code&gt;, where the Java’s generic T is extension-specific. Generating swagger documentation with Java generics is already limited, in this case the difficulty compounds because the actual content of T varies, by DMN model to model !&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;ul&gt;
+ &lt;li&gt;the DMN evaluation payload itself contains the coordinates of the model to be evaluated &lt;em&gt;and&lt;/em&gt; the model-specific input context, per the original implementation requirements; but this interconnection between model coordinates &lt;em&gt;values&lt;/em&gt; and input content &lt;em&gt;structure&lt;/em&gt;, is pragmatically impossible to be defined meaningfully with a Swagger or OpenAPI descriptor.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;About the last point specifically, consider this example DMN payload:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
        &quot;model-namespace&quot;: &quot;https://kiegroup.org/dmn/_FA9849E2-C92E-4E27-83BF-07A7428DC9C9&quot;,
        &quot;model-name&quot;: &quot;Traffic Violation&quot;,
        &quot;dmn-context&quot;: {
            &quot;Driver&quot;: ...,
            &quot;Violation&quot;: ...
        }
-    }&lt;/code&gt;&lt;/pre&gt;
-    &lt;!-- /wp:code --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;because the &lt;em&gt;content&lt;/em&gt; of &lt;code&gt;dmn-context&lt;/code&gt; depends on the &lt;em&gt;values&lt;/em&gt; of &lt;code&gt;model-namespace&lt;/code&gt; and &lt;code&gt;model-name&lt;/code&gt; coordinates, there is no pragmatic way to define with Swagger/OpenAPI that &lt;code&gt;dmn-context&lt;/code&gt; must have the properties “Driver”, “Violation” for this traffic violation model, or property “Customer” for another DMN model.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Besides endpoint documentation limitations, experience proved that building &lt;em&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;manually from scratch&lt;/span&gt;&lt;/em&gt; the kie-server generic payload following the style of the kie-server generic marshaller is very difficult for most end-users (in fact we always advise to use the Kie Server Client API first, and not start from scratch, but this suggestion is often ignored anyway):&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;XML/JAXB format requires domain model pojo to be correctly annotated first, and building Java collection manually is quite tricky.&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;XML/XStream is a more natural format, still requires domain model pojo annotations, requires to respect the domain object FQN, but is yet another xml format while most end-users seem to prefer json instead.&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;JSON/Jackson would be the user preference nowadays, but requires to respect the domain object FQN which is very alien to json native users.&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Example. The correct way to marshall for Traffic Violation example, respecting the domain model defined in the kjar project, would be:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:code --&gt;
-    &lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+    }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;because the &lt;em&gt;content&lt;/em&gt; of &lt;code&gt;dmn-context&lt;/code&gt; depends on the &lt;em&gt;values&lt;/em&gt; of &lt;code&gt;model-namespace&lt;/code&gt; and &lt;code&gt;model-name&lt;/code&gt; coordinates, there is no pragmatic way to define with Swagger/OpenAPI that &lt;code&gt;dmn-context&lt;/code&gt; must have the properties “Driver”, “Violation” for this traffic violation model, or property “Customer” for another DMN model.&lt;/p&gt;   
+&lt;p&gt;Besides endpoint documentation limitations, experience proved that building &lt;em&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;manually from scratch&lt;/span&gt;&lt;/em&gt; the kie-server generic payload following the style of the kie-server generic marshaller is very difficult for most end-users (in fact we always advise to use the Kie Server Client API first, and not start from scratch, but this suggestion is often ignored anyway):&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;XML/JAXB format requires domain model pojo to be correctly annotated first, and building Java collection manually is quite tricky.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;ul&gt;
+ &lt;li&gt;XML/XStream is a more natural format, still requires domain model pojo annotations, requires to respect the domain object FQN, but is yet another xml format while most end-users seem to prefer json instead.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;ul&gt;
+ &lt;li&gt;JSON/Jackson would be the user preference nowadays, but requires to respect the domain object FQN which is very alien to json native users.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;Example. The correct way to marshall for Traffic Violation example, respecting the domain model defined in the kjar project, would be:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
        &quot;model-namespace&quot;: &quot;https://kiegroup.org/dmn/_FA9849E2-C92E-4E27-83BF-07A7428DC9C9&quot;,
        &quot;model-name&quot;: &quot;Traffic Violation&quot;,
        &quot;dmn-context&quot;: {
@@ -269,100 +185,44 @@
                &quot;Speed Limit&quot;: 100
            }}
        }
-    }&lt;/code&gt;&lt;/pre&gt;
-    &lt;!-- /wp:code --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Everything would be much more easier, while building the JSON body payload manually for DMN evaluation, if we could drop the &lt;em&gt;strict&lt;/em&gt; requirement to respect the generic kie-server marshalling format.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:heading --&gt;
-    &lt;h2&gt;NEW model-specific DMN kie-server endpoints&lt;/h2&gt;
-    &lt;!-- /wp:heading --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;We can now move past and beyond these limitations, thanks to the &lt;em&gt;next generation&lt;/em&gt; of DMN endpoints on kie-server, leveraging some new DMN core capabilities:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;programmatic generation of Swagger and OpenAPI (Swagger/OAS) metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;/li&gt;&lt;li&gt;consistent DMNContext build from JSON, based on DMN Model metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;to ultimately offer more user-friendly endpoints on kie-server for DMN evaluation!&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Following similar style to what is offered today via Kogito, summarized in this &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;blog post&lt;/a&gt;, we implemented the following new DMN endpoints on kie-server:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list {&quot;ordered&quot;:true} --&gt;
-    &lt;ol&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;strong&gt;/openapi.json&lt;/strong&gt; (|.yaml)&lt;br&gt;&lt;/code&gt;Retrieves Swagger/OAS for the DMN models&amp;nbsp;in the kjar project&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;Standard DMN XML but with&lt;span style=&quot;text-decoration: underline;&quot;&gt;out&lt;/span&gt; any decision logic, so this can be used as a descriptor of the DMN model (which are the inputs, which are the decisions), while using the same format of the DMN XSD instead.&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname&lt;strong&gt;}/{decisionServiceName}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/{decisionServiceName}/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;/li&gt;&lt;/ol&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;For the difference between “business-domain” and “dmnresult” variants of the rest endpoints, &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;reference the original blog post&lt;/a&gt; as also linked above.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Making reference to the Traffic Violation example model, this new capability can now offer on kie-server something similar to:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
-    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/xlHutscoULeSZNrfLyGAhwC82Z23J9f_Q9ToTKUhX_3An7K1Z8DEmLTHDm19UoUtGmGhbDIPxl04e1jsDnEP0k6YbIWjplU-eaLl1bWJJIyplmKVgdMa5lreuH3eO80_oCp4bOth&quot; width=&quot;717&quot; height=&quot;456&quot;&gt;&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;As we can see, both the input body payload and the response body payload offer Swagger/OAS schemas which are consistent with the &lt;em&gt;specific&lt;/em&gt; DMN model!&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;This is possible thanks to a convergence of factors:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:list --&gt;
-    &lt;ul&gt;&lt;li&gt;Because each REST POST endpoint for DMN evaluation is specific for DMN model in the REST Path, it is possible to offer Swagger/OAS definition which are DMN model-specific&lt;br&gt;e.g.: because &lt;code&gt;POST /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;traffic-violation&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;is a REST endpoint specific to the Traffic Violation model, both its input and output payload &lt;em&gt;can&lt;/em&gt; now be documented properly in the Swagger/OAS schema definitions.&lt;br&gt;&lt;/li&gt;&lt;li&gt;Because each Swagger/OAS definition is offered at kjar/kie-container level, it is possible to generate programmatically the schema definitions for the DMN models contained only in the specific container.&lt;br&gt;e.g.: because &lt;code&gt;GET /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;openapi.json&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;would offer only definitions for the DMN models inside “mykjar-project”.&lt;br&gt;This is thanks to the following DMN core capability: programmatic generation of Swagger/OAS metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;br&gt;&lt;/li&gt;&lt;li&gt;Because these endpoints are DMN evaluation specific and focusing on a natural and &lt;em&gt;idiomatic JSON usage&lt;/em&gt;, they do NOT require to follow the &lt;em&gt;generic&lt;/em&gt; kie-server marshalling format.&lt;br&gt;This is thanks to the following DMN core capability: consistent DMNContext build from JSON based on DMNModel metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;
-    &lt;!-- /wp:list --&gt;
-    
-    &lt;!-- wp:heading --&gt;
-    &lt;h2&gt;Any limitations?&lt;/h2&gt;
-    &lt;!-- /wp:heading --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Being a new set of endpoints, in addition to the currently existing ones, there is basically no impact on the already-existing DMN kie-server capabilities.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;As this proposed set of new endpoints are contained within a specific {containerId}, it also means that the openapi.json|.yaml swagger/OAS definition file is only kie-container specific.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;In turn, it means when accessing the swagger-ui client editor, user need to manually point to the container URL, for example something like:&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph {&quot;align&quot;:&quot;center&quot;} --&gt;
-    &lt;p class=&quot;has-text-align-center&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/bQw9Vx3SposkXY6xhA1HVG7GAN_UvsFr00gDQfOTwnbPYhv8vp9ff1bPNmrYHsKHdQrW9Dil_XkuReD7OWAZHRgyMKYwQLh1WUzMgRBNKbJvw9ql8MM6JbjnTbbLT1mQZOjTBLAk&quot; width=&quot;717&quot; height=&quot;151&quot;&gt;&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Finally, as this core capability do leverage Eclipse MicroProfile for OpenAPI Specification (OAS) and SmallRye-openapi-core, this requires making use of Swagger-UI and clients which are compatible with OpenAPI Specification version 3.0.3, onwards.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:heading --&gt;
-    &lt;h2&gt;Conclusions&lt;/h2&gt;
-    &lt;!-- /wp:heading --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;We believe this feature meaningfully &lt;em&gt;extends&lt;/em&gt; the current set of capabilities, by providing more user-friendly DMN endpoints on kie-server!&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Developers can make full use of this new feature to simplify existing REST call invocations, and as a stepping stone to eventually migrate to a Kogito-based application.&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
-    
-    &lt;!-- wp:paragraph --&gt;
-    &lt;p&gt;Have you tried it yet?&lt;br&gt;Do you have any feedback?&lt;br&gt;Let us know in the comments below!&lt;/p&gt;
-    &lt;!-- /wp:paragraph --&gt;
+    }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Everything would be much more easier, while building the JSON body payload manually for DMN evaluation, if we could drop the &lt;em&gt;strict&lt;/em&gt; requirement to respect the generic kie-server marshalling format.&lt;/p&gt;   
+&lt;h2&gt;NEW model-specific DMN kie-server endpoints&lt;/h2&gt;   
+&lt;p&gt;We can now move past and beyond these limitations, thanks to the &lt;em&gt;next generation&lt;/em&gt; of DMN endpoints on kie-server, leveraging some new DMN core capabilities:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;programmatic generation of Swagger and OpenAPI (Swagger/OAS) metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;/li&gt;
+ &lt;li&gt;consistent DMNContext build from JSON, based on DMN Model metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;to ultimately offer more user-friendly endpoints on kie-server for DMN evaluation!&lt;/p&gt;   
+&lt;p&gt;Following similar style to what is offered today via Kogito, summarized in this &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;blog post&lt;/a&gt;, we implemented the following new DMN endpoints on kie-server:&lt;/p&gt;   
+&lt;ol&gt;
+ &lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn&lt;strong&gt;/openapi.json&lt;/strong&gt; (|.yaml)&lt;br&gt;&lt;/code&gt;Retrieves Swagger/OAS for the DMN models&amp;nbsp;in the kjar project&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;GET /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;Standard DMN XML but with&lt;span style=&quot;text-decoration: underline;&quot;&gt;out&lt;/span&gt; any decision logic, so this can be used as a descriptor of the DMN model (which are the inputs, which are the decisions), while using the same format of the DMN XSD instead.&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models&lt;strong&gt;/{modelname}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname&lt;strong&gt;}/{decisionServiceName}&lt;br&gt;&lt;/strong&gt;&lt;/code&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;JSON-only evaluation of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;strong&gt;&lt;br&gt;&lt;/strong&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;POST /server/containers/{containerId}/dmn/models/{modelname}&lt;strong&gt;/{decisionServiceName}/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;JSON-only evaluation of a specific decision service of a specific DMN model with a body payload tailored for the specific model, but returning a JSON representation as a DMNResult&lt;/li&gt;
+&lt;/ol&gt;   
+&lt;p&gt;For the difference between “business-domain” and “dmnresult” variants of the rest endpoints, &lt;a href=&quot;https://blog.kie.org/2020/08/kogito-2840-about-dmn-endpoints-on-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;reference the original blog post&lt;/a&gt; as also linked above.&lt;/p&gt;   
+&lt;p&gt;Making reference to the Traffic Violation example model, this new capability can now offer on kie-server something similar to:&lt;/p&gt;   
+&lt;p class=&quot;has-text-align-center text-center&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/xlHutscoULeSZNrfLyGAhwC82Z23J9f_Q9ToTKUhX_3An7K1Z8DEmLTHDm19UoUtGmGhbDIPxl04e1jsDnEP0k6YbIWjplU-eaLl1bWJJIyplmKVgdMa5lreuH3eO80_oCp4bOth&quot; class=&quot;img-fluid&quot;&gt;&lt;/p&gt;   
+&lt;p&gt;As we can see, both the input body payload and the response body payload offer Swagger/OAS schemas which are consistent with the &lt;em&gt;specific&lt;/em&gt; DMN model!&lt;/p&gt;   
+&lt;p&gt;This is possible thanks to a convergence of factors:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;Because each REST POST endpoint for DMN evaluation is specific for DMN model in the REST Path, it is possible to offer Swagger/OAS definition which are DMN model-specific&lt;br&gt;e.g.: because &lt;code&gt;POST /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;traffic-violation&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;is a REST endpoint specific to the Traffic Violation model, both its input and output payload &lt;em&gt;can&lt;/em&gt; now be documented properly in the Swagger/OAS schema definitions.&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;Because each Swagger/OAS definition is offered at kjar/kie-container level, it is possible to generate programmatically the schema definitions for the DMN models contained only in the specific container.&lt;br&gt;e.g.: because &lt;code&gt;GET /server/containers/&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;mykjar-project&lt;/span&gt;&lt;/strong&gt;/dmn&lt;strong&gt;/&lt;span style=&quot;text-decoration: underline;&quot;&gt;openapi.json&lt;/span&gt;&lt;/strong&gt;&lt;/code&gt;&lt;br&gt;would offer only definitions for the DMN models inside “mykjar-project”.&lt;br&gt;This is thanks to the following DMN core capability: programmatic generation of Swagger/OAS metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5670&quot;&gt;DROOLS-5670&lt;/a&gt;)&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;Because these endpoints are DMN evaluation specific and focusing on a natural and &lt;em&gt;idiomatic JSON usage&lt;/em&gt;, they do NOT require to follow the &lt;em&gt;generic&lt;/em&gt; kie-server marshalling format.&lt;br&gt;This is thanks to the following DMN core capability: consistent DMNContext build from JSON based on DMNModel metadata (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5719&quot;&gt;DROOLS-5719&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h2&gt;Any limitations?&lt;/h2&gt;   
+&lt;p&gt;Being a new set of endpoints, in addition to the currently existing ones, there is basically no impact on the already-existing DMN kie-server capabilities.&lt;/p&gt;   
+&lt;p&gt;As this proposed set of new endpoints are contained within a specific {containerId}, it also means that the openapi.json|.yaml swagger/OAS definition file is only kie-container specific.&lt;/p&gt;   
+&lt;p&gt;In turn, it means when accessing the swagger-ui client editor, user need to manually point to the container URL, for example something like:&lt;/p&gt;   
+&lt;p class=&quot;has-text-align-center text-center&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/bQw9Vx3SposkXY6xhA1HVG7GAN_UvsFr00gDQfOTwnbPYhv8vp9ff1bPNmrYHsKHdQrW9Dil_XkuReD7OWAZHRgyMKYwQLh1WUzMgRBNKbJvw9ql8MM6JbjnTbbLT1mQZOjTBLAk&quot; class=&quot;img-fluid&quot;&gt;&lt;/p&gt;   
+&lt;p&gt;Finally, as this core capability do leverage Eclipse MicroProfile for OpenAPI Specification (OAS) and SmallRye-openapi-core, this requires making use of Swagger-UI and clients which are compatible with OpenAPI Specification version 3.0.3, onwards.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;We believe this feature meaningfully &lt;em&gt;extends&lt;/em&gt; the current set of capabilities, by providing more user-friendly DMN endpoints on kie-server!&lt;/p&gt;   
+&lt;p&gt;Developers can make full use of this new feature to simplify existing REST call invocations, and as a stepping stone to eventually migrate to a Kogito-based application.&lt;/p&gt;   
+&lt;p&gt;Have you tried it yet?&lt;br&gt;Do you have any feedback?&lt;br&gt;Let us know in the comments below!&lt;/p&gt;
 
 	</description>
     </item>
@@ -372,37 +232,42 @@
       <pubDate>Tue, 2 Mar 2021 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2021/modeling-and-development-of-decision-services-dmn-with-kogito.html</guid>
       	<description>
-	&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;I&apos;ve recorded the following &quot;developer notes&quot; as a support medium to demonstrate the progress and the current integration of several Kogito features. As I believe this could be of interest to a wider audience to have a brief &lt;strong&gt;overview of the many capabilities of the Kogito platform for modeling and developing decision services with DMN,&lt;/strong&gt; I am sharing them in this post.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Let us know if you find these useful and if you&apos;d like to see more of this kind of video recordings!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;DMN with Kogito on Quarkus&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;div class=&quot;text-center&quot;&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/YISlYGIl-jY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+	&lt;p&gt;I&apos;ve recorded the following &quot;developer notes&quot; as a support medium to demonstrate the progress and the current integration of several Kogito features. As I believe this could be of interest to a wider audience to have a brief &lt;strong&gt;overview of the many capabilities of the Kogito platform for modeling and developing decision services with DMN,&lt;/strong&gt; I am sharing them in this post.&lt;/p&gt;   
+&lt;p&gt;Let us know if you find these useful and if you&apos;d like to see more of this kind of video recordings!&lt;/p&gt;   
+&lt;h2&gt;DMN with Kogito on Quarkus&lt;/h2&gt;  
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+&lt;div class=&quot;col-lg-6&quot;&gt;
+    &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+    &lt;iframe src=&quot;https://www.youtube.com/embed/YISlYGIl-jY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;&lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;&lt;li&gt;Generate Swagger / OAS descriptors (development support)&lt;/li&gt;&lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;&lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;&lt;li&gt;Inject listener use case&lt;/li&gt;&lt;li&gt;Test DMN on Quarkus service using Quarkus dev-mode locally&lt;/li&gt;&lt;li&gt;Generated REST API for DMN models with Swagger/OAS descriptors and internals&lt;/li&gt;&lt;li&gt;GraalVM Native Image / Mandrel native support &lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;DMN with Kogito on Spring Boot&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;div class=&quot;text-center&quot;&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/4q694kP7jbY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;  
+&lt;ul&gt;
+ &lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;
+ &lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;
+ &lt;li&gt;Generate Swagger / OAS descriptors (development support)&lt;/li&gt;
+ &lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;
+ &lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;
+ &lt;li&gt;Inject listener use case&lt;/li&gt;
+ &lt;li&gt;Test DMN on Quarkus service using Quarkus dev-mode locally&lt;/li&gt;
+ &lt;li&gt;Generated REST API for DMN models with Swagger/OAS descriptors and internals&lt;/li&gt;
+ &lt;li&gt;GraalVM Native Image / Mandrel native support &lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h2&gt;DMN with Kogito on Spring Boot&lt;/h2&gt;  
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+&lt;div class=&quot;col-lg-6&quot;&gt;
+    &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+    &lt;iframe src=&quot;https://www.youtube.com/embed/4q694kP7jbY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;&lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;&lt;li&gt;Generated Swagger / OAS descriptors (development support) and Test DMN SpringBoot service locally&lt;/li&gt;&lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;&lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
+&lt;/div&gt;  
+&lt;ul&gt;
+ &lt;li&gt;Bootstrap a new project with Kogito Maven archetype&lt;/li&gt;
+ &lt;li&gt;Author DMN model in VS Code DMN modeler tooling &lt;/li&gt;
+ &lt;li&gt;Generated Swagger / OAS descriptors (development support) and Test DMN SpringBoot service locally&lt;/li&gt;
+ &lt;li&gt;Test DMN REST endpoints using JUnit ( + RestAssured )&lt;/li&gt;
+ &lt;li&gt;Test DMN model using VS Code Test scenarios tooling &lt;/li&gt;
+&lt;/ul&gt;
 
 	</description>
     </item>
@@ -487,61 +352,20 @@ Feel free to contact me:
       <pubDate>Wed, 16 Dec 2020 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2020/decisioncamp-monthly-event-on-2021-01-19.html</guid>
       	<description>
-	&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;On 2021 January 19th, Mario and myself will present at the perpetual &lt;a href=&quot;https://dmcommunity.org/decisioncamp/monthly-online-sessions/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DecisionCAMP monthly events&lt;/a&gt;!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Since DecisionCAMP 2020 held virtually, the organizers have decided to institute a series of perpetual meetups, in addition to the annual conference; you can join the community following the instructions &lt;a href=&quot;https://dmcommunity.org/2020/07/02/the-first-online-decisioncamp-became-a-success/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Event Title&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p id=&quot;block-e2b23dd1-179f-49e8-940a-6c23aba4a452&quot;&gt;Kogito: Cloud-native Business Automation&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Event Abstract&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Kogito is a new platform and framework capabilities based on Drools, jBPM and OptaPlanner, designed to bring our traditional, battle-tested business automation engines to the cloud.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;We have rethought the architecture of our platform to enable Java and JVM developers to realize distributed business automation applications with ease.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Leveraging modern application development frameworks, such as Quarkus, we can integrate seamlessly into a large range of capabilities. In particular, Quarkus has shown how it is possible to push the boundaries of traditional Java frameworks to make them cloud-native, through the power of GraalVM’s native compilation.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;After a quick introduction to Kogito we will show with practical examples how to build cloud-native event-driven business applications, to the point where applications can be even deployed in a serverless environment, through Knative. We will also show what challenges a distributed environment poses, and how we can deal with them effectively thanks to Kogito.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Speaker bios&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;&lt;a href=&quot;https://twitter.com/mariofusco&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Mario Fusco&lt;/a&gt; is a principal software engineer at Red Hat working as Drools project lead. He has a huge experience as Java developer having been involved in (and often leading) many enterprise level projects in several industries ranging from media companies to the financial sector. Among his interests there are also functional programming and Domain Specific Languages. By leveraging these 2 passions he created the open source library lambdaj with the purposes of providing an internal Java DSL for manipulating collections and allowing a bit of functional programming in Java. He is also a Java Champion and the co-author of “Modern Java in Action” published by Manning.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.linkedin.com/in/matteomortari?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Btm6JdlNqR4m1K%2FbLHcMvUA%3D%3D&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Matteo Mortari&lt;/a&gt; is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:separator --&gt;
-&lt;hr class=&quot;wp-block-separator&quot; /&gt;
-&lt;!-- /wp:separator --&gt;
-
-&lt;!-- wp:paragraph --&gt;
+	&lt;p&gt;On 2021 January 19th, Mario and myself will present at the perpetual &lt;a href=&quot;https://dmcommunity.org/decisioncamp/monthly-online-sessions/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DecisionCAMP monthly events&lt;/a&gt;!&lt;/p&gt;   
+&lt;p&gt;Since DecisionCAMP 2020 held virtually, the organizers have decided to institute a series of perpetual meetups, in addition to the annual conference; you can join the community following the instructions &lt;a href=&quot;https://dmcommunity.org/2020/07/02/the-first-online-decisioncamp-became-a-success/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;   
+&lt;h3&gt;Event Title&lt;/h3&gt;   
+&lt;p id=&quot;block-e2b23dd1-179f-49e8-940a-6c23aba4a452&quot;&gt;Kogito: Cloud-native Business Automation&lt;/p&gt;   
+&lt;h3&gt;Event Abstract&lt;/h3&gt;   
+&lt;p&gt;Kogito is a new platform and framework capabilities based on Drools, jBPM and OptaPlanner, designed to bring our traditional, battle-tested business automation engines to the cloud.&lt;/p&gt;   
+&lt;p&gt;We have rethought the architecture of our platform to enable Java and JVM developers to realize distributed business automation applications with ease.&lt;/p&gt;   
+&lt;p&gt;Leveraging modern application development frameworks, such as Quarkus, we can integrate seamlessly into a large range of capabilities. In particular, Quarkus has shown how it is possible to push the boundaries of traditional Java frameworks to make them cloud-native, through the power of GraalVM’s native compilation.&lt;/p&gt;   
+&lt;p&gt;After a quick introduction to Kogito we will show with practical examples how to build cloud-native event-driven business applications, to the point where applications can be even deployed in a serverless environment, through Knative. We will also show what challenges a distributed environment poses, and how we can deal with them effectively thanks to Kogito.&lt;/p&gt;   
+&lt;h3&gt;Speaker bios&lt;/h3&gt;   
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/mariofusco&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Mario Fusco&lt;/a&gt; is a principal software engineer at Red Hat working as Drools project lead. He has a huge experience as Java developer having been involved in (and often leading) many enterprise level projects in several industries ranging from media companies to the financial sector. Among his interests there are also functional programming and Domain Specific Languages. By leveraging these 2 passions he created the open source library lambdaj with the purposes of providing an internal Java DSL for manipulating collections and allowing a bit of functional programming in Java. He is also a Java Champion and the co-author of “Modern Java in Action” published by Manning.&lt;/p&gt;   
+&lt;p&gt;&lt;a href=&quot;https://www.linkedin.com/in/matteomortari?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Btm6JdlNqR4m1K%2FbLHcMvUA%3D%3D&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Matteo Mortari&lt;/a&gt; is a Senior Software Engineer at Red Hat, where he contributes in Drools development and support for the DMN standard. Matteo graduated from Engineering with focus on enterprise systems with a thesis involving rule engines which sparked his interests and influenced his professional career since. He believes there is a whole new range of unexplored applications for Expert Systems (AI) within the Corporate business; additionally, he believes defining the Business Rules on the BRMS system not only enables knowledge inference from raw data but, most importantly, helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.&lt;/p&gt;   
+&lt;hr class=&quot;wp-block-separator&quot;&gt;   
 &lt;p&gt;You can join the event by following the instructions &lt;a href=&quot;https://dmcommunity.org/decisioncamp/monthly-online-sessions/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
 
 	</description>
     </item>
@@ -630,91 +454,56 @@ Feel free to contact me:
       <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2020/dmn-validation-updates-kogito-and-migration-to-executable-model.html</guid>
       	<description>
-	&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In this article, we will describe some of the recent updates to the DMN Validation module (&lt;code&gt;kie-dmn-validation&lt;/code&gt;) and how the migration to make use of the Executable Model enabled a number of use-cases, such as porting the functionality on the Kogito platform.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:core-embed/youtube {&quot;url&quot;:&quot;https:\/\/youtu.be\/uAz6pVg0RFQ&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
-&lt;div class=&quot;text-center&quot;&gt;
-    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/uAz6pVg0RFQ&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+	&lt;p&gt;In this article, we will describe some of the recent updates to the DMN Validation module (&lt;code&gt;kie-dmn-validation&lt;/code&gt;) and how the migration to make use of the Executable Model enabled a number of use-cases, such as porting the functionality on the Kogito platform.&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+&lt;div class=&quot;col-lg-6&quot;&gt;
+    &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+    &lt;iframe src=&quot;https://www.youtube.com/embed/uAz6pVg0RFQ&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
-&lt;!-- /wp:core-embed/youtube --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Introduction&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The Drools DMN Engine provides static and semantic validation of DMN models:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;validation of DMN against specification XSDs&lt;br&gt;&lt;/li&gt;&lt;li&gt;static validation of DMN file&lt;ul&gt;&lt;li&gt;e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)&lt;/li&gt;&lt;li&gt;fun-fact: static validation is performed with… Drools rules!&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;compilation phase checks&lt;br&gt;&lt;/li&gt;&lt;li&gt;decision tables static analysis&lt;ul&gt;&lt;li&gt;implements &lt;a href=&quot;https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Method &amp;amp; Style checks&lt;/a&gt;&lt;/li&gt;&lt;li&gt;semantic checks&lt;/li&gt;&lt;li&gt;Hit Policy recommender&lt;/li&gt;&lt;li&gt;Experimental features such as the MC/DC test case generator&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of Drools rules to ensure the conformance requirements from the &lt;a href=&quot;https://www.omg.org/spec/DMN&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DMN specification&lt;/a&gt; itself are respected in the DMN model provided by the user.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Migrating the DMN Validation to make use of the Executable Model&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The migration required to fix some small corner cases in the executable model itself: I am extremely thankful to my colleagues Mario and especially Luca who supported me extensively in this migration, making it possible!&lt;br&gt;As any &lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://en.wikipedia.org/wiki/Eating_your_own_dog_food&quot; target=&quot;_blank&quot;&gt;dogfooding&lt;/a&gt; program (the DMN validation module makes use of DRL rules to describe DMN specification semantics), this has been helpful &lt;em&gt;also&lt;/em&gt; to highlight and overcome limitations early-on in the executable model itself when compared to the classic DRL mode of evaluation, to everyone&apos;s benefit! :)&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;This migration also offers right off the bat several additional advantages:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;now &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;uses the&amp;nbsp;&lt;em&gt;same default&lt;/em&gt;&amp;nbsp;as per any kjar project Maven-built for Drools rules&lt;br&gt;&lt;/li&gt;&lt;li&gt;several performance improvements;&lt;br&gt;for a basic example,&amp;nbsp;executing&amp;nbsp;the full &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;module tests now is cut in half (was 40s, now ~18s)&lt;br&gt;&lt;/li&gt;&lt;li&gt;it is an enabler: the &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;has been enabled also on Kogito, during code generation phase&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;DMN Validation on Kogito&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;By default now Kogito performs validation of DMN against specification XSDs and static validation of DMN file (pre-compilation phase semantic validations). Decision Table analysis on Kogito platform will be enabled in a future iteration.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;As a basic example: if you inadvertently violated the DMN specification by authoring a DMN model with two identical names in the nodes, you will be presented with a relevant DMN Validation message:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image {&quot;id&quot;:6414,&quot;sizeSlug&quot;:&quot;large&quot;} --&gt;
-&lt;figure class=&quot;wp-block-image size-large&quot;&gt;&lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2020/09/Screenshot-2020-09-21-at-14.34.32-1024x576.png&quot; alt=&quot;&quot; class=&quot;wp-image-6414&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;You can always opt-out of DMN Validation by disabling it entirely by configuring with application.properties:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
-&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=DISABLED&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;or ignoring any error during the build by configuring instead:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
-&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=IGNORE&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Next Steps&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;As we expand the DMN Validation features (and the Kogito platform itself) please try it out and let us know your feedback!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
+&lt;/div&gt;  
+&lt;h2&gt;Introduction&lt;/h2&gt;   
+&lt;p&gt;The Drools DMN Engine provides static and semantic validation of DMN models:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;validation of DMN against specification XSDs&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;static validation of DMN file
+  &lt;ul&gt;
+   &lt;li&gt;e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)&lt;/li&gt;
+   &lt;li&gt;fun-fact: static validation is performed with… Drools rules!&lt;br&gt;&lt;/li&gt;
+  &lt;/ul&gt;&lt;/li&gt;
+ &lt;li&gt;compilation phase checks&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;decision tables static analysis
+  &lt;ul&gt;
+   &lt;li&gt;implements &lt;a href=&quot;https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Method &amp;amp; Style checks&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;semantic checks&lt;/li&gt;
+   &lt;li&gt;Hit Policy recommender&lt;/li&gt;
+   &lt;li&gt;Experimental features such as the MC/DC test case generator&lt;/li&gt;
+  &lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of Drools rules to ensure the conformance requirements from the &lt;a href=&quot;https://www.omg.org/spec/DMN&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DMN specification&lt;/a&gt; itself are respected in the DMN model provided by the user.&lt;/p&gt;   
+&lt;h2&gt;Migrating the DMN Validation to make use of the Executable Model&lt;/h2&gt;   
+&lt;p&gt;The migration required to fix some small corner cases in the executable model itself: I am extremely thankful to my colleagues Mario and especially Luca who supported me extensively in this migration, making it possible!&lt;br&gt;As any &lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://en.wikipedia.org/wiki/Eating_your_own_dog_food&quot; target=&quot;_blank&quot;&gt;dogfooding&lt;/a&gt; program (the DMN validation module makes use of DRL rules to describe DMN specification semantics), this has been helpful &lt;em&gt;also&lt;/em&gt; to highlight and overcome limitations early-on in the executable model itself when compared to the classic DRL mode of evaluation, to everyone&apos;s benefit! :)&lt;/p&gt;   
+&lt;p&gt;This migration also offers right off the bat several additional advantages:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;now &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;uses the&amp;nbsp;&lt;em&gt;same default&lt;/em&gt;&amp;nbsp;as per any kjar project Maven-built for Drools rules&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;several performance improvements;&lt;br&gt;for a basic example,&amp;nbsp;executing&amp;nbsp;the full &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;module tests now is cut in half (was 40s, now ~18s)&lt;br&gt;&lt;/li&gt;
+ &lt;li&gt;it is an enabler: the &lt;code&gt;kie-dmn-validation&lt;/code&gt;&amp;nbsp;has been enabled also on Kogito, during code generation phase&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h2&gt;DMN Validation on Kogito&lt;/h2&gt;   
+&lt;p&gt;By default now Kogito performs validation of DMN against specification XSDs and static validation of DMN file (pre-compilation phase semantic validations). Decision Table analysis on Kogito platform will be enabled in a future iteration.&lt;/p&gt;   
+&lt;p&gt;As a basic example: if you inadvertently violated the DMN specification by authoring a DMN model with two identical names in the nodes, you will be presented with a relevant DMN Validation message:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2020/09/Screenshot-2020-09-21-at-14.34.32-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;You can always opt-out of DMN Validation by disabling it entirely by configuring with application.properties:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=DISABLED&lt;/pre&gt;   
+&lt;p&gt;or ignoring any error during the build by configuring instead:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;kogito.decisions.validation=IGNORE&lt;/pre&gt;   
+&lt;h2&gt;Next Steps&lt;/h2&gt;   
+&lt;p&gt;As we expand the DMN Validation features (and the Kogito platform itself) please try it out and let us know your feedback!&lt;/p&gt;   
 &lt;p&gt;We believe the DMN Validation can better support you authoring DMN models more effectively.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
 
 	</description>
     </item>
@@ -724,143 +513,63 @@ Feel free to contact me:
       <pubDate>Tue, 4 Aug 2020 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2020/kogito-2840-about-dmn-endpoints-on-kogito.html</guid>
       	<description>
-	&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part of &lt;a href=&quot;https://issues.redhat.com/browse/KOGITO-2840&quot;&gt;KOGITO-2840&lt;/a&gt;.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Introduction&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;For each DMN model in a Kogito application, a collection of REST endpoints is automatically code generated based on the content of the model.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;For each DMN model there will be:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;one REST “business-domain” endpoint to support the evaluation of the whole model&lt;/li&gt;&lt;li&gt;one REST “business-domain” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;and also analogous endpoints returning &lt;em&gt;classic&lt;/em&gt; &lt;code&gt;DMNResult&lt;/code&gt; comprising business domain context and helper messages and helper decision “pointers”:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;one REST “dmnresult” endpoint to support the evaluation of the whole model&lt;/li&gt;&lt;li&gt;one REST “dmnresult” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;and finally:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;one REST &lt;code&gt;GET&lt;/code&gt; to return the DMN xml &lt;em&gt;without&lt;/em&gt; decision-logic&lt;br&gt;This can be helpful for model introspection.&lt;br&gt;We are planning to eventually parametrise this endpoint with additional options for TrustyAI.&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;URL naming&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The naming of the endpoints is currently structured with the following convention:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;POST&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;GET&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:list --&gt;
-&lt;ul&gt;&lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
-&lt;!-- /wp:list --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Choosing between “business-domain” and dmnresult variant of the REST endpoints&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;If a client application is only concerned with a positive evaluation outcome, is not interested in parsing Info/Warn message(s) and only needs to get an http 5xx in case of Errors, might prefer to opt for using the “business-domain” variant. Especially the feature of singleton coercion of Decision Service result, mimicking the DMN modeling behaviour, might be helpful for single page application-like clients.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;If a client needs to parse also Info/Warn/Error messages in all the cases, it is best to prefer the dmnresult variant.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;API details of the “business-domain” endpoints&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The whole model endpoint needs as the input payload, all the Input Data of the model.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the whole model evaluation, that is the one composed of the actual resulting Decision values, the original input values, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;The decision service endpoint needs as the input payload, all the requirements of the Decision Service.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the Decision Service evaluation, that is the one composed of the actual resulting Decision values, the original input requirements, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In the case the Decision Service is composed of a &lt;em&gt;single output decision&lt;/em&gt;, the output payload will be the resulting value of that specific Decision; this is to provide an equivalent at API level of a specification feature, when invoking the Decision Service in the model itself. This feature can be used for example to interact very easily from single page web applications, with a DMN Decision Service.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;For all these endpoints, in case of a DMN evaluation Error, a full DMNResult payload is returned along with a http 5xx error. In case of a DMN Info/Warn message, these will be returned along with the “business-domain” return rest payload, in the &lt;code&gt;X-Kogito-decision-messages&lt;/code&gt; extended http header, more as an helper than to be used for client-side business logic; this is based on the assumption that, in case when more refined client-side business logic is required, the client can actually use the “dmnresult” variant of the endpoints.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Examples&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;In the following sections, some basic examples will be presented.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Endpoint: whole model&amp;nbsp;&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Given:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image --&gt;
-&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/yF069bevleZaXtS_PwGKNaN-Scz1j_R9XB7rbdMJSXcFKW9wRjPuXGAcwcoo5wdAtxYE2fSIbuor1w1tsrNztppSSSjm1LdVeqxB3vCD378Ulhh53JQcdIk6N9TlVtWQQ_nlEXq-&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;We notice the name of the DMN model is &lt;code&gt;Traffic Violation&lt;/code&gt;:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image --&gt;
-&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/97JmiRDDl3PkaZFwddgDZwqt57Q-p6Bo0r1erEUTBu-j6fZeLoVYUiQTdAuD-Uunaw71yRTnN2zOxpHUD2BS736lsYDyNDLJSaRBRPZp9WOMzaz-2Gdh0i4MpSbUEZ8Q5j5kDLIf&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation&lt;/code&gt;&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;input payload:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
+	&lt;p&gt;This post summarises the current design of REST endpoints which are automatically generated and made available, when using DMN model assets in a Kogito application. This work was finalised as part of &lt;a href=&quot;https://issues.redhat.com/browse/KOGITO-2840&quot;&gt;KOGITO-2840&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Introduction&lt;/h2&gt;   
+&lt;p&gt;For each DMN model in a Kogito application, a collection of REST endpoints is automatically code generated based on the content of the model.&lt;/p&gt;   
+&lt;p&gt;For each DMN model there will be:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;one REST “business-domain” endpoint to support the evaluation of the whole model&lt;/li&gt;
+ &lt;li&gt;one REST “business-domain” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;and also analogous endpoints returning &lt;em&gt;classic&lt;/em&gt; &lt;code&gt;DMNResult&lt;/code&gt; comprising business domain context and helper messages and helper decision “pointers”:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;one REST “dmnresult” endpoint to support the evaluation of the whole model&lt;/li&gt;
+ &lt;li&gt;one REST “dmnresult” endpoint to support the evaluation for each Decision Service(s) in the model&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;and finally:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;one REST &lt;code&gt;GET&lt;/code&gt; to return the DMN xml &lt;em&gt;without&lt;/em&gt; decision-logic&lt;br&gt;This can be helpful for model introspection.&lt;br&gt;We are planning to eventually parametrise this endpoint with additional options for TrustyAI.&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h2&gt;URL naming&lt;/h2&gt;   
+&lt;p&gt;The naming of the endpoints is currently structured with the following convention:&lt;/p&gt;   
+&lt;p&gt;POST&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;/code&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;code&gt;{modelname}&lt;strong&gt;/&lt;/strong&gt;{decisionServiceName}&lt;strong&gt;/dmnresult&lt;/strong&gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;GET&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;code&gt;{modelname}&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;h2&gt;Choosing between “business-domain” and dmnresult variant of the REST endpoints&lt;/h2&gt;   
+&lt;p&gt;If a client application is only concerned with a positive evaluation outcome, is not interested in parsing Info/Warn message(s) and only needs to get an http 5xx in case of Errors, might prefer to opt for using the “business-domain” variant. Especially the feature of singleton coercion of Decision Service result, mimicking the DMN modeling behaviour, might be helpful for single page application-like clients.&lt;/p&gt;   
+&lt;p&gt;If a client needs to parse also Info/Warn/Error messages in all the cases, it is best to prefer the dmnresult variant.&lt;/p&gt;   
+&lt;h2&gt;API details of the “business-domain” endpoints&lt;/h2&gt;   
+&lt;p&gt;The whole model endpoint needs as the input payload, all the Input Data of the model.&lt;/p&gt;   
+&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the whole model evaluation, that is the one composed of the actual resulting Decision values, the original input values, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;   
+&lt;p&gt;The decision service endpoint needs as the input payload, all the requirements of the Decision Service.&lt;/p&gt;   
+&lt;p&gt;Once invoked, the output payload will be the resulting DMN context of the Decision Service evaluation, that is the one composed of the actual resulting Decision values, the original input requirements, and all other parametric DRG requirements in serialized form (e.g.: a BKM will be available in string serialized form in its signature).&lt;/p&gt;   
+&lt;p&gt;In the case the Decision Service is composed of a &lt;em&gt;single output decision&lt;/em&gt;, the output payload will be the resulting value of that specific Decision; this is to provide an equivalent at API level of a specification feature, when invoking the Decision Service in the model itself. This feature can be used for example to interact very easily from single page web applications, with a DMN Decision Service.&lt;/p&gt;   
+&lt;p&gt;For all these endpoints, in case of a DMN evaluation Error, a full DMNResult payload is returned along with a http 5xx error. In case of a DMN Info/Warn message, these will be returned along with the “business-domain” return rest payload, in the &lt;code&gt;X-Kogito-decision-messages&lt;/code&gt; extended http header, more as an helper than to be used for client-side business logic; this is based on the assumption that, in case when more refined client-side business logic is required, the client can actually use the “dmnresult” variant of the endpoints.&lt;/p&gt;   
+&lt;h2&gt;Examples&lt;/h2&gt;   
+&lt;p&gt;In the following sections, some basic examples will be presented.&lt;/p&gt;   
+&lt;h3&gt;Endpoint: whole model&amp;nbsp;&lt;/h3&gt;   
+&lt;p&gt;Given:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/yF069bevleZaXtS_PwGKNaN-Scz1j_R9XB7rbdMJSXcFKW9wRjPuXGAcwcoo5wdAtxYE2fSIbuor1w1tsrNztppSSSjm1LdVeqxB3vCD378Ulhh53JQcdIk6N9TlVtWQQ_nlEXq-&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We notice the name of the DMN model is &lt;code&gt;Traffic Violation&lt;/code&gt;:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/97JmiRDDl3PkaZFwddgDZwqt57Q-p6Bo0r1erEUTBu-j6fZeLoVYUiQTdAuD-Uunaw71yRTnN2zOxpHUD2BS736lsYDyNDLJSaRBRPZp9WOMzaz-2Gdh0i4MpSbUEZ8Q5j5kDLIf&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation&lt;/code&gt;&lt;/p&gt;   
+&lt;p&gt;input payload:&lt;/p&gt;   
 &lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
@@ -870,14 +579,8 @@ Feel free to contact me:
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
-}&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;output:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
+}&lt;/pre&gt;   
+&lt;p&gt;output:&lt;/p&gt;   
 &lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
   &quot;Violation&quot;: {
     &quot;Type&quot;: &quot;speed&quot;,
@@ -892,38 +595,22 @@ Feel free to contact me:
     &quot;Amount&quot;: 500
   },
   &quot;Should the driver be suspended?&quot;: &quot;No&quot;
-}&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Endpoint: decision service with singleton output decision&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Given:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image --&gt;
-&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/kOsYWVbk5wjjQkHuHbjgoyuEyZNMGhwY6jih6cDdV4wNxp9QBMNzGUYNRFajKurFJNUEAstYTYVuS2Ck5_rMvyYrjNeq-NDJLcF69pJ5XkmBVK8RJf5jmXv0nK2NYKGXkJeA3kcd&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;we notice the name of the decision service is &lt;code&gt;TrafficViolationDecisionService&lt;/code&gt;:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image --&gt;
-&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh4.googleusercontent.com/OZ4uj7tKPunXaPvDELE8hzoN8wBreRws-8mDw4l88j80o2yadNGol4FYhuRYFhJTiLBcOClWf0w4isVwD8wJHaqVLudcy8pPi2Y2uOZ1gY1I7lsxqFlamuqxUv_w-G41CJnOKSkw&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;input payload:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
+}&lt;/pre&gt;   
+&lt;h3&gt;Endpoint: decision service with singleton output decision&lt;/h3&gt;   
+&lt;p&gt;Given:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/kOsYWVbk5wjjQkHuHbjgoyuEyZNMGhwY6jih6cDdV4wNxp9QBMNzGUYNRFajKurFJNUEAstYTYVuS2Ck5_rMvyYrjNeq-NDJLcF69pJ5XkmBVK8RJf5jmXv0nK2NYKGXkJeA3kcd&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;we notice the name of the decision service is &lt;code&gt;TrafficViolationDecisionService&lt;/code&gt;:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/OZ4uj7tKPunXaPvDELE8hzoN8wBreRws-8mDw4l88j80o2yadNGol4FYhuRYFhJTiLBcOClWf0w4isVwD8wJHaqVLudcy8pPi2Y2uOZ1gY1I7lsxqFlamuqxUv_w-G41CJnOKSkw&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;   
+&lt;p&gt;input payload:&lt;/p&gt;   
 &lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
@@ -933,38 +620,18 @@ Feel free to contact me:
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
-}&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;output:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
-&lt;pre class=&quot;wp-block-preformatted&quot;&gt;&quot;No&quot;&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:heading {&quot;level&quot;:3} --&gt;
-&lt;h3&gt;Endpoint: decision service with multiple output decision&lt;/h3&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Now given instead:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:image --&gt;
-&lt;figure class=&quot;wp-block-image&quot;&gt;&lt;img src=&quot;https://lh5.googleusercontent.com/1nRZwDs77_9C3pw_zAEW3DDVq6ZTdJH9ENe9KnaOxPBp1AO0iqqfrY55dRI8do9g7JI1aUCyOdu_UJHfpMfj7svbuxfL4H9ggrf9VqKswmrsQrfODxZAJw9kgPyBKOz7_g9_fqKQ&quot; alt=&quot;&quot; /&gt;&lt;/figure&gt;
-&lt;!-- /wp:image --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;input payload:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
+}&lt;/pre&gt;   
+&lt;p&gt;output:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-preformatted&quot;&gt;&quot;No&quot;&lt;/pre&gt;   
+&lt;h3&gt;Endpoint: decision service with multiple output decision&lt;/h3&gt;   
+&lt;p&gt;Now given instead:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/1nRZwDs77_9C3pw_zAEW3DDVq6ZTdJH9ENe9KnaOxPBp1AO0iqqfrY55dRI8do9g7JI1aUCyOdu_UJHfpMfj7svbuxfL4H9ggrf9VqKswmrsQrfODxZAJw9kgPyBKOz7_g9_fqKQ&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;endpoint: &lt;code&gt;localhost:8080/Traffic Violation/TrafficViolationDecisionService&lt;/code&gt;&lt;/p&gt;   
+&lt;p&gt;input payload:&lt;/p&gt;   
 &lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Driver&quot;: {
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Points&quot;: 2
@@ -974,14 +641,8 @@ Feel free to contact me:
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Actual Speed&quot;: 120,
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Speed Limit&quot;: 100
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;}
-}&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;output:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:preformatted --&gt;
+}&lt;/pre&gt;   
+&lt;p&gt;output:&lt;/p&gt;   
 &lt;pre class=&quot;wp-block-preformatted&quot;&gt;{
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Violation&quot;: {
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Type&quot;: &quot;speed&quot;,
@@ -996,20 +657,10 @@ Feel free to contact me:
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Amount&quot;: 500
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;},
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Should the driver be suspended?&quot;: &quot;No&quot;
-}&lt;/pre&gt;
-&lt;!-- /wp:preformatted --&gt;
-
-&lt;!-- wp:heading --&gt;
-&lt;h2&gt;Conclusions&lt;/h2&gt;
-&lt;!-- /wp:heading --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;We have seen the current design of DMN REST endpoints automatically generated in a Kogito application and how can be used to support several use-cases.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
+}&lt;/pre&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;We have seen the current design of DMN REST endpoints automatically generated in a Kogito application and how can be used to support several use-cases.&lt;/p&gt;   
 &lt;p&gt;We like to hear your feedback! Do you have some thoughts or question about this topic? Please make sure to let us know!&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
 
 	</description>
     </item>
@@ -1019,43 +670,21 @@ Feel free to contact me:
       <pubDate>Thu, 9 Jul 2020 00:00:00 +0000</pubDate>
       <guid isPermaLink="false">blog/2020/making-executable-dmn-modeling-more-business-friendly.html</guid>
       	<description>
-	&lt;!-- wp:paragraph {&quot;align&quot;:&quot;right&quot;} --&gt;
-&lt;p class=&quot;has-text-align-right&quot;&gt;presentation by&lt;br&gt;Bruce Silver, MethodAndStyle.com&lt;br&gt;and Matteo Mortari, Red Hat&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;At this year&apos;s&amp;nbsp;&lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://decisioncamp2020.home.blog/program/#BruceSilver&quot; target=&quot;_blank&quot;&gt;Decision Camp 2020&lt;/a&gt;, I had the opportunity to present with Bruce Silver a complete overview of the DMN Validation features, and some of the research areas we are working together on:&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:core-embed/youtube {&quot;url&quot;:&quot;https:\/\/www.youtube.com\/watch?v=eQRDc6fq2yw&quot;,&quot;type&quot;:&quot;video&quot;,&quot;providerNameSlug&quot;:&quot;youtube&quot;,&quot;className&quot;:&quot;wp-embed-aspect-16-9 wp-has-aspect-ratio&quot;} --&gt;
-&lt;div class=&quot;text-center&quot;&gt;
-    &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/eQRDc6fq2yw&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+	&lt;p class=&quot;has-text-align-right&quot;&gt;presentation by&lt;br&gt;Bruce Silver, MethodAndStyle.com&lt;br&gt;and Matteo Mortari, Red Hat&lt;/p&gt;   
+&lt;p&gt;At this year&apos;s&amp;nbsp;&lt;a rel=&quot;noreferrer noopener&quot; href=&quot;https://decisioncamp2020.home.blog/program/#BruceSilver&quot; target=&quot;_blank&quot;&gt;Decision Camp 2020&lt;/a&gt;, I had the opportunity to present with Bruce Silver a complete overview of the DMN Validation features, and some of the research areas we are working together on:&lt;/p&gt;   
+&lt;div class=&quot;justify-content-center text-center row&quot;&gt;
+&lt;div class=&quot;col-lg-6&quot;&gt;
+    &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+    &lt;iframe src=&quot;https://www.youtube.com/embed/eQRDc6fq2yw&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
-&lt;!-- /wp:core-embed/youtube --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;I hope this can be an helpful summary&amp;nbsp;of what you should look at when considering Validation of a DMN model and decision tables, including some of the unique features that we offer there, together with all our partners like Trisotech too, and some of the experimental features we are researching to ease the work of the Business Analyst and decision modelers.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;While DMN is sometimes used simply to create “decision requirements” handed off to developers, the standard was designed for non-programmers to create executable decision models themselves. Although decision model design is nominally business-friendly, business users still struggle to create DMN models that are correct and complete. This can be partially explained by the lack of disciplined approach and application of engineering principles that come naturally to technical users, presenting an opportunity for vendors’ tools to assist them.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Decision tables are DMN’s most business-friendly feature, but business users have problems ensuring they are complete and consistent and difficulty applying the correct hit policy. Decision Table Analysis built into the DMN tool should be able to detect flaws like gaps in the rules, unintended overlaps, subsumption, and incorrect hit policy. We have developed such an algorithm and are incorporating it into multiple DMN tools.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Beyond completeness and consistency, the decision table logic must be correct, the output always matching the expected value. That is what test cases are for, but business users do not know how to use them or create test cases that fully test the logic. This again presents an opportunity for tool-based assistance.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
-&lt;p&gt;Automated test case generation is not an easy problem. A decision table with N inputs, each of which has m possible values, requires m**N test cases for complete coverage. From the world of automated software testing, a method called Modified Condition/Decision Coverage (MC/DC) has been shown to provide excellent coverage with far fewer test cases. We have developed an algorithm for applying MC/DC to test case generation for DMN decision tables.&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
-
-&lt;!-- wp:paragraph --&gt;
+&lt;/div&gt;   
+&lt;p&gt;I hope this can be an helpful summary&amp;nbsp;of what you should look at when considering Validation of a DMN model and decision tables, including some of the unique features that we offer there, together with all our partners like Trisotech too, and some of the experimental features we are researching to ease the work of the Business Analyst and decision modelers.&lt;/p&gt;   
+&lt;p&gt;While DMN is sometimes used simply to create “decision requirements” handed off to developers, the standard was designed for non-programmers to create executable decision models themselves. Although decision model design is nominally business-friendly, business users still struggle to create DMN models that are correct and complete. This can be partially explained by the lack of disciplined approach and application of engineering principles that come naturally to technical users, presenting an opportunity for vendors’ tools to assist them.&lt;/p&gt;   
+&lt;p&gt;Decision tables are DMN’s most business-friendly feature, but business users have problems ensuring they are complete and consistent and difficulty applying the correct hit policy. Decision Table Analysis built into the DMN tool should be able to detect flaws like gaps in the rules, unintended overlaps, subsumption, and incorrect hit policy. We have developed such an algorithm and are incorporating it into multiple DMN tools.&lt;/p&gt;   
+&lt;p&gt;Beyond completeness and consistency, the decision table logic must be correct, the output always matching the expected value. That is what test cases are for, but business users do not know how to use them or create test cases that fully test the logic. This again presents an opportunity for tool-based assistance.&lt;/p&gt;   
+&lt;p&gt;Automated test case generation is not an easy problem. A decision table with N inputs, each of which has m possible values, requires m**N test cases for complete coverage. From the world of automated software testing, a method called Modified Condition/Decision Coverage (MC/DC) has been shown to provide excellent coverage with far fewer test cases. We have developed an algorithm for applying MC/DC to test case generation for DMN decision tables.&lt;/p&gt;   
 &lt;p&gt;Keywords: DMN, Decision Tables, Hit Policy, Test Cases&lt;/p&gt;
-&lt;!-- /wp:paragraph --&gt;
 
 	</description>
     </item>

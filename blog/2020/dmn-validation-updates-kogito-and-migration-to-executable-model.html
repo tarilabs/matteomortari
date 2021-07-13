@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" >
-    <meta content="&lt;!-- wp:paragraph --&gt; In this article, we will describe some of the recent updates to the DMN Validation module (kie-dmn-validation) and how the migration to make use of the Executable Model ..." name="description"> 
+    <meta content="In this article, we will describe some of the recent updates to the DMN Validation module (kie-dmn-validation) and how the migration to make use of the Executable Model enabled a number of ..." name="description"> 
     <title>DMN Validation updates: Kogito and migration to Executable Model</title>
     <link rel="canonical" href="https://blog.kie.org/2020/09/dmn-validation-updates-kogito-and-migration-to-executable-model.html" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -32,91 +32,56 @@
 
 	<p><em>22 September 2020</em></p>
 
-	<!-- wp:paragraph -->
-<p>In this article, we will describe some of the recent updates to the DMN Validation module (<code>kie-dmn-validation</code>) and how the migration to make use of the Executable Model enabled a number of use-cases, such as porting the functionality on the Kogito platform.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:core-embed/youtube {"url":"https:\/\/youtu.be\/uAz6pVg0RFQ","type":"video","providerNameSlug":"youtube","className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
-<div class="text-center">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/uAz6pVg0RFQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	<p>In this article, we will describe some of the recent updates to the DMN Validation module (<code>kie-dmn-validation</code>) and how the migration to make use of the Executable Model enabled a number of use-cases, such as porting the functionality on the Kogito platform.</p>   
+<div class="justify-content-center text-center row">
+<div class="col-lg-6">
+    <div class="ratio ratio-16x9">
+    <iframe src="https://www.youtube.com/embed/uAz6pVg0RFQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
 </div>
-<!-- /wp:core-embed/youtube -->
-
-<!-- wp:heading -->
-<h2>Introduction</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>The Drools DMN Engine provides static and semantic validation of DMN models:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li>validation of DMN against specification XSDs<br></li><li>static validation of DMN file<ul><li>e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)</li><li>fun-fact: static validation is performed with… Drools rules!<br></li></ul></li><li>compilation phase checks<br></li><li>decision tables static analysis<ul><li>implements <a href="https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178" target="_blank" rel="noreferrer noopener">Method &amp; Style checks</a></li><li>semantic checks</li><li>Hit Policy recommender</li><li>Experimental features such as the MC/DC test case generator</li></ul></li></ul>
-<!-- /wp:list -->
-
-<!-- wp:paragraph -->
-<p>The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of Drools rules to ensure the conformance requirements from the <a href="https://www.omg.org/spec/DMN" target="_blank" rel="noreferrer noopener">DMN specification</a> itself are respected in the DMN model provided by the user.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading -->
-<h2>Migrating the DMN Validation to make use of the Executable Model</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>The migration required to fix some small corner cases in the executable model itself: I am extremely thankful to my colleagues Mario and especially Luca who supported me extensively in this migration, making it possible!<br>As any <a rel="noreferrer noopener" href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food" target="_blank">dogfooding</a> program (the DMN validation module makes use of DRL rules to describe DMN specification semantics), this has been helpful <em>also</em> to highlight and overcome limitations early-on in the executable model itself when compared to the classic DRL mode of evaluation, to everyone's benefit! :)</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>This migration also offers right off the bat several additional advantages:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:list -->
-<ul><li>now <code>kie-dmn-validation</code>&nbsp;uses the&nbsp;<em>same default</em>&nbsp;as per any kjar project Maven-built for Drools rules<br></li><li>several performance improvements;<br>for a basic example,&nbsp;executing&nbsp;the full <code>kie-dmn-validation</code>&nbsp;module tests now is cut in half (was 40s, now ~18s)<br></li><li>it is an enabler: the <code>kie-dmn-validation</code>&nbsp;has been enabled also on Kogito, during code generation phase</li></ul>
-<!-- /wp:list -->
-
-<!-- wp:heading -->
-<h2>DMN Validation on Kogito</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>By default now Kogito performs validation of DMN against specification XSDs and static validation of DMN file (pre-compilation phase semantic validations). Decision Table analysis on Kogito platform will be enabled in a future iteration.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>As a basic example: if you inadvertently violated the DMN specification by authoring a DMN model with two identical names in the nodes, you will be presented with a relevant DMN Validation message:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:image {"id":6414,"sizeSlug":"large"} -->
-<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2020/09/Screenshot-2020-09-21-at-14.34.32-1024x576.png" alt="" class="wp-image-6414" /></figure>
-<!-- /wp:image -->
-
-<!-- wp:paragraph -->
-<p>You can always opt-out of DMN Validation by disabling it entirely by configuring with application.properties:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
-<pre class="wp-block-preformatted">kogito.decisions.validation=DISABLED</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:paragraph -->
-<p>or ignoring any error during the build by configuring instead:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:preformatted -->
-<pre class="wp-block-preformatted">kogito.decisions.validation=IGNORE</pre>
-<!-- /wp:preformatted -->
-
-<!-- wp:heading -->
-<h2>Next Steps</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p>As we expand the DMN Validation features (and the Kogito platform itself) please try it out and let us know your feedback!</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
+</div>  
+<h2>Introduction</h2>   
+<p>The Drools DMN Engine provides static and semantic validation of DMN models:</p>   
+<ul>
+ <li>validation of DMN against specification XSDs<br></li>
+ <li>static validation of DMN file
+  <ul>
+   <li>e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)</li>
+   <li>fun-fact: static validation is performed with… Drools rules!<br></li>
+  </ul></li>
+ <li>compilation phase checks<br></li>
+ <li>decision tables static analysis
+  <ul>
+   <li>implements <a href="https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178" target="_blank" rel="noreferrer noopener">Method &amp; Style checks</a></li>
+   <li>semantic checks</li>
+   <li>Hit Policy recommender</li>
+   <li>Experimental features such as the MC/DC test case generator</li>
+  </ul></li>
+</ul>   
+<p>The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of Drools rules to ensure the conformance requirements from the <a href="https://www.omg.org/spec/DMN" target="_blank" rel="noreferrer noopener">DMN specification</a> itself are respected in the DMN model provided by the user.</p>   
+<h2>Migrating the DMN Validation to make use of the Executable Model</h2>   
+<p>The migration required to fix some small corner cases in the executable model itself: I am extremely thankful to my colleagues Mario and especially Luca who supported me extensively in this migration, making it possible!<br>As any <a rel="noreferrer noopener" href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food" target="_blank">dogfooding</a> program (the DMN validation module makes use of DRL rules to describe DMN specification semantics), this has been helpful <em>also</em> to highlight and overcome limitations early-on in the executable model itself when compared to the classic DRL mode of evaluation, to everyone's benefit! :)</p>   
+<p>This migration also offers right off the bat several additional advantages:</p>   
+<ul>
+ <li>now <code>kie-dmn-validation</code>&nbsp;uses the&nbsp;<em>same default</em>&nbsp;as per any kjar project Maven-built for Drools rules<br></li>
+ <li>several performance improvements;<br>for a basic example,&nbsp;executing&nbsp;the full <code>kie-dmn-validation</code>&nbsp;module tests now is cut in half (was 40s, now ~18s)<br></li>
+ <li>it is an enabler: the <code>kie-dmn-validation</code>&nbsp;has been enabled also on Kogito, during code generation phase</li>
+</ul>   
+<h2>DMN Validation on Kogito</h2>   
+<p>By default now Kogito performs validation of DMN against specification XSDs and static validation of DMN file (pre-compilation phase semantic validations). Decision Table analysis on Kogito platform will be enabled in a future iteration.</p>   
+<p>As a basic example: if you inadvertently violated the DMN specification by authoring a DMN model with two identical names in the nodes, you will be presented with a relevant DMN Validation message:</p>   
+<div class="justify-content-center text-center row">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2020/09/Screenshot-2020-09-21-at-14.34.32-1024x576.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>You can always opt-out of DMN Validation by disabling it entirely by configuring with application.properties:</p>   
+<pre class="wp-block-preformatted">kogito.decisions.validation=DISABLED</pre>   
+<p>or ignoring any error during the build by configuring instead:</p>   
+<pre class="wp-block-preformatted">kogito.decisions.validation=IGNORE</pre>   
+<h2>Next Steps</h2>   
+<p>As we expand the DMN Validation features (and the Kogito platform itself) please try it out and let us know your feedback!</p>   
 <p>We believe the DMN Validation can better support you authoring DMN models more effectively.</p>
-<!-- /wp:paragraph -->
 
 
 </section>
