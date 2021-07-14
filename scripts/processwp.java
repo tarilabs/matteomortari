@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -110,7 +111,7 @@ public class processwp implements Callable<Integer> {
             iframe.attr("allowfullscreen", true);
             Element ratio = new Element("div").classNames(Set.of("ratio","ratio-16x9")).appendChild(iframe);
             Element col = new Element("div").classNames(Set.of("col-lg-6")).appendChild(ratio);
-            Element row = new Element("div").classNames(Set.of("row","justify-content-center","text-center")).appendChild(col);
+            Element row = new Element("div").classNames(new LinkedHashSet<>(List.of("row","justify-content-center","text-center", "py-3"))).appendChild(col);
             y.replaceWith(row);
         }
         String content = mdHeader + System.lineSeparator() +  doc.body().html();
