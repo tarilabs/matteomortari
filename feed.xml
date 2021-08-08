@@ -6,9 +6,98 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Wed, 14 Jul 2021 08:52:46 +0000</pubDate>
-    <lastBuildDate>Wed, 14 Jul 2021 08:52:46 +0000</lastBuildDate>
+    <pubDate>Sun, 8 Aug 2021 14:09:11 +0000</pubDate>
+    <lastBuildDate>Sun, 8 Aug 2021 14:09:11 +0000</lastBuildDate>
 
+    <item>
+      <title>Integrating DMN Validation on BC, Maven, Kogito, ...and beyond!</title>
+      <link>https://matteomortari.com/blog/2021/integrating-dmn-validation-on-bc-maven-kogito-and-beyond.html</link>
+      <pubDate>Tue, 3 Aug 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/integrating-dmn-validation-on-bc-maven-kogito-and-beyond.html</guid>
+      	<description>
+	&lt;p&gt;In this post I want to highlight all the integrations of the &lt;code&gt;kie-dmn-validation&lt;/code&gt; module on several platforms.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio-16x9 ratio&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/Cm43NQXyk_o&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;h2&gt;What is it?&lt;/h2&gt;   
+&lt;p&gt;In a &lt;a href=&quot;https://blog.kie.org/2020/09/dmn-validation-updates-kogito-and-migration-to-executable-model.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;previous post&lt;/a&gt;, we have seen how the Drools DMN validation module was integrated specifically on the Kogito platform. As a short review, the kie-dmn-validation module offer several features for:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;validation of &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DMN&lt;/a&gt; model against specification XSDs&lt;/li&gt; 
+ &lt;li&gt;static validation of DMN file 
+  &lt;ul&gt; 
+   &lt;li&gt;e.g.: pre-compilation phase semantic validations (duplicate names, missing decision logic, etc.)&lt;/li&gt; 
+   &lt;li&gt;fun-fact: static validation is performed with… Drools rules!&lt;/li&gt; 
+  &lt;/ul&gt; &lt;/li&gt; 
+ &lt;li&gt;compilation phase checks&lt;/li&gt; 
+ &lt;li&gt;decision tables static analysis 
+  &lt;ul&gt; 
+   &lt;li&gt;implements&amp;nbsp;&lt;a href=&quot;https://www.amazon.com/Dmn-Method-Style-2nd-Pracitioners/dp/0982368178&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Method &amp;amp; Style checks&lt;/a&gt;&lt;/li&gt; 
+   &lt;li&gt;semantic checks&lt;/li&gt; 
+   &lt;li&gt;Hit Policy recommender&lt;/li&gt; 
+   &lt;li&gt;Experimental features, such as the MC/DC test case generator&lt;/li&gt; 
+  &lt;/ul&gt; &lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;The pre-compilation phase, where semantic validations are performed statically by introspecting deserialised DMN models, make use of &lt;a href=&quot;https://www.youtube.com/watch?v=IdS7dgSj3ds&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools rules&lt;/a&gt; to ensure the conformance requirements from the&amp;nbsp;&lt;a href=&quot;https://www.omg.org/spec/DMN&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DMN specification&lt;/a&gt;&amp;nbsp;itself are respected in the DMN model provided by the user.&lt;/p&gt;   
+&lt;h2&gt;Integration on Kie v7: Business Central and Maven (KJAR)&lt;/h2&gt;   
+&lt;p&gt;Speaking of Kie (v7) platforms, the DMN Validation is performed out of the box:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;When editing a DMN Model on Business Central&lt;br&gt;the Validation is performed when clicking the Save button, and when the full project is being built.&lt;/li&gt; 
+ &lt;li&gt;When building the KJAR-based project with Maven&lt;br&gt;the Validation is performed by the &lt;code&gt;kie-maven-plugin&lt;/code&gt; for any DMN model knowledge asset found in the KJAR project automatically&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;There is some fine-print about out of the box DMN Validation enabled features, on the Kie v7 platform:&lt;/p&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;table class=&quot;table table-sm table-striped&quot;&gt; 
+   &lt;tbody&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&amp;nbsp;&lt;/td&gt; 
+     &lt;td&gt;&lt;strong&gt;kie-maven-plugin&lt;/strong&gt;&lt;/td&gt; 
+     &lt;td&gt;&lt;strong&gt;DMN Editor on BC&lt;/strong&gt;&lt;/td&gt; 
+    &lt;/tr&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;strong&gt;VALIDATE_SCHEMA&lt;/strong&gt;&lt;br&gt;&lt;em&gt;compliance with DMN xml&lt;/em&gt;&lt;/td&gt; 
+     &lt;td&gt;Active by default&lt;/td&gt; 
+     &lt;td&gt;Skipped (always skipped)&lt;/td&gt; 
+    &lt;/tr&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;strong&gt;VALIDATE_MODEL&lt;/strong&gt;&lt;br&gt;&lt;em&gt;semantic validation&lt;/em&gt;&lt;/td&gt; 
+     &lt;td&gt;Active by default&lt;/td&gt; 
+     &lt;td&gt;Always performed&lt;/td&gt; 
+    &lt;/tr&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;strong&gt;VALIDATE_COMPILATION&lt;/strong&gt;&lt;br&gt;&lt;em&gt;consistency during compilation&lt;/em&gt;&lt;/td&gt; 
+     &lt;td&gt;Active by default&lt;/td&gt; 
+     &lt;td&gt;Always performed*&lt;/td&gt; 
+    &lt;/tr&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;strong&gt;ANALYZE_DECISION_TABLE&lt;/strong&gt;&lt;br&gt;&lt;em&gt;decision table static analysis&lt;/em&gt;&lt;/td&gt; 
+     &lt;td&gt;Active by default&lt;/td&gt; 
+     &lt;td&gt;Always performed&lt;/td&gt; 
+    &lt;/tr&gt; 
+   &lt;/tbody&gt; 
+  &lt;/table&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;*&lt;sub&gt; except for DMN-&amp;gt;Java integration checks (&lt;a href=&quot;https://issues.redhat.com/browse/DROOLS-5577&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DROOLS-5577&lt;/a&gt;)&lt;/sub&gt;&lt;/p&gt;   
+&lt;p&gt;The table summarises how Business Central and the kie-maven-plugin use validation features of the DMN Validation module. There is no option to customize which features to use on BC. When using a Maven build of a KJAR project with the kie-maven-plugin, you can customize which features to use; you can reference to &lt;a href=&quot;https://docs.jboss.org/drools/release/7.57.0.Final/drools-docs/html_single/index.html#dmn-validation-con_dmn-models&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;this chapter in the documentation&lt;/a&gt; referring to &quot;&lt;a href=&quot;https://docs.jboss.org/drools/release/7.57.0.Final/drools-docs/html_single/index.html#dmn-validation-con_dmn-models&quot;&gt;Configurable DMN validation in Drools&lt;/a&gt;&quot; and the &lt;code&gt;validateDMN&lt;/code&gt; option of the kie-maven-plugin configuration.&lt;/p&gt;   
+&lt;h2&gt;Integration on Kogito&lt;/h2&gt;   
+&lt;p&gt;As mentioned in the &lt;a href=&quot;https://blog.kie.org/2020/09/dmn-validation-updates-kogito-and-migration-to-executable-model.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;previous post&lt;/a&gt;, the kie-dmn-validation module is integrated out of the box on the Kogito platform, during the code generation phase.&lt;/p&gt;   
+&lt;p&gt;All DMN Validation features are enabled by default. You can customize with a configuration option whether to disable this validation integration; you can reference to &lt;a href=&quot;https://docs.kogito.kie.org/latest/html_single/#con-dmn-validation_kogito-dmn-models&quot;&gt;this chapter in the documentation&lt;/a&gt; referring to &quot;&lt;a href=&quot;https://docs.kogito.kie.org/latest/html_single/#con-dmn-validation_kogito-dmn-models&quot;&gt;Configurable DMN validation in Kogito&lt;/a&gt;&quot; and the &lt;code&gt;kogito.decisions.validation&lt;/code&gt; option of the Kogito application configuration.&lt;/p&gt;   
+&lt;h2&gt;Integration on JIT executor&lt;/h2&gt;   
+&lt;p&gt;The Just-in-Time (JIT) executor is an experimental module based on Kogito, Quarkus and Native Image compilation; it is meant as a foundational tool to support development-time of DMN models and other knowledge assets.&lt;/p&gt;   
+&lt;p&gt;The JIT Executor provides integration of the kie-dmn-validation to perform all the DMN validation by means of an API; you can reference &lt;a href=&quot;https://github.com/kiegroup/kogito-apps/tree/main/jitexecutor#validation&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;the documentation for more details&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;You might be interested to know the JIT Executor is the underlying engine empowering the local DMN runner, described in &lt;a href=&quot;https://blog.kie.org/2021/07/instantaneous-feedback-loop-for-dmn-authoring-with-dmn-runner.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;this post&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;As we have seen in this article, not only the &lt;code&gt;kie-dmn-validation&lt;/code&gt; module provides several helpful features to validate DMN model during build-time, such as semantic validation and Decision Table static analysis!&lt;/p&gt;   
+&lt;p&gt;It is also a set of comprehensive capabilities which we have integrated for you on several platforms, including Kie v7 KJAR maven build, Business Central, Kogito and Kogito toolings!&lt;/p&gt;   
+&lt;p&gt;Have you tried it? Let us know your feedback in the comments below!&lt;/p&gt;
+
+	</description>
+    </item>
     <item>
       <title>Intelligent Kafka message routing using Drools DMN Engine and Apache Camel</title>
       <link>https://matteomortari.com/blog/2021/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html</link>
