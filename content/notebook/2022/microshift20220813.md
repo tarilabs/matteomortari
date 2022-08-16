@@ -102,6 +102,16 @@ sudo crictl info
 }
 ```
 
+inspect logs with
+```sh
+journalctl -u microshift -f
+```
+
+or for cri-o errors with 
+```sh
+journalctl -u crio -f
+```
+
 Deploy an K8s app with https://microshift.io/docs/user-documentation/networking/exposing-services/#service-of-type-nodeport
 
 Accessing http://fedora.local:32681/ works from external computer/hosts as well.
