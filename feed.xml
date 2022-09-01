@@ -6,8 +6,8 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Tue, 16 Aug 2022 14:16:54 +0000</pubDate>
-    <lastBuildDate>Tue, 16 Aug 2022 14:16:54 +0000</lastBuildDate>
+    <pubDate>Thu, 1 Sep 2022 09:54:21 +0000</pubDate>
+    <lastBuildDate>Thu, 1 Sep 2022 09:54:21 +0000</lastBuildDate>
 
     <item>
       <title>Integrating DMN Validation on BC, Maven, Kogito, ...and beyond!</title>
