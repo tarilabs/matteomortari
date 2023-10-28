@@ -1,0 +1,139 @@
+title=How to Capture Business Decisions using DMN: Introduction to Some Basic Patterns and Their Value
+date=2021-09-28
+type=post
+tags=blog
+canonical=https://blog.kie.org/2021/08/how-to-capture-business-decisions-using-dmn-introduction-to-some-basic-patterns-and-their-value.html
+~~~~~~
+<!-- wp:paragraph -->
+<p>I am very glad for the opportunity to have <a href="https://www.youtube.com/watch?v=0hQEMMRVHjA" target="_blank" rel="noreferrer noopener">presented at IIBA this session on DMN patterns</a> with Denis Gagné CEO &amp; CTO of Trisotech!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol><!-- wp:list-item -->
+<li>how business analysts can use the DMN open-standard to capture the requirements for operational business decisions</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>some of the recurring basic patterns in modeling (Q&amp;A, Scoring, Classification and Categorisation, Ranking..)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>how to transform these decision models into actual <a href="https://drools.org/learn/dmn.html" target="_blank" rel="noreferrer noopener">executable business decision services</a></li>
+<!-- /wp:list-item --></ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>In the following you can find the recording, as well as a brief summary of some key highlights for the patterns.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Webinar recording</h2>
+<!-- /wp:heading -->
+
+<!-- wp:embed {"url":"https://www.youtube.com/watch?v=0hQEMMRVHjA","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+https://www.youtube.com/watch?v=0hQEMMRVHjA
+</div><figcaption class="wp-element-caption">IIBA Webinar recording</figcaption></figure>
+<!-- /wp:embed -->
+
+<!-- wp:paragraph -->
+<p>Businesses continuously make Business Decisions. Some of these decisions are strategic business decisions, but a lot are operational business decisions taken every day within every transaction. With the ever-increasing number of laws and regulations that may apply or regulate these operational business decisions, business analysts are more often called upon to document/specify how these business decisions are to be taken in order to provide transparency and to offer auditable traces of the actual decisions taken. In this insightful session, we will introduce how business analysts can use DMN to capture the requirements for operational business decisions, some of the recurring basic patterns in modeling these business decisions and will even show how to transform these decision models into actual executable business decision services.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Pattern: Q&amp;A</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Not to be confused with the generally applicable multiple-choice paradigm, on of the key aspects of DMN models is that each Decision is meant to answer a question, usually a business related question or a domain question.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>This Q&amp;A pattern is a built-in of the DMN standard, thanks to the optional attributes "<em>question</em>" and "<em>allowedAnswers</em>", which business analyst and subject matter expert modelers often use to describe using natural language to complement the modeled decision logic semantic.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Pattern: Scoring</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Input variables, described as InputData, are often analysed and weighted into a score, typically to be later used in the DMN model with other patterns (such as categorisation) or directly with decision logic such as thresholds.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Examples:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":11068,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2021/06/image-2-1024x776.png" alt="" class="wp-image-11068"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":11069,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2021/06/image-3-1024x596.png" alt="" class="wp-image-11069"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Pattern: Classification</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>In this pattern, model variables are recognized, differentiated and classified to be better understood; usually this is done to verbalise classes and often using a Score as an input (ref above).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>It is important to be aware of several types of classification:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul><!-- wp:list-item -->
+<li><strong>Classification</strong>: separating based on class labels</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><strong>Clustering</strong>: separating based similarities without class labels</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><strong>Categorization</strong>: subsuming classes (to realize a taxonomy)</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li><strong>Segmentation</strong>: complete and disjunct categorization</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Examples:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":11070,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2021/06/image-4.png" alt="" class="wp-image-11070"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":11071,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2021/06/image-5-1024x258.png" alt="" class="wp-image-11071"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Pattern: Ranking</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>In this pattern, the position, or rank, of each item in a collection is determined. This pattern is usually a bit more complex to implement if compared to the previous one, requiring iteration with sorting. Fortunately the DMN standard gives all the tools to implement this pattern more easily!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>For example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":11074,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2021/06/image-6-1024x493.png" alt="" class="wp-image-11074"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Transform DMN models into executable business decision services</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Have you found this content interesting? Don't forget a great advantage of DMN models is that they can be <em>immediately</em> deployed as executable services, thanks to the <a href="https://drools.org/learn/dmn.html" target="_blank" rel="noreferrer noopener">Drools DMN engine</a> and <a href="https://kogito.kie.org/" target="_blank" rel="noreferrer noopener">Kogito</a>!</p>
+<!-- /wp:paragraph -->
