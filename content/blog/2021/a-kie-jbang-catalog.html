@@ -1,0 +1,43 @@
+title=a KIE JBang! catalog
+date=2021-09-28
+type=post
+tags=blog
+canonical=https://blog.kie.org/2021/09/a-kie-jbang-catalog.html
+~~~~~~
+<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/gdE5Nb5gT34" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>In this episode, I want to share with you about an experimental <a href="https://www.jbang.dev/" target="_blank" rel="noreferrer noopener">JBang</a> catalog to quickly operate some KIE capabilities such as DMN and FEEL, directly on the Command Line!</p>   
+<h2>What is JBang!?</h2>   
+<p>JBang! is a powerful command line and shell capability, allowing you to run jsh and Java <span style="text-decoration: underline;">source code</span> as a script.</p>   
+<p>
+ <meta charset="utf-8">JBang offers a great advantage with Java 8 compatibility and a very smart way to handle dependencies directly within the source of the scripts. You can read more about how 
+ <meta charset="utf-8">JBang facilitates Developers, but also Students and Educators create, edit, and run self-contained source-only Java programs <a href="https://www.jbang.dev/" target="_blank" rel="noreferrer noopener">on the Jbang! website</a>.</p>   
+<p>You only need 
+ <meta charset="utf-8">JBang to be installed on your system in order to follow the steps shown in the video and summarised in this post.</p>   
+<h2>DMN</h2>   
+<p>You can use the <kbd>jbang dmn@kiegroup</kbd> alias to evaluate a&nbsp;<a href="https://drools.org/learn/dmn.html">DMN model</a>&nbsp;using the Drools DMN Engine:</p>   <a href="https://asciinema.org/a/433150?autoplay=1&amp;speed=2" target="_blank" rel="noopener"><img src="https://asciinema.org/a/433150.svg" class="img-fluid"></a>   
+<p>The script takes as input a DMN mode file, and a DMN Context expressed as JSON. It produces as output a JSON of the evaluated DMN result context.</p>   
+<p>As with most common command line utilities, you can issue <kbd>--help</kbd> to get usage help information:</p>   
+<pre class="wp-block-code"><code>jbang dmn@kiegroup --help</code></pre>   
+<h2>Converter for Excel (.xls/.xlsx) files containing DMN decision tables</h2>   
+<p>You can use the <kbd>jbang xls2dmn@kiegroup</kbd> alias to convert Excel (.xls/.xlsx) files containing&nbsp;<a href="https://drools.org/learn/dmn.html">DMN decision tables</a>&nbsp;using the Drools DMN Engine experimental converter:</p>   <a href="https://asciinema.org/a/433167?autoplay=1&amp;speed=2" target="_blank" rel="noopener"><img src="https://asciinema.org/a/433167.svg" class="img-fluid"></a>   
+<p>For more details about the Converter and the conventions to be used in the Excel file, please reference the&nbsp;<a href="https://github.com/kiegroup/drools/tree/main/kie-dmn/kie-dmn-xls2dmn-cli#readme">Converter documentation</a>.</p>   
+<h2>FEEL</h2>   
+<p>You can use the <kbd>jbang feel@kiegroup</kbd> alias to evaluate a&nbsp;<a href="https://drools.org/learn/dmn.html">FEEL expression</a>&nbsp;using the Drools DMN Engine.</p>   
+<p>This script takes as input a FEEL expression (as a string) and it produces a FEEL representation of the result of evaluating the expression.</p>   <a href="https://asciinema.org/a/433154?autoplay=1&amp;speed=2" target="_blank" rel="noopener"><img src="https://asciinema.org/a/433154.svg" class="img-fluid"></a>   
+<p>This jBang alias can be very handy when you want to quickly try out some FEEL expressions, using the command line for additional fun!</p>   
+<h2>Conclusions<a href="https://github.com/kiegroup/jbang-catalog#converter-for-excel-xlsxlsx-files-containing-dmn-decision-tables"></a></h2>   
+<p>You can reference the video embedded with this post to get an overview of how to use this JBang! catalog. Don't forget to checkout the <a href="https://github.com/kiegroup/jbang-catalog#readme" target="_blank" rel="noreferrer noopener">README in the repository</a> for the full details.</p>   
+<p>For more information on JBang, see:</p>   
+<ul>
+ <li><a href="https://www.jbang.dev/documentation/guide/latest/installation.html">Installation</a></li>
+ <li><a href="https://www.jbang.dev/documentation/guide/latest/usage.html">Usage</a></li>
+</ul>   
+<p>Try it out today!</p>   
+<p>Go to: https://github.com/kiegroup/jbang-catalog</p>   
+<p>Don't forget to let us know your feedback using the <a href="https://kogito.kie.org/community/">Kogito community</a> channels!</p>

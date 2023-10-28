@@ -1,0 +1,161 @@
+title=Transparent ML, integrating Drools with AIX360
+date=2022-09-20
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/09/transparent-ml-integrating-drools-with-aix360.html
+~~~~~~
+<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/rDghxB8F4nU?t=20" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>Following up from <a href="https://blog.kie.org/2022/04/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html">a previous blog post</a> about integrating Drools with the Open Prediction Service, in this new post we want to share the current results from another exploration work: this time integrating Drools with research on Transparent Machine Learning by IBM.</p>   
+<h2>Introduction</h2>   
+<p>Transparency is a key requirement in many business sectors, from FSI (Financial Services Industry), to Healthcare, to Government institutions, and many others.</p>   
+<p>In more recent years, a generalized need for increased transparency in the decision making processes has gained a great deal of attention from several different stakeholders, especially when it comes to automated decisioning and AI-based decision services.</p>   
+<p>Specifically in the Eurozone, this ties with the <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR regulation</a> and the requirement for explainability in the way businesses automate processes and decision making. Additionally, an “<a href="https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence">Artificial Intelligence Act</a>” is proposed and currently under discussion at the European Commission: under the current status of the proposal several risk levels are identified. The integration of AI in the business process and decision model will likely require explainability, transparency and a conformity assessment, depending on the applicable risk level:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image-2-1024x576.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>In other parts of the world, similar legislations are coming into effect or are currently being proposed.</p>   
+<p>You can read more details in <a href="https://medium.com/@greger_ottosson/transparent-ml-in-enterprise-decisions-intro-8c01438c11c5">this article on Medium</a>.</p>   
+<p>With these considerations in mind, we will explore how to leverage rule induction strategies and specific types of machine learning models, with the intent of producing predictive models which can integrate with effective results into this general context.</p>   
+<h2>Transparent ML with Drools and AIX360</h2>   
+<p>One way to address some of the problems and requirements highlighted in the previous section is to use Machine Learning to generate specific types of models that are inherently readable and transparent.</p>   
+<p>As we will see in this blog post, a <em>transparent</em> predictive model can be handed over easily to the next phase as a decision model, in order to be evaluated as-is, but most importantly for the ability to be inspected and authored directly!</p>   
+<p>Comparing a Transparent ML approach with the broader general Machine Learning, we can highlight some of its characteristics:</p>   
+<div class="wp-block-columns"> 
+ <div class="wp-block-column" style="flex-basis:100%"> 
+  <div class="row justify-content-center text-center">
+   <figure class="figure"> 
+    <table> 
+     <tbody> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left"><strong>General Machine Learning evaluation</strong>:</td> 
+       <td><strong>Transparent ML approach</strong>:</td> 
+      </tr> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left">All supported model types, but black box evaluation</td> 
+       <td>Model can be inspected, authored, evaluated</td> 
+      </tr> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left">Accuracy focused</td> 
+       <td>Transparency focused</td> 
+      </tr> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left">eXplainable AI complements, such as <a href="https://kogito.kie.org/trustyai/">TrustyAI</a></td> 
+       <td>Intrinsically eXplainable</td> 
+      </tr> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left">MLOps —governed by data science</td> 
+       <td>Business centric governance</td> 
+      </tr> 
+      <tr> 
+       <td class="has-text-align-left" data-align="left">Multiple runtimes</td> 
+       <td>Potentially single runtime</td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </figure>
+  </div> 
+ </div> 
+</div>   
+<p>Naturally the transparent ML approach has its limitations; we will discuss alternative approaches in the conclusions of this blog post.</p>   
+<p>An example pipeline can be summarized as follows:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image-3-1024x262.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>For the examples in this blog post, we will use the <a href="https://archive.ics.uci.edu/ml/datasets/Adult"></a><a href="https://archive.ics.uci.edu/ml/datasets/Adult"></a><a href="https://archive.ics.uci.edu/ml/datasets/Adult">https://archive.ics.uci.edu/ml/datasets/Adult</a> dataset&nbsp; (predicting if income exceeds $50K/yr from census data).</p>   
+<p>Let’s get started!</p>   
+<h2>Rule Set induction</h2>   
+<p>In this section we will make use of the <a href="https://github.com/Trusted-AI/AIX360">AI Explainability 360 toolkit</a>, an open-source library that supports interpretability and explainability of datasets and machine learning models.</p>   
+<p>Our goal in this phase is to generate a predictive model from the UCI Adult dataset, using Machine Learning techniques:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image10-1024x313.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>To generate a <em>transparent</em> predictive model, we can drive the generation of a RuleSet <a href="https://blog.kie.org/2021/02/predictions-in-kogito-pmml-endpoints-with-openapi.html">PMML model</a>, as explained in the following Jupyter notebook <a href="https://github.com/Trusted-AI/AIX360/tree/master/examples/rule_induction">examples at this link</a>:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image1-1024x664.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>As a result of this, we have now generated a set of rules, in the form of a PMML RuleSet, which represents the transparent predictive model for the Adult dataset:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image12-1024x572.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>If you are interested to delve into more details about using AIX360 and related algorithms, you can check out <a href="https://medium.com/@greger_ottosson/transparent-ml-for-enterprise-decisions-rule-sets-d8f55bee3a00">this article on Medium</a>.</p>   
+<h2>Drools</h2>   
+<p>In this section, we will transform the result from the previous steps into an executable decision model, which can also be directly authored.</p>   
+<p>Please note: in a different context, where the only requirement is the execution of predictive models in general, you can simply make reference to the PMML support for Drools from the <a href="https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#drools.PMML">documentation</a>, or to integration blueprints such as the integration of Drools with IBM Open Prediction Service from a <a href="https://blog.kie.org/2022/04/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html">previous blog post</a>. In this article instead, as premised, we’re interested in the result of a transparent prediction model, which can be fully inspected, authored and (naturally!) evaluated.</p>   
+<p>Specifically, we will transform the transparent predictive model serialized as a RuleSet, into a DMN model with DMN Decision Tables.</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image6-1024x236.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>To perform this transformation, we will make use of the kie-dmn-ruleset2dmn utility; this is available as a developer API, and as a command line utility too.</p>   
+<p>You can download a published version of the command line utility (executable .jar) from <a href="https://repo1.maven.org/maven2/org/kie/kie-dmn-ruleset2dmn-cli/8.27.0.Beta/kie-dmn-ruleset2dmn-cli-8.27.0.Beta.jar">this link</a>; otherwise, you can lookup a more recent version directly from <a href="https://mvnrepository.com/artifact/org.kie/kie-dmn-ruleset2dmn-cli">Maven central here</a>.</p>   
+<p>To transform the RuleSet file into a DMN model, you can issue the following command:</p>   
+<pre class="wp-block-code"><code><strong>$ java -jar kie-dmn-ruleset2dmn-cli-8.27.0.Beta.jar adult.pmml --output=adult.dmn</strong></code></pre>   
+<p>This will result in a .dmn file generated, which you can author with the Kogito Tooling and evaluate as usual with the <a href="https://www.drools.org/learn/dmn.html">Drools DMN engine</a>!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image5-1024x572.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>We can upload the generated .dmn file onto the <a href="https://dmn.new">DMN.new</a> sandbox:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image2-1024x664.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>We can make use of the Kie Sandbox extended services, to evaluate locally the DMN model, as-is or authored as needed!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image3-1024x394.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>It’s interesting to note the static analysis of the DMN decision table identifies potential gaps in the table, and subsumptions in the rules inducted during the Machine Learning phase; this is expected, and can be authored directly depending on the overall business requirements.</p>   
+<p>From the model evaluation perspective, overlapping rules are not a problem, as they would evaluate to the same prediction; this is a quite common scenario when the ML might have identified overlapping “clusters” or grouping over a number of features, leading to the same output.</p>   
+<p>From a decision table perspective however, overlapping rules can be simplified, as a more compact representation of the same table semantic is often preferable in decision management.</p>   
+<p>Here it is up to the business to decide if to keep the table as translated from the original predictive model, or to leverage the possibilities offered by the transparent ML approach, and simplify/compact the table for easier read and maintenance by the business analyst.</p>   
+<h2>Deploy</h2>   
+<p>We can deploy directly from the KIE Sandbox:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image8-1024x664.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>Our Transparent prediction and decision model is available as a deployment on OpenShift !</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image11-1024x640.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>As you can see, with just the click of a button in the KIE Sandbox, our transparent ML model has been easily deployed on OpenShift.</p>   
+<p>If you want to leverage the serverless capabilities of Knative for auto-scaling (including auto scale to zero!) for the same predictive model, you can consider packaging it as a Kogito application. You can find more information in this <a href="https://blog.kie.org/2022/08/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html">other blog post and video tutorial</a>.</p>   
+<h2>Conclusion</h2>   
+<p>We have seen how a Transparent ML approach can provide solutions to some of the business requirements and conformance needs to regulations such as GDPR or AI Act; we have seen how to drive rule induction by generating predictive models which are inherently transparent, can be authored directly as any other decision model, and can be deployed on a cloud-native OpenShift environment.</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/09/image7-1024x551.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>In this post, we have focused ourselves on using directly upstream AIX360 and Drools. You can refer to the above diagram for commercial solutions by IBM and Red Hat that include these projects too, such as <a href="https://medium.com/ibm-data-ai/transparent-machine-learning-in-ibm-business-automation-b75cd8aed944">IBM AIMEE</a>, <a href="https://developers.redhat.com/products/red-hat-decision-manager/overview">Red Hat Decision Manager</a>, <a href="https://www.ibm.com/cloud/blog/announcements/ibm-expands-business-automation-portfolio-with-open-source-process-and-decision-automation#:~:text=DMN1.4%2Dcompliant%20runtime">IBM Business Automation Manager Open Edition</a>.</p>   
+<p>If you are interested in additional capabilities for eXplainable AI solutions, check-out the <a href="https://kogito.kie.org/trustyai/">TrustyAI initiative at this link</a>!</p>   
+<p>The Transparent ML predictive model, now available as a decision service, can be integrated in other DMN models and other applications, as needed. For example, the transparent prediction on the Adult dataset (predicting if income exceeds $50K/yr) could become invocable as part of another decision service that decides on the applicability for the requests of issuing a certain type of credit card.</p>   
+<p>Another possible integration could be to employ a transparent ML predictive model in the form of scorecards, inside a broader DMN model for segmentation; that is, first identify the applicable category/segment based on the input data, and then apply one of several score cards for the specific segment.</p>   
+<p>Don’t miss on checking out the <a href="https://decisioncamp2022.wordpress.com/program/">DecisionCamp 2022 presentations</a> on related Transparent ML topics!</p>   
+<p>Hope you have enjoyed this blog post, showcasing integration of several technologies to achieve a transparent ML solution!</p>   
+<p>Questions? Feedback?<br>Let us know with the comment section below!</p>   
+<p>Special thanks for Greger Ottosson and Tibor Zimanyi for their help while crafting this content.</p>

@@ -1,0 +1,213 @@
+title=Data enrichment use-case with DMN and BPMN
+date=2022-01-21
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/01/data-enrichment-use-case-with-dmn-and-bpmn.html
+~~~~~~
+<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/NHigoAz1TRY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>In this post I want to share an interesting use case of data enrichment, using DMN with BPMN and other open standards.</p>   
+<p>The typical usage pattern for data enrichment is the following: a complex data structure containing several attributes is provided as input; based on some computations and decision results, the original structure is enriched with <em>additional</em> attributes. In an even more complex scenario, already existing specific attributes are overridden with new values.</p>   
+<p>Often this usage pattern is referred to as “mutability”, but speaking about mutability is an improper terminology to be used in the context of DMN; DMN is stateless and mandates that “<em>all decision logic is free of side-effects</em>” (DMN Specification chapter 5.2.3) among other idempotent and deterministic requirements.</p>   
+<p>Instead a more important aspect to focus on, while considering this use-case, is that Functional Programming has taught us powerful lessons which can be applied in this context: we can achieve the desired goal by pushing side-effects at the boundaries, or by adopting other FP strategies.</p>   
+<p>In this post we will see how we don’t strictly need mutability features, in order to effectively achieve data enrichment.</p>   
+<p>I will demonstrate the pragmatic implementation of this use-case, both by using DMN as a standalone knowledge asset, as well as combining the same DMN model with a BPMN process.</p>   
+<h2>Introduction</h2>   
+<p>For the remainder of this post, we will use a running example where the fundamental Domain Model is a structure dealing with an incoming request of Tech Support.</p>   
+<p>This can be represented as a DMN ItemDefinition, shown in the screenshot below; we can also use the idiomatic Java Pojo representation, following the Kie v7 conventions:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/0R0kXRu9Uc80Wrg16a4a7AAu9wzsx56I3z4cQnbWj1lW2vE8qZcJihLkwIZ8BYDtGMlpKtYFUsOmV7m6umqQaClejI9-8Gj7APF8orjnGHoTg6aCkh15HPq6lle2kpWANvzeV5vP" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>For this example, we can notice most attributes are pertaining to the event of the support request being raised:</p>   
+<pre class="wp-block-code"><code>  "Support Request" : {
+        "full name" : "John Doe",
+        "email" : "info@redhat.com",
+        "mobile" : "+1",
+        "mailing address" : "somewhere",
+        "account" : "47",
+        "premium" : false,
+        "area" : "tech",
+        "description" : "app crashed"
+      }</code></pre>   
+<p>all except for the <strong>priority</strong> attribute.</p>   
+<p>The goal of the business application is to process the support request, establish the appropriate priority level, and then produce a support request with the priority attribute now correctly valorized.</p>   
+<p>While looking in details at this example, I will keep the decision logic simple and we will <strong>not</strong> use any complex decision logic to actually determine the priority value; as mentioned, the focus of this post is the processing of the incoming payload, to produce a fully valorized support request, also including the actual priority value.</p>   
+<h2>Strategy A: combine DMN with BPMN</h2>   
+<p>A first approach is to combine DMN and BPMN for the best of both worlds: DMN should focus on the decision logic keeping an immutable and stateless approach, while BPMN is used to manage in a stateful manner the different stages of processing for the support request.</p>   
+<p>The DMN model can focus on the decision logic to establish the appropriate Priority value, depending on the content of the incoming support request:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/v7pwBDYpuoEJJyVTa9eyv3apX0mafRB0-CUVhPE18sSAJ597vwTexvbsyAK4gBINSj2HXuf4Qk69qEVqXfl8MY5LFVu2DZihuQs_XgkfvAalk33Un411CHHFP6Exc7M5wNxjh2zk" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>The current decision logic in the example right now is quite simplistic because as mentioned is not the most important aspect, but naturally can be further extended to have a more complex decision table, etc:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh3.googleusercontent.com/1uy8Qy-mezgcZfoF6xBeZI26G1L5aLSCjFD4Z3B6US9K49UCi0qyBc-fz3IC_bgMVvWWtOWRT8n2Xokns12wojnp6iDgSuusE3W9IlnuwVdc1xQElh_ZCm-iJoTD3eV1j-Xs471b" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>Now we need to have as output almost the ~same structure we have received as input, and override it with the combination of the key-value pair for Priority, having value either “High” or “Medium”.</p>   
+<p>We can use for this goal a BPMN process:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/Lu7JshhQCdxnFTmTmaaKylje3wF5a-xQ0lssHZ7Poxt_saxEAvsWNMccYDoLe1xo_clLTXvnJ4rT9H3QfE2G4m558fnCdY0aKAc1SGJHIux-LjvvdKmPRdL4qad1eFS3aCLaEYQp" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>The process is started by receiving as input the support request payload, stored as a process variable named “request”.</p>   
+<p>The first BPMN Task, named “Process Support Request”, is in charge of:</p>   
+<ol> 
+ <li>Invoke the evaluation of the DMN model, passing the incoming support request (the “request” process variable) as input of the DMN evaluation.</li> 
+ <li>Take the output decision of the DMN evaluation, “Determine Priority”, and assign it to a temporary process variable called “priority”.</li> 
+ <li>Modify the “request” process variable, with the value now contained in the “priority” from step2.</li> 
+</ol>   
+<p>You can find more details about these three steps of the “Process Support Request” Task in the next section.</p>   
+<p>Later, the “request” process variable is will be fully valorized as well in the priority attribute, so that can be used in the gateway, as one would naturally expect:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/EhbbWa1gfS-vPA9Vm40Vj1_HZM9Z3smfqtv5ZCXXCp1_0aYcSj4nH1CyIQxTTpbP5Ng_e_eJkWxQEkDj5o_0CT_Wis1rqE6Kc-7Isu7e2DAj0K4-cteEAwLZTLc5bGWepyrr3acy" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>This has achieved the original requirements.</p>   
+<h3>Details</h3>   
+<p>The final step 3 of the “Process Support Request” BPMN Task in effect mutates the original structure; however, it is important to be noted that the <em>mutation</em> happens indeed in the context of a BPMN process, which naturally allows for statefulness, mutations, side-effects, etc.</p>   
+<p>In this strategy, we have kept the DMN model fully focused on the actual decision, that is the determination of the <strong>priority</strong> for the given support request.</p>   
+<p>Currently this is implemented on jBPM Kie v7 with the three steps described above, meaning it can be achieved already today by:</p>   
+<pre class="wp-block-code"><code>Input “Support Request” &lt;- request (process variable)
+    Output “Determine Priority” -&gt; priority (process variable)</code></pre>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/YvWMp_9rYsu7oxUUiGbcj2mXChF7QJiWcIGc6wC0--jRbV1Ijoy-PkvkiQF6CMVOboSesEVDIcJOLFvqOzcbNJ9_ZV_MLMq_-PN-7qcazE2cDojsGpfg-SvKgxhr9v-gC3lpCYfA" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>Please notice in the screenshot both the assignment in the foreground to a temporary process variable name “priority” (step2) and in the background the modification of the support request in the attribute “priority” using the On Exit Action script (step3).</p>   
+<p>Step2 and Step3 of the “Process Support Request” Task, <em>in the future</em>, could be combined in the Data Assignment, directly in the Task’s “Data I/O”, when support for expressions will be fully implemented.</p>   
+<p>Something that <em>could</em> potentially look like this:</p>   
+<pre class="wp-block-code"><code>Input “Support Request” &lt;- request (process variable)
+    Output “Determine Priority” -&gt; ${request.priority} (expression)</code></pre>   
+<p>Support for expressions is currently being discussed for FEEL in future iterations and might achieve something similar.</p>   
+<h2>Strategy B: using DMN standalone</h2>   
+<p>Another approach is to use DMN only; in this case we cannot modify the original InputData value, but we can definitely create an exact copy of the input payload structure but altered only on the desired attribute “priority”.</p>   
+<p><strong>Naturally we want to do this without having to replicate manually all the original attributes</strong>, which would be extremely tedious!&nbsp;</p>   
+<p>NOTE: this approach is still fully compliant with the DMN Specification semantics, meaning free of side-effects and stateless.&nbsp;</p>   
+<p>We introduce a new built-in function called “<kbd>context put</kbd>”: this function takes 3 parameters:</p>   
+<ul> 
+ <li>“context” of type context (a composite structure in DMN terms)</li> 
+ <li>“key” of type string</li> 
+ <li>“value” of Any type</li> 
+</ul>   
+<p>and produces a resulting context altered in the key-value pair, or enriched of the new key-value pair.</p>   
+<p>For example:</p>   
+<pre class="wp-block-code"><code>context put({ name: "John Doe" }, "age", 47)</code></pre>   
+<p>would result in:</p>   
+<pre class="wp-block-code"><code>{ name: "John Doe", age: 47 }</code></pre>   
+<p>You might have some ideas by now about where this is about to go :)</p>   
+<p>We can achieve something similar to:</p>   
+<pre class="wp-block-code"><code>context put( &lt;request&gt; , "priority", ... )</code></pre>   
+<p>This in fact it is pretty easy, by taking the previous DMN model and adding just one more Decision to keep the clarity of the decision logics in the DRG:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/vvnpuywq4ZfEkgZ5-ezd4pHeoVFSgSAQS6ic1xa4-8imlp7bNjxXoyNKf7dJS560nr0D0Jhnqfq1cVBeaHfsyJXfnKgZhsx06QXG7jA7C_FLEHzC7BaWUPqDyEB3AY2wxOXFURKx" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>In this DRD picture I’ve used the same colour to highlight both nodes “Support Request” and “Processed Request” having the same typeRef, meaning both nodes conform to the ItemDefinition “tSupportRequest” originally shown at the beginning of this post.</p>   
+<p>The decision logic for “Processed Request” is super simple, meaning:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/W184VO4jLBmuoQRjS8zIgMlC9-kSBfVGdkZbdEmIwFJ7k1IWEzk9EaWVx9ZJf5JnphM4h4K2X6s7ZcB-DLAfD4VMl6ZapvZDYuIVuEMYieJcBVviPnZUGbxSAtxGTal4WQ-SHT5V" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>As we have learnt, that means: produce the same structure of the node “Support Request” but altered (or appended) with a new key-value pair, having key “priority” and having value from the “Determine Priority” sub-decision.</p>   
+<p>So we have achieved the same goal, following another strategy now; we have as output Decision the same structure we see in one of the InputData, but valorized in the new “priority” attribute value!</p>   
+<p>This would also work in a totally equivalent BPMN process too:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/dS6l_gotFEabCrYVRmwll6o34yCCvhJ8cqS1OdyULs56Nscgaf9tACCWgtWSEJ6HV_3J__2Wy-ayEvpLMenLUbfjmmQPTXEV_obMiP6OA696cONTwa186mFYIMf6UrlTy8GclUYx" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>This BPMN process is now simpler in the Task's Data I/O Assignments, as we no longer need the previously required Step2+Step3.</p>   
+<p>The BPMN "Process Support Request" Task now simply uses:</p>   
+<pre class="wp-block-code"><code>Input “Support Request” &lt;- request (process variable)
+    Output “Processed Request” -&gt; request (process variable)</code></pre>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh5.googleusercontent.com/Fzk0x1YW38HL6cYgz3R5U1wYnuf7SKgaI2K3avmFowanngvfzJgLFBEHbVpyQFwB6Bb1xFsczQUcVZIEevZfFxV-biYCEalocS_JwQBF1kdfj3ShniE8o3C3VDS7aXvI_fIgwW1F" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>This works perfectly thanks to the awesome contributions by Anton Giertli clarifying requirements and work by Enrique Gonzalez Martinez with <a href="https://issues.redhat.com/browse/JBPM-9783">JBPM-9783</a>, allowing a better integration of the DMN results with the jBPM’s BRE Task!&nbsp;</p>   
+<h3>Details</h3>   
+<p>Adopting the same JSON originally presented at the beginning of this post, we can use that as a DMN input payload and check the results using this DMN model alone.</p>   
+<p>DMNContext of INPUT:</p>   
+<pre class="wp-block-code"><code>{
+      "Support Request" : {
+        "account" : "47",
+        "email" : "info@redhat.com",
+        "mobile" : "+1",
+        "premium" : false,
+        "area" : "tech",
+        "description" : "app crashed",
+        "priority" : null,
+        "full name" : "John Doe",
+        "mailing address" : "somewhere"
+      }
+    }</code></pre>   
+<p>DMNResult of OUTPUT:</p>   
+<pre class="wp-block-code"><code>{
+      "Support Request" : {
+        "account" : "47",
+        "email" : "info@redhat.com",
+        "mobile" : "+1",
+        "premium" : false,
+        "area" : "tech",
+        "description" : "app crashed",
+        "priority" : null,
+        "full name" : "John Doe",
+        "mailing address" : "somewhere"
+      },
+      "Determine Priority" : "Medium",
+      "Processed Request" : {
+        "area" : "tech",
+        "premium" : false,
+        "mobile" : "+1",
+        "description" : "app crashed",
+        "mailing address" : "somewhere",
+        "full name" : "John Doe",
+        <strong>"priority" : "Medium"</strong>,
+        "account" : "47",
+        "email" : "info@redhat.com"
+      }
+    }</code></pre>   
+<p>This "<kbd>context put</kbd>" function is not part of the DMN v1.3 specification, so at the time of writing this is to be considered an experimental and extended built-in function, even if it is actually provided as part of the Drools DMN Engine out of the box. The DMN Revision Task Force group might decide to eventually adopt this in a future release of the specification. In fact, this blog post takes inspiration from drawing additional consequences after a Vendor proposal raised similar use-case in the DMN RTF Group: I believe this is a very encouraging demonstration of the power of open standards and their communities, where innovations are generated by the collaboration of different Vendors! Previously, we have been internally experimenting with a similar concept called “<kbd>lambda-update(object,[fields])</kbd>”, but the ultimate approach presented with this post is much simpler.</p>   
+<p>In the meantime of that final DMN approval, the usage of this extended built-in function is to be considered experimental.</p>   
+<p>The DMNContext in the dmn output results contains as expected the two structures, and they both conform to the ItemDefinition defining the content of said structure, as expected. On the Drools DMN Engine Java API however as we have learnt, they are <strong>not</strong> the same <em>instances</em> and they are <em>not necessarily</em> the same Java class: it could be the case the input is supplied as a Pojo and the output resulting as a java.util.Map, or it could also work by having a java.util.Map as input and again as output. Naturally in any case, either the Pojo or either the java.util.Map must conform (or do conform automatically when produced by the engine) to the applicable ItemDefinition(s), meaning they include all the properties expected from the ItemDefinition’s components. This is an implementation detail of the embedded Java API, and it is completely transparent when dealing with REST APIs, such as those code generated on a Kogito based application, or by leveraging the Kie Server’s “Next generation DMN model specific endpoints” (<a href="https://issues.redhat.com/browse/BAPL-1787">BAPL-1787</a>). This is also completely transparent when integrating DMN inside a jBPM BRE Task, as mentioned thanks to the improvement of (<a href="https://issues.redhat.com/browse/JBPM-9783">JBPM-9783</a>).</p>   
+<p>The same decision logic for the new Decision node could have equivalently be expressed with a boxed function invocation too:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh6.googleusercontent.com/fYJ6x2siAdKXz9dBdZ1xIQGlD3M1dIUxD_Ngn-D9yFKwd2mPMhC88D9OMbHgaJ9gkY_Brf4MZQv0OGewgofM5Kz9lpJjhpuYuRQfQtzarqqNDrkdPzgvAxo717OuFy20SXSZLh5F" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>The same DMN model would indeed code generate the expected REST API endpoint definitions on a Kogito based application too:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://lh4.googleusercontent.com/VQcNad0IW3e7bqvJh0zBjIrsDxxnCGJ9EhfYRaVLdNshGd5QgfO6GgRlbqhsWtrXt1SjJOitb9ylyKR8kj2UT1xUi71cLMBUQyCobrdtwqOnfDO2maEZuMRHeYRZf9sRSXRwkk8T" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>We can notice the payload structure both in Request and Response of the Swagger / OpenAPI is the expected one.</p>   
+<h2>What about data transformation?</h2>   
+<p>This example naturally draws even closer to additional use-cases which can be integrated in the context of DMN implementation, such as <strong>data transformation</strong>.</p>   
+<p>The power of DMN can be fully exploited when using its notation to describe <em>business rules and decision logic</em>, and while it can be also employed to “transform” data in a way similarly described in this post, using DMN purely for data transformation may not always be the best solution. For the use-case dealing only with pure data transformation requirements, we suggest you also take a look at <a href="http://www.atlasmap.io">AtlasMap</a>, a data mapping solution with interactive web based user interface.</p>   
+<h2>Conclusions</h2>   
+<p>We have learnt how to leverage open standards in the best possible way to achieve the desired goals, even better by considering two very pragmatic strategies:</p>   
+<ul> 
+ <li>Combine DMN with the power of BPMN</li> 
+ <li>Use DMN standalone and an extended feature</li> 
+</ul>   
+<p>We have also seen how integrations and collaborations are foundational elements which allowed us to achieve these important results!</p>   
+<p>Demo code material is available, which can be used as reference for the content presented in this post, at: <a href="https://github.com/tarilabs/dmn-data-enrichment-20210804">https://github.com/tarilabs/dmn-data-enrichment-20210804</a>&nbsp;</p>   
+<p>What do you think of these approaches? Let us know in the comments down below!</p>
