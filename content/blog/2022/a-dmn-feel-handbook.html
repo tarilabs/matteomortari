@@ -1,0 +1,79 @@
+title=a DMN FEEL handbook
+date=2022-08-18
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/08/a-dmn-feel-handbook.html
+~~~~~~
+<!-- wp:embed {"url":"https://www.youtube.com/shorts/jPhAynN73Jw","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+    https://www.youtube.com/shorts/jPhAynN73Jw
+    </div><figcaption>a DMN FEEL handbook "promotion" video :)</figcaption></figure>
+    <!-- /wp:embed -->
+    
+    <!-- wp:paragraph -->
+    <p>We're introducing an (experimental) DMN FEEL handbook, an helpful companion for your DMN modeling activities!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":15725,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="http://blog.kie.org/wp-content/uploads/2022/07/Screenshot-2022-07-11-at-09.19.28-2-1024x576.jpg" alt="" class="wp-image-15725"/></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>You can access this new helpful resource at the following URL: <a href="https://kiegroup.github.io/dmn-feel-handbook" target="_blank" rel="noreferrer noopener"></a><a href="https://kiegroup.github.io/dmn-feel-handbook">https://kiegroup.github.io/dmn-feel-handbook</a>.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Key features include:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:list -->
+    <ul><li>FEEL built-in functions organised by category</li><li>tested and integrated FEEL examples</li><li>Responsive design: easily access on Mobile, Tablet and Desktop from your favourite browser!</li></ul>
+    <!-- /wp:list -->
+    
+    <!-- wp:paragraph -->
+    <p>...and many more!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:heading -->
+    <h2>Implementation details</h2>
+    <!-- /wp:heading -->
+    
+    <!-- wp:paragraph -->
+    <p>For the technically curious, this section will highlight some of the technical implementation choices for the realisation of this handbook.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>If you want to just use this handbook, you are free to skip this section! :)</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>The framework used to render this handbook is called <a href="https://github.com/slatedocs/slate" target="_blank" rel="noreferrer noopener">Slate</a>; it's very convenient to use it when, in general, you want a neat API documented with use-cases and examples. This makes it a perfect framework candidate to build a technical manual of a <em>very specific aspect</em> --the FEEL expression language of DMN. Naturally we're keeping Antora for the general documentation of Drools, which is more powerful for the user-manuals and modularising content.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Then, in order to CI the FEEL snippets and examples in the handbook, we're leveraging the awesome <a href="https://www.jbang.dev/" target="_blank" rel="noreferrer noopener">JBang</a>! As you can see in the Java_script source (<a href="https://github.com/kiegroup/dmn-feel-handbook/blob/3a36dc2ea9663a5b7b5100813395c4ee583b13fb/test.java#L97-L124" target="_blank" rel="noreferrer noopener">here</a>) we're parsing the content of the Markdown file to search for codeblocks related to FEEL. Each codeblock related to FEEL is then evaluated, to make sure it does not error or misbehave.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>This allowed us to catch small typos, <a href="https://github.com/kiegroup/kie-docs/pull/4218/files" target="_blank" rel="noreferrer noopener">such as this one</a> which we corrected in the main docs. I got the inspiration to implement this approach by reading the Rust manual. If you are familiar with that book, you will likely recognise where <a href="https://doc.rust-lang.org/book/ch00-00-introduction.html#how-to-use-this-book" target="_blank" rel="noreferrer noopener">Ferris inspired me</a> :).</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Finally, we integrated the JBang! tests with CI with a <a href="https://github.com/kiegroup/dmn-feel-handbook/blob/main/.github/workflows/test.yml#L22-L25" target="_blank" rel="noreferrer noopener">simple GitHub Action</a>, and then we serve the content via GitHub Pages.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:heading -->
+    <h2>Conclusions</h2>
+    <!-- /wp:heading -->
+    
+    <!-- wp:paragraph -->
+    <p>Don't forget to checkout this DMN FEEL handbook today!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph {"align":"center"} -->
+    <p class="has-text-align-center"><a href="https://kiegroup.github.io/dmn-feel-handbook">https://kiegroup.github.io/dmn-feel-handbook</a></p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Do you like it? Feedback? Let us know!</p>
+    <!-- /wp:paragraph -->

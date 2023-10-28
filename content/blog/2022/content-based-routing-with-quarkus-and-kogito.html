@@ -1,0 +1,119 @@
+title=Content Based Routing with Quarkus and Kogito
+date=2022-03-09
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/03/content-based-routing-with-quarkus-and-kogito.html
+~~~~~~
+<!-- wp:embed {"url":"https://youtu.be/nXyKM-xds2M","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+    https://youtu.be/nXyKM-xds2M
+    </div></figure>
+    <!-- /wp:embed -->
+    <!-- wp:paragraph -->
+    <p>This is a second iteration of a <a href="https://blog.kie.org/2021/06/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html" target="_blank" rel="noreferrer noopener">previous post</a>, where we implemented EIP patterns using just Drools and Apache Camel.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>In this post instead, I want to share with you how to implement a complete, end-to-end <strong>Content Based Routing</strong> solution using <a href="https://quarkus.io/" target="_blank" rel="noreferrer noopener">Quarkus</a> as a developer platform, including: <a href="https://www.drools.org/learn/dmn.html" target="_blank" rel="noreferrer noopener">Drools DMN Engine</a>, <a href="https://kogito.kie.org/" target="_blank" rel="noreferrer noopener">Kogito</a>, <a href="https://camel.apache.org/#apache-camel-projects" target="_blank" rel="noreferrer noopener">Apache Camel</a>, <a href="https://www.atlasmap.io/" target="_blank" rel="noreferrer noopener">AtlasMap</a> and Apache Kafka as our message broker.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>I will make use of a <strong>Managed Service</strong> offering for Kafka, which you can try for free yourself too, by using this link: <a href="https://red.ht/trykafka"></a><a href="https://red.ht/trykafka"><a href="https://red.ht/trykafka">https://red.ht/trykafka</a></a>.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>I will also make use of the Red Hat Developer <strong>OpenShift Sandbox</strong> to deploy the application; you can try for free yourself by using this link: <a href="https://developers.redhat.com/developer-sandbox"></a><a href="https://developers.redhat.com/developer-sandbox"><a href="https://developers.redhat.com/developer-sandbox">https://developers.redhat.com/developer-sandbox</a></a>.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:heading -->
+    <h2>Content based routing overview</h2>
+    <!-- /wp:heading -->
+    <!-- wp:paragraph -->
+    <p>Here is the revised Enterprise Integration Pattern diagram of the flow, with the new components:</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14491,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-1024x431.png" alt="" class="wp-image-14491"><figcaption>EIP Diagram of the Content Based Routing application</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:paragraph -->
+    <p>The application keep the focus on routing healthcare-related messages; for this demo example, messages are routed accordingly to the following decision table rules:</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14492,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-1.png" alt="" class="wp-image-14492"><figcaption>Message Routing rules in a DMN decision table</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:paragraph -->
+    <p>The table above describes the rules of message routing in terms of the (business) domain model:</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:list -->
+    <ul><li>the sending application</li><li>the type of message</li><li>the type of event</li></ul>
+    <!-- /wp:list -->
+    <!-- wp:paragraph -->
+    <p>For the purpose of this demo, the examples are provided using HL7v2 as the <strong>technical format</strong> for the message payload. You can read more about HL7v2 on the <a href="http://www.hl7.org/implement/standards/product_brief.cfm?product_id=185" target="_blank" rel="noreferrer noopener">HL7 website</a> and on this <a href="https://cloud.google.com/healthcare-api/docs/concepts/hl7v2" target="_blank" rel="noreferrer noopener">tutorial page</a>.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>In order to properly translate from the specific technical format HL7v2 into the domain model, we can make use of the AtlasMap capabilities of data-mapping. This allows the stakeholder involved in the content based routing application to more easily inspect and describe the rules, for instance. Here is a visual summary of the AltasMap intent combined with the DMN decision table:</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14493,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-2-1024x497.png" alt="" class="wp-image-14493"><figcaption>Using AltasMap in combination with a DMN decision table</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:paragraph -->
+    <p>In a <a href="https://blog.kie.org/2022/01/data-enrichment-use-case-with-dmn-and-bpmn.html" target="_blank" rel="noreferrer noopener">separate post</a> about data enhancement, I hinted at combining the capabilities of AltasMap with DMN; I hope this tutorial now provides a very pragmatic example!</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:heading -->
+    <h2>Technical details</h2>
+    <!-- /wp:heading -->
+    <!-- wp:paragraph -->
+    <p>In this section, I want to highlight how the <a href="https://camel.apache.org/manual/dsl.html" target="_blank" rel="noreferrer noopener">Camel DSL</a> allows to implement the EIP pattern very easily:</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:code -->
+    <pre class="wp-block-code"><code>from("direct:hl7")
+        .enrich("direct:label", aggregationStrategy)
+        .to("log:org.drools.demo?level=DEBUG&amp;showAll=true&amp;multiline=true")
+        .routingSlip(header("whereTo"))
+        .transform(HL7.ack())
+        ;
+    
+    from("direct:label")
+        .unmarshal().hl7()
+        .to("atlasmap:atlasmap-mapping.adm").unmarshal().json()
+        .process(kogitoDMNEvaluate) // &lt;== Rules as DMN decisions 
+        .setHeader("topicsHeader", simple("${body[topic names]}"))
+    ;</code></pre>
+    <!-- /wp:code -->
+    <!-- wp:paragraph -->
+    <p>As you can see, that's all needed in order to implement the Enterprise Integration Pattern in a Quarkus application, and integrate it with AltasMap and Kogito. You can access the source code at this git repository: <a href="https://github.com/tarilabs/quarkus-content-based-routing" target="_blank" rel="noreferrer noopener"></a><a href="https://github.com/tarilabs/quarkus-content-based-routing"><a href="https://github.com/tarilabs/quarkus-content-based-routing">https://github.com/tarilabs/quarkus-content-based-routing</a></a>.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:heading -->
+    <h2>Deployment</h2>
+    <!-- /wp:heading -->
+    <!-- wp:paragraph -->
+    <p>After setting up the Managed Kafka and OpenShift Sandbox accounts using the links provided above, the deployment is pretty straightforward.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>First, we create the intended Kafka topics on the Managed Kafka console.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14494,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-3-1024x576.png" alt="" class="wp-image-14494"><figcaption>Creating the topic (queues) in the Managed Kafka</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:paragraph -->
+    <p>Second, we deploy the content based routing Quarkus application using the OpenShift console.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14495,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-4-1024x576.png" alt="" class="wp-image-14495"><figcaption>The content based routing application now deployed on OpenShift</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:paragraph -->
+    <p>Don't forget you can easily recreate the same setup yourself and for free, by using the links provided earlier in this post. For instance, I used the very same links myself in order to make sure the demo worked fine using free resources only.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>Finally, the deployment and setup is complete, and we can start to make use of our content based routing solution, by sending REST calls to the ingress endpoint; this can be used as a classic webhook or analogous to a <a href="https://cds-hooks.org/" target="_blank" rel="noreferrer noopener">CDS hook</a>.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:image {"id":14496,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/03/image-5-1024x577.png" alt="" class="wp-image-14496"><figcaption>Invoking the REST API with an EDI message payload in HL7v2 format, and it is routed to the correct queue</figcaption></figure>
+    <!-- /wp:image -->
+    <!-- wp:heading -->
+    <h2>Conclusions</h2>
+    <!-- /wp:heading -->
+    <!-- wp:paragraph -->
+    <p>To see a demonstration of this setup in action, don't forget to check out the video linked at the beginning of this post! For example, the video shows the application responding live to the incoming messages in order to route them to the expected Kafka topic.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>Finally, I hope this article is helpful to you as a pragmatic example on how to implement a complete content based routing solution using Quarkus, Drools DMN and Apache Camel.</p>
+    <!-- /wp:paragraph -->
+    <!-- wp:paragraph -->
+    <p>Feedback?<br>Questions?<br>Don't hesitate to let us know!</p>
+    <!-- /wp:paragraph -->

@@ -1,0 +1,266 @@
+title=Integrating Drools DMN Engine with IBM Open Prediction Service
+date=2022-04-14
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/04/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html
+~~~~~~
+<!-- wp:paragraph -->
+<p>In this blog post we're going to explore an integration between the <a href="https://www.drools.org/learn/dmn.html" target="_blank" rel="noreferrer noopener">Drools DMN Engine</a> and another open source project from IBM: "<a href="https://github.com/IBM/open-prediction-service-hub#readme" target="_blank" rel="noreferrer noopener">Open Prediction Service</a>" (OPS).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Introduction</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Integrating symbolic AIs (rule engines, KRR, etc) with Machine Learning predictive models is an effective strategy to achieve pragmatical, and often more eXplainable, AI solutions.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>We have also reiterated on this very powerful message across several conferences:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14801,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.10.21-1024x576.png" alt="" class="wp-image-14801"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>For the most recent examples, you can reference <a href="https://www.youtube.com/watch?v=VK99kmwdb_Y" target="_blank" rel="noreferrer noopener">DecisionCamp</a> or the <a href="https://odsc.com/speakers/54619/" target="_blank" rel="noreferrer noopener">Open Data Science Conference</a>, or the <a href="https://www.youtube.com/watch?v=eVQfGtyDrY8" target="_blank" rel="noreferrer noopener">All Things Open</a> presentations.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>This is the reason why we believe the <strong><span style="text-decoration: underline;">integration</span></strong> between Predictive Models (such as ML or PMML-based solutions) and Decision Models is very, very important.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>In this context, we will explore how to integrate the Drools DMN Engine with IBM's Open Prediction Service hub, to achieve a pragmatic AI solution:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14802,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.18.11-1024x576.png" alt="" class="wp-image-14802"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>The Open Prediction Service offers us a broker mechanism between several backends for ML evaluation of Predictive Models.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Building the demo</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>In today's demo, we will develop a simple loan "fast-track" approval service, based on both a Predictive Model to estimate the Risk Score, and a Decision Table in DMN to apply a business policy.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>For the Risk Score prediction, you can reference <a href="https://github.com/IBM/open-prediction-service-hub/tree/main/ops-implementations/ads-ml-service#readme" target="_blank" rel="noreferrer noopener">this example</a> on the IBM OPS repository.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Using the documentation, also available as Swagger / OpenAPI descriptor, we can identify the Predictive Model input features and output scoring.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Now we understand we will need to supply:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul><li>the Credit score</li><li>the Income</li><li>the Loan Amount requested</li><li>the number of instalments</li><li>and the Rate</li></ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>As output, we can <em>reference the second predictor</em> as a measure of Risk Score in our Decision Model.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>We can integrate the ML predictive model inside our DMN model to implement the loan "fast-track" approval as usual by defining a BKM node:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14813,"sizeSlug":"full","linkDestination":"none"} -->
+<figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.43.20-1.png" alt="" class="wp-image-14813"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>Then, we can define a Decision Table implementing the business policy for the "fast-track" mechanism:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14814,"sizeSlug":"full","linkDestination":"none"} -->
+<figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2022/04/image-5.png" alt="" class="wp-image-14814"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>We have completed our modeling activities with DMN and the Predictive Model served via OPS.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Invoking the OPS service</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>On the more technical side, to actually integrate OPS evaluation we can follow two options.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The first solution could be to use the Quarkus' RESTEasy client capabilities. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>For this demo, it's enough to define the interface of the service:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>@Path("/predictions")
+@RegisterRestClient
+public interface OPSClient {
+
+    @POST
+    OPSResponse predictions(OPSRequest request);
+}</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>You can explore the complete code by referencing the repo of the demo <a href="https://github.com/tarilabs/demo20220330/tree/ecb2bd7fde8e3d459e86528345560ff94f39f769" target="_blank" rel="noreferrer noopener">at this commit</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Then, you just need to configure the actual URL for the OPS, for example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code># Connect to OPS Server
+# on quarkus:dev, we use a local Docker run:
+%dev.quarkus.http.port=0
+%dev.org.acme.demo20220330.OPSClient/mp-rest/url=http://localhost:8080
+
+# as default, we are using an app deployed on OpenShift:
+org.acme.demo20220330.OPSClient/mp-rest/url=https://{your sandbox}.openshiftapps.com</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>You can reference to <a href="https://quarkus.io/guides/rest-client" target="_blank" rel="noreferrer noopener">this Quarkus guide</a>, for more details about implementing a REST client with Quarkus.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Invoking OPS using the Java client SDK</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>As a next step, we can replace the RESTEasy client, with the SDK offered by the OPS itself.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>In this case, it will be enough to reference the dependency in the Maven pom.xml:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>    &lt;dependency&gt;
+      &lt;groupId&gt;com.ibm.decision&lt;/groupId&gt;
+      &lt;artifactId&gt;ops-client-sdk&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>Then, we can just replace the RESTEasy client with the OPS' RunApi, for example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>RunApi api = new RunApi();
+Prediction prediction = new Prediction();
+// ...
+prediction.setParameters(Arrays.asList(
+    param("creditScore", creditScore),
+    param("income", income),
+    param("loanAmount", loanAmount),
+    param("monthDuration", monthDuration),
+    param("rate", rate)
+));
+PredictionResponse result = api.prediction(prediction);</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>You can explore the complete code by referencing the repo of the demo <a href="https://github.com/tarilabs/demo20220330/tree/8698337c70251961f5800445c2cd03dea26b5bae" target="_blank" rel="noreferrer noopener">at this commit</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Running the demo</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>We will run the demo on the Red Hat Developer OpenShift Sandbox. Remember you can <a href="https://developers.redhat.com/developer-sandbox/get-started" target="_blank" rel="noreferrer noopener">apply for a free account yourself</a>. The free account has some limitations, but they will not block you in replicate this complete solution!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14819,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/image-6-1024x601.png" alt="" class="wp-image-14819"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>As you can see in the picture, first I have deployed the OPS demo on the sandbox (left).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Then, I've deployed the DMN demo explained in this post, as a Kogito-based application (right).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Then, we will have access to the Swagger OpenAPI code generated by the DMN extension of Kogito:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14821,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/image-8-1024x601.png" alt="" class="wp-image-14821"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>As you can see, the REST API is automatically generated for the InputData nodes as defined by the DMN model (Prospect and Loan).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Finally, to exercise the demo, we can make use of the automatically generated forms, based on the Swagger OpenAPI:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14822,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-21.45.17-1024x591.png" alt="" class="wp-image-14822"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>In this case, as we would expect, the total amount would not classify for the fast-track.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Then, we can exercise for a different amount value:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":14823,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-21.47.22-1024x601.png" alt="" class="wp-image-14823"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>In this case, beyond the expected improvement in the Risk Score prediction from the ML model, we classify for a "fasttrack" as the policy in the Decision Table prescribes.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>You can play with different values, showing how the Risk Score prediction is being affected and causing a different final decision.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2>Conclusions</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>In this post, we have explored integrating a Decision Model using DMN with a ML predictive model. Machine Learning and Decision Models together can provide a pragmatic, and eXplainable, AI solution.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Specifically, we have explored integrating the Drools DMN Engine with IBM Open Prediction Service. The advantage of this integration comes from the capability of OPS to interact with several ML providers!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Finally, we have deployed the complete demo on the OpenShift Sandbox.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>What do you think of this integration demo?<br>Questions?</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Let us know in the comments below!</p>
+<!-- /wp:paragraph -->

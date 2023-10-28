@@ -1,0 +1,89 @@
+title=Transparent ML, integrating Drools with AIX360
+date=2023-01-14
+type=post
+tags=blog
+canonical=https://blog.kie.org/2023/01/exceptional-rules-with-drools-and-kogito.html
+~~~~~~
+<!-- wp:embed {"url":"https://www.youtube.com/shorts/WGpjuietqmw","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+    https://www.youtube.com/shorts/WGpjuietqmw
+    </div></figure>
+    <!-- /wp:embed -->
+    
+    <!-- wp:paragraph -->
+    <p>Managing exceptional rules is easy, thanks to Drools and Kogito!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":17359,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2023/01/image-4.png" alt="" class="wp-image-17359"/></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>In this use-case, we have a <em>base</em> business process and a <em>default</em> knowledge base with rules, which can be overridden by specific entities or departments as needed.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>We actually have several architectural options we could implement!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>The simplest architectural option I can think about, draws inspiration from this book by Alan Fish:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":17356,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2023/01/image-1.png" alt="" class="wp-image-17356"/><figcaption class="wp-element-caption"><sub>"Knowledge Automation: How to Implement Decision Management in Business Processes"<br>Book by Alan N. Fish</sub></figcaption></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>which is a great book by the way if you <em>also</em> want to understand the main ideas prequel to the DMN standard!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":17358,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2023/01/image-3.png" alt="" class="wp-image-17358"/><figcaption class="wp-element-caption"><sub>Exceptional rules using only DMN</sub></figcaption></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>In a decision node in DMN, we check if any exception is applicable, and we collect the exceptions in a list.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:list -->
+    <ul><!-- wp:list-item -->
+    <li>If the exception list is <em>empty</em>, we apply the default knowledge and rules.</li>
+    <!-- /wp:list-item -->
+    
+    <!-- wp:list-item -->
+    <li>Otherwise, we apply the rules related to the <em>most relevant</em> exceptions from the list.</li>
+    <!-- /wp:list-item --></ul>
+    <!-- /wp:list -->
+    
+    <!-- wp:paragraph -->
+    <p>You may substitute the BKM nodes with Decision Service, say coming from other DMN models!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Another option is to model this with a combination of BPMN and DMN and rules, the idea is similar:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":17360,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img src="https://blog.kie.org/wp-content/uploads/2023/01/image-5.png" alt="" class="wp-image-17360"/><figcaption class="wp-element-caption"><sub>Managing exceptional rules with BPMN and DMN</sub></figcaption></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>The default branch applies the default knowledge base and would be followed, <em>unless</em> in the predetermination task we have evaluated we must follow one of the exceptional types of branches.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>A final option would be to deploy each knowledge base –the default one, the different exceptional ones– each as its own Kogito microservice on a cloud native environment such as Kubernetes:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":17374,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2023/01/image-9-1024x621.png" alt="" class="wp-image-17374"/></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>Then, you can orchestrate them using a Serverless Workflow, which will be in charge of invoking the needed cloud-native decision service.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>As you have seen, managing exceptional rules is easy, thanks to Drools and Kogito!</p>
+    <!-- /wp:paragraph -->

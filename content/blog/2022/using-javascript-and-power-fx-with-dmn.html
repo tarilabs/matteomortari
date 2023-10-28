@@ -1,0 +1,131 @@
+title=Using JavaScript and Power Fx with DMN
+date=2022-03-25
+type=post
+tags=blog
+canonical=https://blog.kie.org/2022/03/using-javascript-and-power-fx-with-dmn.html
+~~~~~~
+<!-- wp:embed {"url":"https://www.youtube.com/watch?v=-5VcMF40o_U","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio">
+    <div class="wp-block-embed__wrapper">https://www.youtube.com/watch?v=-5VcMF40o_U</div>
+    </figure>
+    <!-- /wp:embed -->
+    
+    <!-- wp:paragraph -->
+    <p>In this short update, I want to share with you about an <em>experimental</em> feature to leverage the extensibility of the DMN specification to evaluate expressions using a plurality of expression languages, such as JavaScript, <a href="https://github.com/microsoft/Power-Fx" target="_blank" rel="noreferrer noopener">Power Fx</a>, and potentially many more!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>For the running example in this post, let's use the Body Mass Index (BMI) calculation described in the <a href="https://en.wikipedia.org/wiki/Body_mass_index" target="_blank" rel="noreferrer noopener">Wikipedia page</a>:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14672,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img class="wp-image-14672" src="https://blog.kie.org/wp-content/uploads/2022/03/CodeCogsEqn-2.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>We can classify the result of the calculation, based on a standard Decision Table:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14673,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img class="wp-image-14673" src="https://blog.kie.org/wp-content/uploads/2022/03/image-7.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>The decision table has been simplified if compared to the original article from Wikipedia, but that's irrelevant for the scope of this example.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>The overall DRG of the DMN model looks like this:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14674,"sizeSlug":"full","linkDestination":"none"} -->
+    <figure class="wp-block-image size-full"><img class="wp-image-14674" src="https://blog.kie.org/wp-content/uploads/2022/03/image-8.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>As we expect, "Mass" and "Height" are the InputDatas of the model; then we calculate the BMI with a first Decision node. Finally, we classify the calculated BMI value, accordingly to the Decision Table above.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>The last step is to provide the expression for the "Calculate BMI" decision node.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>For example, using Power Fx idioms:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14675,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img class="wp-image-14675" src="https://blog.kie.org/wp-content/uploads/2022/03/image-9-1024x504.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>It would result in this final expression for the "Calculate BMI" decision node:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14676,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img class="wp-image-14676" src="https://blog.kie.org/wp-content/uploads/2022/03/image-10-1024x416.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>In this case, the resulting DMN model evaluates using two expression languages: Power Fx for the first Decision, and the default (FEEL) for the Decision Table.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>For another example, we could use idiomatic JavaScript:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14693,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img class="wp-image-14693" src="https://blog.kie.org/wp-content/uploads/2022/03/Screenshot-2022-03-24-at-16.03.49-1024x396.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>In this second case, the resulting DMN model evaluates using two expression languages: JavaScript for the first Decision, and again FEEL for the Decision Table.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:heading -->
+    <h2>Running the demo</h2>
+    <!-- /wp:heading -->
+    
+    <!-- wp:paragraph -->
+    <p>We can now run the Kogito application.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>To demonstrate the BMI calculation, we naturally keep using the Swagger GUI:</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:image {"id":14686,"sizeSlug":"large","linkDestination":"none"} -->
+    <figure class="wp-block-image size-large"><img class="wp-image-14686" src="https://blog.kie.org/wp-content/uploads/2022/03/Screenshot-2022-03-24-at-16.12.46-1024x877.png" alt="" /></figure>
+    <!-- /wp:image -->
+    
+    <!-- wp:paragraph -->
+    <p>If you are already accustomed in using DMN models with Kogito, you will have noticed there is basically no different in the way this system behaves from an external point of view.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>This is what we expect!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>We have now defined two DMN models, using a plurality of expression languages. However, our goal is to model our <em>decision services </em>in the most convenient and effective way possible. In this case, for example, we have used Power Fx, or JavaScript for some calculations.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>The code of this demo for the curious, is available <a href="https://github.com/tarilabs/dmn-js-powerfx-demo" target="_blank" rel="noreferrer noopener">here</a>.</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:heading -->
+    <h2>Conclusions</h2>
+    <!-- /wp:heading -->
+    
+    <!-- wp:paragraph -->
+    <p>Don't forget to check out the video linked above, for a live demonstration of this experimental capability!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>In this post, we have leveraged the extensibility of the DMN specification, in order to evaluate expressions using a plurality of expression languages. We have just used JavaScript and Power Fx with DMN!</p>
+    <!-- /wp:paragraph -->
+    
+    <!-- wp:paragraph -->
+    <p>Questions?<br />Feedback?<br />Don't hesitate to let us know!</p>
+    <!-- /wp:paragraph -->
