@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" >
+    <meta content="We&apos;re introducing an (experimental) DMN FEEL handbook, an helpful companion for your DMN modeling activities! You can access this new helpful resource at the following URL: ..." name="description"> 
+    <title>a DMN FEEL handbook</title>
+    <link rel="canonical" href="https://blog.kie.org/2022/08/a-dmn-feel-handbook.html" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+.blog-header {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+}
+    </style>
+</head>
+<body>	
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-lg">
+    <div class="container">
+      <a href="https://matteomortari.com" class="navbar-brand d-flex align-items-center">
+        <strong>matteomortari.com</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main><section class="my-2 py-5 container">
+	<div class="page-header">
+		<h1 class="blog-header">a DMN FEEL handbook</h1>
+	</div>
+
+	<p><em>18 August 2022</em></p>
+
+	<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/jPhAynN73Jw a DMN FEEL handbook &quot;promotion&quot; video :)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>We're introducing an (experimental) DMN FEEL handbook, an helpful companion for your DMN modeling activities!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/07/Screenshot-2022-07-11-at-09.19.28-2-1024x576.jpg" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>You can access this new helpful resource at the following URL: <a href="https://kiegroup.github.io/dmn-feel-handbook" target="_blank" rel="noreferrer noopener"></a><a href="https://kiegroup.github.io/dmn-feel-handbook">https://kiegroup.github.io/dmn-feel-handbook</a>.</p>   
+<p>Key features include:</p>   
+<ul>
+ <li>FEEL built-in functions organised by category</li>
+ <li>tested and integrated FEEL examples</li>
+ <li>Responsive design: easily access on Mobile, Tablet and Desktop from your favourite browser!</li>
+</ul>   
+<p>...and many more!</p>   
+<h2>Implementation details</h2>   
+<p>For the technically curious, this section will highlight some of the technical implementation choices for the realisation of this handbook.</p>   
+<p>If you want to just use this handbook, you are free to skip this section! :)</p>   
+<p>The framework used to render this handbook is called <a href="https://github.com/slatedocs/slate" target="_blank" rel="noreferrer noopener">Slate</a>; it's very convenient to use it when, in general, you want a neat API documented with use-cases and examples. This makes it a perfect framework candidate to build a technical manual of a <em>very specific aspect</em> --the FEEL expression language of DMN. Naturally we're keeping Antora for the general documentation of Drools, which is more powerful for the user-manuals and modularising content.</p>   
+<p>Then, in order to CI the FEEL snippets and examples in the handbook, we're leveraging the awesome <a href="https://www.jbang.dev/" target="_blank" rel="noreferrer noopener">JBang</a>! As you can see in the Java_script source (<a href="https://github.com/kiegroup/dmn-feel-handbook/blob/3a36dc2ea9663a5b7b5100813395c4ee583b13fb/test.java#L97-L124" target="_blank" rel="noreferrer noopener">here</a>) we're parsing the content of the Markdown file to search for codeblocks related to FEEL. Each codeblock related to FEEL is then evaluated, to make sure it does not error or misbehave.</p>   
+<p>This allowed us to catch small typos, <a href="https://github.com/kiegroup/kie-docs/pull/4218/files" target="_blank" rel="noreferrer noopener">such as this one</a> which we corrected in the main docs. I got the inspiration to implement this approach by reading the Rust manual. If you are familiar with that book, you will likely recognise where <a href="https://doc.rust-lang.org/book/ch00-00-introduction.html#how-to-use-this-book" target="_blank" rel="noreferrer noopener">Ferris inspired me</a> :).</p>   
+<p>Finally, we integrated the JBang! tests with CI with a <a href="https://github.com/kiegroup/dmn-feel-handbook/blob/main/.github/workflows/test.yml#L22-L25" target="_blank" rel="noreferrer noopener">simple GitHub Action</a>, and then we serve the content via GitHub Pages.</p>   
+<h2>Conclusions</h2>   
+<p>Don't forget to checkout this DMN FEEL handbook today!</p>   
+<p class="has-text-align-center"><a href="https://kiegroup.github.io/dmn-feel-handbook">https://kiegroup.github.io/dmn-feel-handbook</a></p>   
+<p>Do you like it? Feedback? Let us know!</p>
+
+
+</section>
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Matteo Mortari. All rights reserved
+      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
+      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
+      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
+      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
+</html>

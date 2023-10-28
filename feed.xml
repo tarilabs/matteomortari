@@ -6,9 +6,1687 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Thu, 1 Sep 2022 09:54:21 +0000</pubDate>
-    <lastBuildDate>Thu, 1 Sep 2022 09:54:21 +0000</lastBuildDate>
+    <pubDate>Sat, 28 Oct 2023 13:27:02 +0000</pubDate>
+    <lastBuildDate>Sat, 28 Oct 2023 13:27:02 +0000</lastBuildDate>
 
+    <item>
+      <title>Integrate Excel with Drools on OpenShift with Knative and Quarkus!</title>
+      <link>https://matteomortari.com/blog/2023/integrate-excel-with-drools-on-openshift-with-knative-and-quarkus.html</link>
+      <pubDate>Thu, 4 May 2023 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2023/integrate-excel-with-drools-on-openshift-with-knative-and-quarkus.html</guid>
+      	<description>
+	&lt;p&gt;In this blog post I want to share the results of a technical exploration in bridging, bringing together and integrating a diverse set of technologies and platforms, ranging from classic spreadsheet applications (Excel) to serverless platforms (Knative on OpenShift) to technical rules executed by our rule engine Drools!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/TWHHBi-0ELU&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;h1 class=&quot;wp-block-heading&quot;&gt;Introduction&lt;/h1&gt;   
+&lt;p&gt;This content has been inspired by &lt;a href=&quot;https://www.goodreads.com/book/show/117838853-business-rule-engines-and-ai-for-excel-power-users&quot;&gt;a great book&lt;/a&gt; I had the opportunity to read recently (see more below). So I wanted to take on a personal challenge to build a novel example, based on some of the powerful techniques presented in the book, and then add some more, going beyond. Specifically, I wanted to be able to invoke some custom DRL rule evaluation in a serverless way, by connecting Excel with my &lt;a href=&quot;https://quarkus.io&quot;&gt;Quarkus&lt;/a&gt;-based &lt;a href=&quot;https://www.drools.org&quot;&gt;Drools&lt;/a&gt; application served by &lt;a href=&quot;https://knative.dev/docs/&quot;&gt;Knative&lt;/a&gt; on &lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;OpenShift&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;As I wanted a use-case with plenty of realistic data for this technical exploration, I decided to focus my attention on the IoT (Internet of Things) which is another factor revolutionizing the way we live. If I think about the diverse ranges of devices available nowadays, from smart homes to connected cars, these IoT devices in my opinion are changing not only the way we interact with our surroundings… when used sapiently, I believe they can really augment and improve our lives. However, IoT is more than just internet-connected devices! To me, it is also about leveraging various technologies and platforms to create intelligent systems that can automate processes, optimize, and improve our decision-making.&lt;/p&gt;   
+&lt;p&gt;More specifically, I wanted to try processing the technical data collected through my smart scale and smart watch, collecting into Excel, and then processing it via the intelligent application described above. This will give us the opportunity to highlight some of the benefits of the integration scope mentioned in the preamble, and a perspective on how these techniques can help your organization or benefit your own use-cases! Before wrapping up, I will share my review of the mentioned book.&lt;/p&gt;   
+&lt;h1 class=&quot;wp-block-heading&quot;&gt;Serverless Drools&lt;/h1&gt;   
+&lt;p&gt;Let’s dive into the DRL rules:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;rule R1
+when
+  $r : MeasRecord( morning == true, bpm &amp;lt; 60 || bpm &amp;gt; 100 )
+then
+  insert(new Advice(&quot;abnormal Blood Pressure in the morning&quot;, 100));
+end
+
+rule R2
+when
+  $r : MeasRecord( weight &amp;lt; weight_m3, weight_m3 &amp;lt; weight_m5 )
+then
+  insert(new Advice(&quot;downward trend in weight&quot;));
+end
+
+rule R3
+when
+  $r : MeasRecord( weight &amp;gt; weight_m3, weight_m3 &amp;gt; weight_m5 )
+then
+  insert(new Advice(&quot;upward trend in weight&quot;));
+end&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Here, I want to define some rules which will advise me if specific data measurement is observed. These rules in my opinion are very naturally readable in spite of the technical nature of DRL: I want to emit an advice in case of abnormal bpm, or when there is a specific trend in weight compared to T-3D or T-5D (I take these measurements once each day).&lt;/p&gt;   
+&lt;p&gt;Similarly, you could think of analogous DRL rules for your IoT use-case, reacting to events and measurement signals from your sensors or devices!&lt;/p&gt;   
+&lt;p&gt;In order to make this intelligent application efficiently consumable as a serverless decision service, I decided to experiment with a number of capabilities of Drools v8 and Quarkus, starting by making use of the Drools v8 &lt;a href=&quot;https://github.com/kiegroup/drools/blob/main/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/guide.adoc#drools-quarkus-extension&quot;&gt;drools-drl-quarkus-extension&lt;/a&gt;.&lt;br&gt;Further, in order for the REST API in my Quarkus application to be easily consumable from external, JavaScript-based services and applications, I needed to enable CORS. A word of warning is important here with regards to the CORS “origin”, that should be tailored to your production use case (as &lt;a href=&quot;https://quarkus.io/guides/http-reference#support-all-origins-in-devmode&quot;&gt;noted in the documentation&lt;/a&gt;); if you decide to build on this example, you might want to consider for your allow-list to be specific to the expected origin of your clients (in my case Swagger UI from OpenShift and Excel ScriptLabs, but you might want to extend to the servers of your Office Add-In, etc):&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;quarkus.http.cors=true
+# note: check settings for PROD:
+quarkus.http.cors.origins=/.*\\.azureedge\\.net/,/.*\\.openshiftapps\\.com/
+
+quarkus.swagger-ui.always-include=true
+
+quarkus.kubernetes.deployment-target=knative
+
+quarkus.container-image.registry=quay.io
+quarkus.container-image.group=mmortari
+
+quarkus.container-image.builder=jib&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;In addition to the CORS configuration, it’s pretty easy to influence the behavior of the final resulting Quarkus application, specifically:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;I want the Swagger UI to be included in the deployed artifact&lt;/li&gt;   
+ &lt;li&gt;it will be a Knative Service, so to allow the serveless use-case, including auto-scale to zero&lt;/li&gt;   
+ &lt;li&gt;I find easier to publish my container images on Quay.io, to be picked up by my OpenShift instance&lt;/li&gt;   
+ &lt;li&gt;to build the container image, I typically use JIB&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;These configuration steps are similar to what described in &lt;a href=&quot;https://blog.kie.org/2022/08/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html&quot;&gt;a previous blog post&lt;/a&gt;, showcasing how it’s really easy to build a Serverless application with Drools and Quarkus! Be sure to &lt;a href=&quot;https://www.youtube.com/watch?v=KGXJ_bEyTmo&quot;&gt;check it out&lt;/a&gt; if you missed it.😉&lt;/p&gt;   
+&lt;h1 class=&quot;wp-block-heading&quot;&gt;Excel integration&lt;/h1&gt;   
+&lt;p&gt;Here comes the very unusual part, at least for me, where I wanted to apply some of the techniques from the book and then explore even further.🙂&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;First, I collected all the data from my IoT devices; personally I own a couple of smart devices from &lt;a href=&quot;https://www.withings.com&quot;&gt;Withings&lt;/a&gt;, as I appreciate they allow you to easily export an archive of your data, in CSV format: perfect for Excel! Similarly, you might consider expanding on this example by directly interacting instead &lt;a href=&quot;https://developer.withings.com/&quot;&gt;with their APIs&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;The archive exports a ZIP of a collection of CSV files; for my challenge I indeed decided to focus on bpm and weight measurements, which are actually in 2 separate files. To combine this data into a single table I’ve used a Power Query, one of the capabilities presented in the book, in order to connect to the CSV files as data sources and merge them seamlessly.&lt;/p&gt;   
+&lt;p&gt;The merge result is something similar to:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/05/Screenshot-2023-05-02-at-18.33.14-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;em&gt;Merging 2 CSV files in Excel&lt;/em&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Then, I have defined a custom function in Excel; you can find more information about this capability on &lt;a href=&quot;https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-web-reqs#functions-that-return-data-from-external-sources&quot;&gt;Microsoft’s website&lt;/a&gt; as it is one of the most powerful mechanisms available to extend Excel with custom behavior.&lt;/p&gt;   
+&lt;p&gt;I should highlight that in the book, you will find many, many other mechanisms to perform an invocation from your Excel sheets to a remote Drools application running on OpenShift; personally, I opted to develop a custom function in order to try something new but also sophisticated, which could be bundled later as a fully-fledged Office Add-In; but the book indeed guides you through many more (and often easier) mechanisms!&lt;/p&gt;   
+&lt;p&gt;One of the reasons I loved that read so much, is that it offered a wide portfolio of options to choose from when it comes to integrating Excel with Drools.&lt;/p&gt;   
+&lt;p&gt;My final custom Excel function looks like this:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;/** @CustomFunction */
+function advices(isodate: string, bpm: number, weight: number,
+    weight_m3: number, weight_m5: number): Promise&amp;lt;string&amp;gt; {
+  return new Promise(function (resolve, reject) {
+    const baseUrl = &quot;https://(...).openshiftapps.com&quot;;
+    const payload = JSON.stringify(
+      {
+        &quot;ts&quot;: isodate,
+        &quot;bpm&quot;: bpm &amp;gt; 0 ? bpm : null,
+        &quot;weight&quot;: weight,
+        &quot;weight_m3&quot;: weight_m3,
+        &quot;weight_m5&quot;: weight_m5
+      }
+    );
+    fetch(baseUrl + &quot;/advices&quot;, {
+      method: &quot;POST&quot;,
+      body: payload,
+      headers: {
+        &quot;Content-type&quot;: &quot;application/json; charset=UTF-8&quot;
+      }
+    })
+    .then((response) =&amp;gt; response.json())
+    .then((json) =&amp;gt; resolve(json))
+    .catch((error) =&amp;gt; reject(&quot;unable to connect to Drools&quot;))
+  });
+}&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;…and it works like a charm!&lt;/p&gt;   
+&lt;p&gt;The custom function is invoked by a very simple Excel formula, as one would easily expect:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/05/Screenshot-2023-05-02-at-18.47.04-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;em&gt;Excel custom function to invoke Drools!&lt;/em&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;It is also to be noted, again as expected, that when the formulas has been computed for the entire worksheet, the backend Knative service will &lt;em&gt;automatically&lt;/em&gt; scale back to zero:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/05/Screenshot-2023-05-02-at-18.14.34-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;em&gt;a Knative based serverless backend serving the Excel formulas!&lt;/em&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This is super helpful only to consume computing resources when needed, in this case when some Excel worksheet needs to (re-)calculate its formulas!&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;As the final and most important result, we can appreciate the rules processing the data and producing the advice in our Excel file, as defined in the DRL.&lt;/p&gt;   
+&lt;p&gt;I believe combining Excel custom and extended behaviors with a serverless backend is truly a powerful combination! Thankfully integrating Quarkus and Drools and deploying our app on OpenShift with Knative is super easy as we’ve seen in this post. I hope this atypical blog post tickles your curiosity on how to integrate Excel or similarly other spreadsheet platforms; if you are interested to know more, I warmly invite you to check out this book…&lt;/p&gt;   
+&lt;h1 class=&quot;wp-block-heading&quot;&gt;Book review: Business Rule Engines and AI for Excel Power Users&lt;/h1&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/05/AI-and-Business-Rule-Engines-for-Excel-Power-Users-Cover-Image-1.jpg&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Title: Business Rule Engines and AI for Excel Power Users: Capture and scale your business knowledge into the cloud – with Microsoft 365, Decision Models, and AI tools from IBM and Red Hat&lt;br&gt;Author: Paul Browne&lt;br&gt;ISBN: 9781804619544 (ISBN10: 180461954X)&lt;/p&gt;   
+&lt;p&gt;I believe this book is an excellent guide for both software developers and business analysts seeking to scale the automation of their business knowledge into the cloud. It provides an in-depth analysis of how decision models and semantic rules can be combined with other AI models, to solve some of the inherent limitations of Excel –which is an omnipresent tool in every business and industry sector. The book introduces readers to industry-standard open source Drools rule engine and Kogito, and how these can be linked with many of Microsoft&apos;s tools.&lt;/p&gt;   
+&lt;p&gt;Paul presents very easy-to-follow examples to teach readers how to author sophisticated decision models, how to develop decision services in order to solve current business challenges using AI (both ML and symbolic AI), and how to combine rules with workflows to deploy a cloud-based solution. The book also covers advanced modeling using the Decision Model and Notation (DMN) open standard and related testing tools.&lt;/p&gt;   
+&lt;p&gt;As a reader of this blog, I assume you are already familiar with some of the KIE projects, so you might be tempted to jump straight into reading from Chapter 6 onwards; but my recommendation would be to make sure to revisit the initial chapters nevertheless, especially Chapters 1-2, since they will equip you with important considerations when evaluating the adoption of the powerful techniques presented in this book in your organization. It is also to be noted that while specific to Microsoft tools, the techniques presented in this book (and this inspired blog post) can very likely be analogously applied using other software provider platforms and other hyperscalers!&lt;/p&gt;   
+&lt;h1 class=&quot;wp-block-heading&quot;&gt;Conclusion&lt;/h1&gt;   
+&lt;p&gt;I hope this blog post intrigued you to check out this new book and to explore more integration opportunities of Drools with other platforms and tools!&lt;/p&gt;   
+&lt;p&gt;How are you planning to integrate Drools for your next use-case?&lt;/p&gt;   
+&lt;p&gt;Let us know in the comments section below!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Simplify Kubernetes debugging with declarative logic</title>
+      <link>https://matteomortari.com/blog/2023/simplify-kubernetes-debugging-with-declarative-logic.html</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2023/simplify-kubernetes-debugging-with-declarative-logic.html</guid>
+      	<description>
+	&lt;p class=&quot;has-text-align-center&quot;&gt;&lt;em&gt;We put Drools inside Kubernetes’ control plane …you wouldn’t believe what happened next!&lt;/em&gt; 😉&lt;/p&gt;   
+&lt;p&gt;This is a longer post on the current status of explorations with RuleOps; you may want to skim or skip to different sections, depending on your interests.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;table&gt; 
+   &lt;tbody&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;strong&gt;RuleOps in a nutshell&lt;/strong&gt;&lt;/td&gt; 
+    &lt;/tr&gt; 
+    &lt;tr&gt; 
+     &lt;td&gt;&lt;em&gt;&lt;sup&gt;Read time: ~ 1 minute&lt;/sup&gt;&lt;/em&gt;&lt;br&gt;Kubernetes is an orchestration platform, very powerful but also complex with multiple layers of abstraction, interdependent components, relying on automation and orchestration to manage deployments; this can make it difficult at times to pinpoint the actual &lt;em&gt;root cause&lt;/em&gt; of an issue when troubleshooting.&lt;br&gt;&lt;br&gt;We have coined the terms &lt;strong&gt;RuleOps to identify both the abstract concept and the actual solution&lt;/strong&gt; which can pragmatically be of support in many of those scenarios:&lt;br&gt;&lt;br&gt;1. In the context of RuleOps, we believe that a declarative approach helps a lot while defining the root cause analysis, troubleshooting concepts, standard operating procedures (SOP), and is an effective instrument to help in debugging and troubleshooting Kubernetes operations.&lt;br&gt;&lt;br&gt;2. We have developed a real application (based on Drools and Quarkus), which can be used from the command line as well as a continuously running application on a control plane, which demonstrates in practice the RuleOps concepts and techniques. We have implemented some best-practice troubleshooting guides available on the public domain as well as built PoC on some real SOP used by teams that we know.&lt;br&gt;&lt;br&gt;We believe RuleOps is valuable research exploration and a tangible, pragmatic, helpful instrument you can start to use in your day-to-day when managing a Kubernetes cluster.&lt;/td&gt; 
+    &lt;/tr&gt; 
+   &lt;/tbody&gt; 
+  &lt;/table&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/watch?v=ZJ4tUnaGlaY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;h1&gt;Introduction to RuleOps&lt;/h1&gt;   
+&lt;p&gt;DevOps practitioners who interact daily with Kubernetes throughout its control plane know the problem of having to apply different resources, through different interactions. Every DevOps engineer has experienced the feeling of having forgotten to create a specific resource, having the cluster in an unknown state or not being sure about what is the best action to do next to continue troubleshooting.&lt;/p&gt;   
+&lt;p&gt;For example: if a Pod fails to start, it may be due to a misconfiguration in the Deployment, a problem with the container image, or an issue with the required resources on the cluster itself.&lt;/p&gt;   
+&lt;p&gt;For another example: a DevOps team has several configurations in place to ensure two namespaces are properly isolated and related policies to segment the network in the cluster; this requires performing checks and maintenance to mitigate the risk of configuration drift, across the lifecycles of application deployments and other general operations on the cluster.&lt;/p&gt;   
+&lt;p&gt;Troubleshooting may require digging through a variety of logs, configurations and exercising other debugging techniques.&lt;/p&gt;   
+&lt;p&gt;RuleOps solves this problem by providing a toolchain to help users writing custom rules that will check the consistency of the cluster and more generally speaking, the health of the system.&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;In the following we’ll see some theory behind RuleOps and how it can detect problems in your cluster Control Plane, with a real demo showing the actual rules the users can model and define.&lt;/p&gt;   
+&lt;p&gt;Here are some of the topic we’ll cover:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;The team managing the cluster can use RuleOps as a foundation to align on the definition of a healthy system (for example, define what is the expected relationship between resources being developed, define what are the requirements of a strict cluster security configuration), by providing specific checks beyond what Kubernetes can perform out-of-the-box, also correlating internal and custom resources with a high-level declarative language especially optimized for executing a large number of checks.&lt;/li&gt;   
+ &lt;li&gt;RuleOps provides useful information about the issues so that DevOps and SRE can easily understand and resolve the issue.&lt;/li&gt;   
+ &lt;li&gt;The checks and the rules provided can be packaged in a series of reusable components that can be shared throughout the different DevOps.&lt;/li&gt;   
+ &lt;li&gt;In addition to that, RuleOps provides general rules that apply to most common error-cases that improves the debug experience of a vanilla cluster.&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;After understanding RuleOps, users can start defining their own rules to fix the most common Kubernetes problems.&lt;/p&gt;   
+&lt;h2&gt;Benefits to the Kubernetes Ecosystem&lt;/h2&gt;   
+&lt;p&gt;We strongly believe that RuleOps with its powerful declarative language based on symbolic AI reasoning can help the Kubernetes ecosystem in building more healthy cloud based application, by detecting anomalies in the control plane configuration and improving on the amount of time DevOps and SREs will take to find and resolve problem in a Kubernetes cluster.&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;In addition to that, we’d like to provide some contributions to the conversation on how to improve the robustness of Kubernetes with external tools.&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;Various tools such as monitoring are already available; our focus is to offer the full power of a symbolic AI rule engine in this space.&lt;/p&gt;   
+&lt;p&gt;More specifically, even though Kubernetes by itself is a mature project and it’s meant to be reliable and consistent, once App Developers start building applications using the Kubernetes API a whole new set of problems emerge, i.e. how to handle the lifecycle of the custom resources, or how to make sure that error messages from the cluster are useful to the developers that need to detect inconsistent scenarios.&lt;/p&gt;   
+&lt;p&gt;Day-2 operations are especially affected, as these broken scenarios will need clear and solvable error messages even after the application has been deployed and it’s currently running.&lt;/p&gt;   
+&lt;h2&gt;Why RuleOps&lt;/h2&gt;   
+&lt;p&gt;We believe it’s important to highlight that in Kubernetes the &lt;strong&gt;&lt;kbd&gt;etcd&lt;/kbd&gt;&lt;/strong&gt; key-value store is used as the Source of Truth but, on the other hand, typically operations on the cluster (e.g.: through &lt;strong&gt;&lt;kbd&gt;kubectl apply&lt;/kbd&gt;&lt;/strong&gt; ) are performed on&amp;nbsp; several resources at different times, while the global configuration of the cluster is inherently eventually-consistent in nature.&lt;/p&gt;   
+&lt;p&gt;This could lead to a global or local configuration drift for cluster resources, and in some way a semantically inconsistent state of the cluster; the probability of reaching such an inconsistent state also correlates with the number of operations performed on the cluster.&lt;/p&gt;   
+&lt;p&gt;What we strive to do with RuleOps, in this whitepaper and demo, is to put more Dev skills inside of DevOps: from the software development principles we have a lot of debugging instruments which are at the core of our discipline and at the same time debugging can also be further complemented with a lot of automation using AI (Artificial Intelligence) as we will see in this content. We don&apos;t want to overlook a potential opportunity for process improvement benefitting operations on the kubernetes cluster.&lt;/p&gt;   
+&lt;p&gt;We are also aware that AI these days is quite a buzzword, but what we mean for AI in this context is a very &lt;strong&gt;pragmatic AI approach&lt;/strong&gt;, specifically focusing on Rule Engine (previously related to expert systems) and a symbolic AI, used for Knowledge Representation and Reasoning (KRR). Throughout the rest of this document, when we refer to AI, kindly keep this smaller disclaimer in mind.&lt;/p&gt;   
+&lt;h2&gt;State of the art in Debugging Kubernetes&lt;/h2&gt;   
+&lt;p&gt;A quick &lt;a href=&quot;https://www.google.com/search?q=debugging+kubernetes&quot;&gt;google search&lt;/a&gt; can sometimes be used as a litmus test for the actual day to day reality, especially when facing the needs of “Debugging Kubernetes” operations. The fact that such query returns millions of results and plenty of courses,&amp;nbsp; videos, and other training material is a clear indication that is a hot topic and likely a problem without a trivial solution, but at the same time an opportunity for people to acquire new knowledge, undergo training, and improve their skills.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-09.48.57-2-1-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Another interesting consideration is that many of these “debugging kubernetes” resources are in the form of flowchart, decision tree, or more specifically if-this-do-that, when-this-do-that guides. This is interesting because it expresses a semantic reasoning, which can find a natural translation and equivalent in a semantic rule, such as DRL for Drools (but not limiting to DRL).&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-09.49.04-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;For example: many times the knowledge in these types of resources resembles “&lt;em&gt;please check these things first, if those fail, then check these other things …&lt;/em&gt;” in order to provide a framework to identify the root-cause of the problem; once the root-cause has been identified, corrective actions can be effectively performed.&lt;/p&gt;   
+&lt;p&gt;This is the perfect opportunity to automate all of this with KRR and a rule engine, such as Drools!&amp;nbsp;&lt;/p&gt;   
+&lt;h2&gt;What RuleOps means&lt;/h2&gt;   
+&lt;p&gt;We coined the term RuleOps as an evolution of the term DevOps name.&lt;/p&gt;   
+&lt;p&gt;DevOps is a compound name that brings together Development and Operations; we want to play on the term itself and add to the mix also the Rules as coming from rule engine: we believe that the declarative power that can be expressed with the rule definition, together with a lot of the features that are typical of rule engine (such as Drools) really make it a perfect fit for debugging, inspecting and automating a lot of the semantic reasoning on the cluster resources and on the cluster status.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-15.04.18-hcrop-1024x335.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h1&gt;Demos&lt;/h1&gt;   
+&lt;p&gt;In this section, we present with pragmatic examples and real demo and working prototypes, some application of the RuleOps concepts.&lt;/p&gt;   
+&lt;h2&gt;Demo: “Relax the ResourceQuota limits for Deployment”&lt;/h2&gt;   
+&lt;p&gt;For the first example we would like to make reference to a tutorial in the kubernetes documentation titled “&lt;a href=&quot;https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-pod-namespace/&quot;&gt;Configure a Pod Quota for a Namespace&lt;/a&gt;”.&lt;/p&gt;   
+&lt;p&gt;Drawing inspiration from that tutorial, we simulate instead the case where a Deployment no longer fit the configured ResourceQuota on the cluster with:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: pod-demo
+spec:
+ hard:
+   pods: &quot;2&quot;&lt;/pre&gt;   
+&lt;p&gt;and:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: pod-quota-demo
+spec:
+ selector:
+   matchLabels:
+     purpose: quota-demo
+ replicas: 3
+ template:
+   metadata:
+     labels:
+       purpose: quota-demo
+   spec:
+     containers:
+     - name: pod-quota-demo
+       image: nginx&lt;/pre&gt;   
+&lt;p&gt;Preparing this experiment on a Minikube-based lab environment, accessing the dashboard we can see the deployment is grayed out:&amp;nbsp;&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-11.45.18-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This scenario can easily be governed by defining a semantic rule using the domain model of kubernetes and in the rule example below we are correlating some of deployment conditions on the actual deployment:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;- name: Relax the ResourceQuota limits Deployment PENDING
+  when:
+  - given: Deployment
+    as: $d
+  - given: DeploymentCondition
+    having:
+    - type == &quot;Available&quot;
+    - status == &quot;False&quot;
+    from: $d.status.conditions
+  - given: DeploymentCondition
+    having:
+    - message contains &quot;exceeded quota&quot;
+    from: $d.status.conditions
+  then: |
+    insert(new Advice(&quot;Relax the ResourceQuota limits&quot;, ...&lt;/pre&gt;   
+&lt;p&gt;And the RuleOps interface provide the defined advisory:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-11.49.39-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This is a very first example on how to implement a declarative rule on a concept which was expressed by the troubleshooting debugging flowchart section, and instead of manually performing some checks, we automated the same checks in a declarative way.&lt;/p&gt;   
+&lt;h2&gt;Demo: “Relax the ResourceQuota limits for StatefulSet”&lt;/h2&gt;   
+&lt;p&gt;In this example we would like to make reference to another tutorial in the kubernetes documentation titled “&lt;a href=&quot;https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/&quot;&gt;Configure Memory and CPU Quotas for a Namespace&lt;/a&gt;”.&lt;/p&gt;   
+&lt;p&gt;Drawing inspiration from that tutorial, we simulate instead the case where a StatefulSet no longer fit the configured ResourceQuota on the cluster with:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: mem-cpu-demo
+spec:
+ hard:
+   requests.cpu: &quot;1&quot;
+   requests.memory: 1Gi
+   limits.cpu: &quot;2&quot;
+   limits.memory: 2Gi&lt;/pre&gt;   
+&lt;p&gt;and&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: v1
+kind: Pod
+metadata:
+ name: quota-mem-cpu-demo
+spec:
+ containers:
+   - name: quota-mem-cpu-demo-ctr
+     image: nginx
+     resources:
+       limits:
+         memory: &quot;1Gi&quot;
+         cpu: &quot;1&quot;
+       requests:
+         memory: &quot;600Mi&quot;
+         cpu: &quot;500m&quot;&lt;/pre&gt;   
+&lt;p&gt;and finally&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+ labels:
+   app.kubernetes.io/version: 1.0.0-SNAPSHOT
+   app.kubernetes.io/name: hello-pvdf
+ name: hello-pvdf
+ namespace: default
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app.kubernetes.io/name: hello-pvdf
+     app.kubernetes.io/version: 1.0.0-SNAPSHOT
+ serviceName: hello-pvdf
+ template:
+   metadata:
+     labels:
+       app.kubernetes.io/version: 1.0.0-SNAPSHOT
+       app.kubernetes.io/name: hello-pvdf
+   spec:
+     containers:
+       - env:
+           - name: KUBERNETES_NAMESPACE
+             valueFrom:
+               fieldRef:
+                 fieldPath: metadata.namespace
+           - name: PVDF_DIRECTORY
+             value: /mnt/data
+         image: quay.io/mmortari/hello-pvdf:1.0.0-SNAPSHOT
+         imagePullPolicy: Always
+         livenessProbe:
+           failureThreshold: 3
+           httpGet:
+             path: /q/health/live
+             port: 8080
+             scheme: HTTP
+           initialDelaySeconds: 0
+           periodSeconds: 30
+           successThreshold: 1
+           timeoutSeconds: 10
+         name: hello-pvdf
+         ports:
+           - containerPort: 8080
+             name: http
+             protocol: TCP
+         readinessProbe:
+           failureThreshold: 3
+           httpGet:
+             path: /q/health/ready
+             port: 8080
+             scheme: HTTP
+           initialDelaySeconds: 0
+           periodSeconds: 30
+           successThreshold: 1
+           timeoutSeconds: 10
+         resources:
+           limits:
+             cpu: 2000m
+             memory: 2Gi
+           requests:
+             cpu: 500m
+             memory: 500Mi
+         volumeMounts:
+           - mountPath: /mnt/data
+             name: my-pvc-claim
+             readOnly: false
+     terminationGracePeriodSeconds: 10
+ volumeClaimTemplates:
+   - apiVersion: v1
+     kind: PersistentVolumeClaim
+     metadata:
+       labels:
+         app.kubernetes.io/version: 1.0.0-SNAPSHOT
+         app.kubernetes.io/name: hello-pvdf
+       name: my-pvc-claim
+       namespace: default
+     spec:
+       accessModes:
+         - ReadWriteOnce
+       resources:
+         requests:
+           storage: 10Mi
+       storageClassName: standard&lt;/pre&gt;   
+&lt;p&gt;Preparing this experiment on a Minikube-based lab environment, accessing the dashboard we can see the stateful set is grayed out:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-12.02.56-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This scenario can also be governed very easily by defining a declarative rule, again using the domain model of kubernetes correlating event from the StatefulSet:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;- name: Relax the ResourceQuota limits StatefulSet PENDING
+  when:
+  - given: StatefulSet
+    as: $s
+    having:
+    - spec.replicas != status.replicas
+  - given: Event
+    having:
+    - message contains &quot;exceeded quota&quot;
+    from: DroolsK8sClient.eventsFor($s)
+  then: |
+    insert(new Advice(&quot;Relax the ResourceQuota limits&quot;, ...&lt;/pre&gt;   
+&lt;p&gt;Again the RuleOps interface automatically generate the advisory:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-12.06.20-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Please notice the name referenced in the advisory “hello-pvdf” is exactly the kubernetes resources we wanted to make reference to!&lt;/p&gt;   
+&lt;h2&gt;Demo: “Fix the PersistentVolumeClaim for Pod”&lt;/h2&gt;   
+&lt;p&gt;In this example we would like to make reference to another tutorial in the kubernetes documentation titled “&lt;a href=&quot;https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/&quot;&gt;Configure a Pod to Use a PersistentVolume for Storage&lt;/a&gt;”.&lt;/p&gt;   
+&lt;p&gt;Drawing inspiration from that tutorial, we simulate instead the case where a Deployment is not healthy as a PersistentVolumeClaim is still pending because failing to bind on a matching persistent volume on the cluster with:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: task-pv-claim
+spec:
+ storageClassName: manual
+ accessModes:
+   - ReadWriteOnce
+ resources:
+   requests:
+     storage: 3Gi&lt;/pre&gt;   
+&lt;p&gt;and&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: pod-quota-demo
+spec:
+ selector:
+   matchLabels:
+     purpose: quota-demo
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       purpose: quota-demo
+   spec:
+     volumes:
+     - name: task-pv-storage
+       persistentVolumeClaim:
+         claimName: task-pv-claim
+     containers:
+     - name: pod-quota-demo
+       image: nginx
+       ports:
+         - containerPort: 80
+           name: &quot;http-server&quot;
+       volumeMounts:
+         - mountPath: &quot;/usr/share/nginx/html&quot;
+           name: task-pv-storage&lt;/pre&gt;   
+&lt;p&gt;Preparing this experiment on a Minikube-based lab environment, accessing the dashboard we can see the deployment is red:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-13.42.32-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can define a semantic rule to cover this scenario with ease:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;- name: Fix the PersistentVolumeClaim Pod PENDING
+  when:
+  - given: PersistentVolumeClaim
+    as: $pvc
+    having:
+    - status.phase == &quot;Pending&quot;
+  - given: Pod
+    as: $pod
+    having:
+    - status.phase == &quot;Pending&quot;
+  - given: Volume
+    having:
+    - persistentVolumeClaim!.claimName == $pvc.metadata.name
+    from: $pod.spec.volumes
+  then: |
+    insert(new Advice(&quot;Fix the PersistentVolume&quot;, ...&lt;/pre&gt;   
+&lt;p&gt;The RuleOps interface automatically generate the relevant advisory:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-13.50.17-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Where we are clearly instructed about the need to fix the requirement of PersistentVolume so that the indicated pvc of the indicated pod can fully deploy.&lt;/p&gt;   
+&lt;h2&gt;Extra: Automate it with Event Driven Ansible!&lt;/h2&gt;   
+&lt;p&gt;The same demo discussed in the previous chapter, can be further automated integrating it with &lt;a href=&quot;https://www.ansible.com/blog/getting-started-with-event-driven-ansible&quot;&gt;Event Driven Ansible&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;In this case, we extended the semantic rule to send a relevant event to an Ansible rulebook, which will be in charge of defining the appropriate remediating response depending on the type of events, and in the specific case of a missing PersistentVolume, we could invoke a playbook creating a new volume from a NAS and make that available to the Kubernetes cluster. In other scenarios, this integration could identify the requirements of more compute nodes, which could also be provided to the cluster with similar automation.&lt;/p&gt;   
+&lt;p&gt;We have demonstrated this integration with some sample rulebook and playbook:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-21-at-09.38.36-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;You can refer to this video for more details:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/watch?v=Y1Cwb0uKgR4&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;h2&gt;Demo: “Fix the Service selector: No Pod found for selector”&lt;/h2&gt;   
+&lt;p&gt;In this example, we’ll start from the perspective of overlooking the cluster with the dashboard:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-13.57.42-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Everything seems to be working fine –all is green.&lt;/p&gt;   
+&lt;p&gt;But actually from an operational perspective we would not be satisfied with the current health of the system, as we will reveal by the end of this demo.&lt;/p&gt;   
+&lt;p&gt;We can showcase the command-line version of using RuleOps:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-14.28.27-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this scenario, we are advised that the Service selector is faulty.&lt;/p&gt;   
+&lt;p&gt;We believe this is of great help, because despite all dashboards looking green, the expressivity of the declarative rules allow us to capture the semantics of a healthy cluster –or a degraded cluster, as this demonstration highlighted.&lt;/p&gt;   
+&lt;p&gt;In summary:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-14.28.05-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2&gt;Demo: “Fix the Service selector because it sounds like another Pod name but not an exact match”&lt;/h2&gt;   
+&lt;p&gt;This demo is a variation of the previous one, where we would like to highlight other characteristics of the expressive power of the semantic rules, in order to catch name similarities which may produce inconsistent or degraded state of the cluster.&lt;/p&gt;   
+&lt;p&gt;Such rules could easily be expressed as, for example:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;- name: Fix the Service selector sounds like Pod name but not an exact match
+  when:
+  - given: Service
+    as: $svc
+    having:
+    - metadata.name != &quot;kubernetes&quot;
+    - &apos;$selectorName: spec!.selector[&quot;app.kubernetes.io/name&quot;]&apos;
+  - given: Pod
+    as: $pod
+    having:
+    - &apos;metadata.labels[&quot;app.kubernetes.io/name&quot;] != $selectorName&apos;
+    - &apos;metadata.labels[&quot;app.kubernetes.io/name&quot;] soundslike $selectorName&apos;
+  then: |
+    insert(new Advice(&quot;Service selector hint&quot;, ...&lt;/pre&gt;   
+&lt;p&gt;In order to detect those anomalies with an increased level of nuances:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-14.33.31-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2&gt;Demo: “Fix the Service targetPort and the containerPort”&lt;/h2&gt;   
+&lt;p&gt;In this example we want to highlight the expressive power of the semantic rule making use of existential operators:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-syntaxhighlighter-code&quot;&gt;- name: Fix the Service targetPort and the containerPort
+  when:
+  - given: Service
+    as: $svc
+    having:
+    - metadata.name != &quot;kubernetes&quot;
+  - given: ServicePort
+    as: $sPort
+    from: $svc.spec.ports
+  - given: Pod
+    as: $pod
+    having:
+    - &apos;mapContains(metadata.labels, $svc.spec.selector)&apos;
+  - not:
+    - all:
+      - given: Container
+        as: $c
+        from: $pod.spec.containers
+      - given: ContainerPort
+        having:
+        - containerPort == $sPort.targetPort.intVal
+        from: $c.ports
+  then: &apos;insert(new Advice(&quot;Fix the Service targetPort and the containerPort&quot;, ...&lt;/pre&gt;   
+&lt;p&gt;In order to detect mismatch between the definition in a service and its related pod:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/03/Screenshot-2023-03-07-at-14.47.02-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;It is to be noted how making use of existential operators in semantic rules make it very easy to express declaratively these types of checks, with a relatively lower effort if compared to coding the same manually by hand using an imperative-style programming language.&lt;/p&gt;   
+&lt;h1&gt;Conclusions (for today!)&lt;/h1&gt;   
+&lt;p&gt;We have introduced RuleOps, a concept and a very powerful instrument based on symbol AI, to help with debugging Kubernetes operations.&amp;nbsp; We have demonstrated with some entry-level but also pragmatic use-cases how RuleOps supports the DevOps practitioners while developing and deploying their application on Kubernetes. We believe RuleOps is valuable research exploration and a very helpful instrument you can start to use today, in your day-to-day management of Kubernetes cluster and cloud-native applications!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>CloudEvents labeling and classification with Drools</title>
+      <link>https://matteomortari.com/blog/2023/cloudevents-labeling-and-classification-with-drools.html</link>
+      <pubDate>Wed, 8 Feb 2023 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2023/cloudevents-labeling-and-classification-with-drools.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/v3E_zX3azMw&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;This blog post is a quick update on a demo in labeling CNCF’s CloudEvents.&lt;/p&gt;   
+&lt;h1&gt;Introduction&lt;/h1&gt;   
+&lt;p&gt;Categorizing events is a general, common use-case; in the context of this post, we will delve into labeling CNCF’s CloudEvents for Intelligent Response Management (IRM) which can find application in several ways.&lt;/p&gt;   
+&lt;p&gt;One way is to categorize and prioritize different types of events based on their urgency or importance; for example: a SRE team might label an event as &quot;critical&quot; if it involves a major service outage, or &quot;low priority&quot; if it is a minor issue of a sub-system that can be resolved at a later time. This allows the team to quickly respond to the most pressing issues and allocate resources accordingly.&lt;/p&gt;   
+&lt;p&gt;Additionally, labeling events can also be used to track and analyze patterns in a system (or cluster) behaviors, which can help to identify potential problems before they occur and improve the overall reliability of the system by implementing corrective actions preventively.&lt;/p&gt;   
+&lt;p&gt;This demo make use of several technologies:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;&lt;a href=&quot;https://www.drools.org/learn/video.html&quot;&gt;Drools&lt;/a&gt; and YaRD for the rule definition and evaluation&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://kogito.kie.org/&quot;&gt;Kogito&lt;/a&gt; for cloud native based decisioning&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://quarkus.io/&quot;&gt;Quarkus&lt;/a&gt; for cloud native Java development on top of Kubernetes&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://cloudevents.io/&quot;&gt;CloudEvents&lt;/a&gt; –this is the format of the event data that we want to process&lt;/li&gt;   
+ &lt;li&gt;Kafka as an event broker&lt;/li&gt;   
+ &lt;li&gt;PostgreSQL as our data store; we&apos;re using specifically PostgreSQL for very interesting query capabilities that this RDBMS can offer&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://github.com/vladmihalcea/hibernate-types#readme&quot;&gt;Hibernate types&lt;/a&gt; to define our custom types on top of PostgreSQL&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/&quot;&gt;Quarkus Quinoa&lt;/a&gt; extension&lt;/li&gt;   
+ &lt;li&gt;&lt;a href=&quot;https://www.patternfly.org/v4/&quot;&gt;Patternfly&lt;/a&gt; for the web-based GUI&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;h1&gt;Architecture&lt;/h1&gt;   
+&lt;p&gt;The following is a high level diagram of the overall architecture for this demo:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/02/Screenshot-2023-01-25-at-15.51.51-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;On the left hand side, the incoming CloudEvents instance that we want to process by labeling, is received by the endpoint which represents one of the possible inputs for this application. The CloudEvents instance is then immediately placed on a kafka topic, which is used to better isolate the ingress portion of this application from the rest of the processing pipeline.&lt;/p&gt;   
+&lt;p&gt;The processing pipeline starts with a labeling processor: this is the component responsible for applying the rules to enrich the CloudEvents instance with the required and applicable labels. As a result, the received message is now enriched with labeling and it gets persisted inside the data store.&lt;/p&gt;   
+&lt;p&gt;PostgreSQL is used specifically here as it provides hierarchical labels via &lt;kbd&gt;ltree&lt;/kbd&gt; data type and related query capabilities, which are very useful in categorization applications such as this one. These advanced query capabilities are also foundational to potentially re-process the same CloudEvents instance, after some further augmentation or additional manual labeling.&lt;/p&gt;   
+&lt;p&gt;In the context of this article, the web-based GUI is provisional and will be used only as a practical demonstrator for the rich query capabilities.&lt;/p&gt;   
+&lt;h1&gt;Walkthrough&lt;/h1&gt;   
+&lt;p&gt;A CloudEvents instance is submitted to this application, for example:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+      &quot;specversion&quot;: &quot;1.0&quot;,
+      &quot;id&quot;: &quot;matteo-8eb9-43b2-9313-22133f2c747a&quot;,
+      &quot;source&quot;: &quot;example&quot;,
+      &quot;type&quot;: &quot;demo20220715contextlabel.demotype&quot;,
+      &quot;data&quot;: {
+        &quot;host&quot;: &quot;basedidati.milano.local&quot;,
+        &quot;diskPerc&quot;: 70,
+        &quot;memPerc&quot;: 50,
+        &quot;cpuPerc&quot;: 20
+      }
+    }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;The data context of the CloudEvents instance pertains to some host which came under supervision due to resource load. We now want to classify this context/case, using some labels. We may have more than one label. Each label is hierarchical (&lt;kbd&gt;root.branch1.branch2.leaf&lt;/kbd&gt;).&lt;/p&gt;   
+&lt;p&gt;We want to classify the hostname based on its relevance to the department, unit, person or team responsible for it. To do so, a simple decision table provides an easy solution. For example, we can classify the hostname based on geographical location or determine the type of server based on the hostname. Ultimately, we might want to setup a labeling rule for who&apos;s on call, something like the following decision table using &lt;a href=&quot;https://stedolan.github.io/jq/&quot;&gt;JQ expressions&lt;/a&gt;:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;   type: DecisionTable
+        inputs: [&apos;.location&apos;, &apos;.type&apos;]
+        rules:
+        - when: [&apos;startswith(&quot;location.emea&quot;)&apos;, &apos;. == &quot;type.db&quot;&apos;]
+          then: &apos;&quot;oncall.EMEA.dbadm&quot;&apos;
+        - when: [&apos;startswith(&quot;location.emea&quot;) | not&apos;, &apos;. == &quot;type.db&quot;&apos;]
+          then: &apos;&quot;oncall.CORP.dbadm&quot;&apos;
+        - when: [&apos;true&apos;, &apos;. == &quot;type.nas&quot;&apos;]
+          then: &apos;&quot;oncall.CORP.it&quot;&apos;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;For example, a CloudEvents context may be labeled as follows:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;type.db&lt;/li&gt;   
+ &lt;li&gt;location.emea.italy.milan&lt;/li&gt;   
+ &lt;li&gt;oncall.EMEA.dbadm&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;For the PostgreSQL DDL we currently have:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;                      Table &quot;public.cecase&quot;
+     Column  |          Type          | Collation | Nullable | Default 
+    ---------+------------------------+-----------+----------+---------
+     id      | bigint                 |           | not null | 
+     ceuuid  | character varying(255) |           |          | 
+     context | jsonb                  |           |          | 
+     mytag   | ltree[]                |           |          | 
+    Indexes:
+        &quot;cecase_pkey&quot; PRIMARY KEY, btree (id)
+        &quot;mytag_gist_idx&quot; gist (mytag)
+        &quot;mytag_idx&quot; btree (mytag)&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Please notice we’re taking advantage here of PostgreSQL&apos;s &lt;kbd&gt;jsonb&lt;/kbd&gt; for storing the original CloudEvents context, and &lt;kbd&gt;ltree[]&lt;/kbd&gt; data type for searching ad-hoc with indexing the hierarchical labels.&lt;/p&gt;   
+&lt;p&gt;The latter is extremely helpful also to setup queries making use of &lt;kbd&gt;&amp;lt;@&lt;/kbd&gt; and &lt;kbd&gt;~&lt;/kbd&gt; operators for PostgreSQL which performs on the &lt;kbd&gt;ltree&lt;/kbd&gt;&lt;strong&gt; &lt;/strong&gt;data type, showcased below.&lt;/p&gt;   
+&lt;p&gt;As the data flows into the application, we can use the provisional web-based GUI which provide a convenient way to consume the backend REST API(s) developed on Quarkus:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/02/image-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In the screenshot above, you can access all the records from the table, where the labels have been applied by the rule definition.&lt;/p&gt;   
+&lt;p&gt;We can browse by &lt;em&gt;having at least one label having the specified parent&lt;/em&gt;, with a query like:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;SELECT * FROM cecase WHERE mytag &amp;lt;@ &apos;oncall.CORP&apos;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;For example, if we want all the records having at least a label for the &lt;kbd&gt;oncall.CORP&lt;/kbd&gt; rooting:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/02/image-1-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can browse by &lt;em&gt;having at least one label having the specified ltree&lt;/em&gt;, with a query like”&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;SELECT * FROM cecase WHERE mytag ~ &lt;span style=&quot;background-color: initial; font-family: inherit; font-size: inherit; color: initial;&quot;&gt;*.emea.*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;For example, if we want all the records having at least a label for the &lt;em&gt;.emea.&lt;/em&gt; (a branch named emea in any point in the hierarchical label):&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/02/image-2-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Don’t forget to check out the video linked above, as it demonstrates the demo working live as the data is being sent to the application!&lt;/p&gt;   
+&lt;p&gt;If you want to checkout the source, here is the code repo: &lt;a href=&quot;https://github.com/tarilabs/demo20220715contextlabel#readme&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://github.com/tarilabs/demo20220715contextlabel#readme&quot;&gt;https://github.com/tarilabs/demo20220715contextlabel#readme&lt;/a&gt;&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;These advanced query capabilities offered by PostgreSQL can be used as a foundation to identify events due to reprocessing, manual inspection, triggering a workflow, etc. …but that is maybe subject for a second iteration on this demo...&lt;/p&gt;   
+&lt;h1&gt;Conclusions&lt;/h1&gt;   
+&lt;p&gt;This demo showcases the power of combining declarative logic, persistence and other technologies to process and label CloudEvents effectively! We defined our logic using a combination of expression and rules in the form of decision tables, combined with the use of PostgreSQL as a data store thanks to its advanced query capabilities, allowing for a more efficient and effective handling of the events.&lt;/p&gt;   
+&lt;p&gt;We hope you enjoyed our demo and look forward to hearing your feedback!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Exceptional rules, with Drools and Kogito</title>
+      <link>https://matteomortari.com/blog/2023/exceptional-rules-with-drools-and-kogito.html</link>
+      <pubDate>Sat, 14 Jan 2023 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2023/exceptional-rules-with-drools-and-kogito.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/WGpjuietqmw&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;Managing exceptional rules is easy, thanks to Drools and Kogito!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/01/image-4.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this use-case, we have a &lt;em&gt;base&lt;/em&gt; business process and a &lt;em&gt;default&lt;/em&gt; knowledge base with rules, which can be overridden by specific entities or departments as needed.&lt;/p&gt;   
+&lt;p&gt;We actually have several architectural options we could implement!&lt;/p&gt;   
+&lt;p&gt;The simplest architectural option I can think about, draws inspiration from this book by Alan Fish:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/01/image-1.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;sub&gt;&quot;Knowledge Automation: How to Implement Decision Management in Business Processes&quot;&lt;br&gt;Book by Alan N. Fish&lt;/sub&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;which is a great book by the way if you &lt;em&gt;also&lt;/em&gt; want to understand the main ideas prequel to the DMN standard!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/01/image-3.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;sub&gt;Exceptional rules using only DMN&lt;/sub&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In a decision node in DMN, we check if any exception is applicable, and we collect the exceptions in a list.&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;If the exception list is &lt;em&gt;empty&lt;/em&gt;, we apply the default knowledge and rules.&lt;/li&gt;   
+ &lt;li&gt;Otherwise, we apply the rules related to the &lt;em&gt;most relevant&lt;/em&gt; exceptions from the list.&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;You may substitute the BKM nodes with Decision Service, say coming from other DMN models!&lt;/p&gt;   
+&lt;p&gt;Another option is to model this with a combination of BPMN and DMN and rules, the idea is similar:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/01/image-5.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt; &lt;sub&gt;Managing exceptional rules with BPMN and DMN&lt;/sub&gt; 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The default branch applies the default knowledge base and would be followed, &lt;em&gt;unless&lt;/em&gt; in the predetermination task we have evaluated we must follow one of the exceptional types of branches.&lt;/p&gt;   
+&lt;p&gt;A final option would be to deploy each knowledge base –the default one, the different exceptional ones– each as its own Kogito microservice on a cloud native environment such as Kubernetes:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2023/01/image-9-1024x621.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Then, you can orchestrate them using a Serverless Workflow, which will be in charge of invoking the needed cloud-native decision service.&lt;/p&gt;   
+&lt;p&gt;As you have seen, managing exceptional rules is easy, thanks to Drools and Kogito!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Transparent ML, integrating Drools with AIX360</title>
+      <link>https://matteomortari.com/blog/2022/transparent-ml-integrating-drools-with-aix360.html</link>
+      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/transparent-ml-integrating-drools-with-aix360.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/rDghxB8F4nU?t=20&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;Following up from &lt;a href=&quot;https://blog.kie.org/2022/04/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html&quot;&gt;a previous blog post&lt;/a&gt; about integrating Drools with the Open Prediction Service, in this new post we want to share the current results from another exploration work: this time integrating Drools with research on Transparent Machine Learning by IBM.&lt;/p&gt;   
+&lt;h2&gt;Introduction&lt;/h2&gt;   
+&lt;p&gt;Transparency is a key requirement in many business sectors, from FSI (Financial Services Industry), to Healthcare, to Government institutions, and many others.&lt;/p&gt;   
+&lt;p&gt;In more recent years, a generalized need for increased transparency in the decision making processes has gained a great deal of attention from several different stakeholders, especially when it comes to automated decisioning and AI-based decision services.&lt;/p&gt;   
+&lt;p&gt;Specifically in the Eurozone, this ties with the &lt;a href=&quot;https://en.wikipedia.org/wiki/General_Data_Protection_Regulation&quot;&gt;GDPR regulation&lt;/a&gt; and the requirement for explainability in the way businesses automate processes and decision making. Additionally, an “&lt;a href=&quot;https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence&quot;&gt;Artificial Intelligence Act&lt;/a&gt;” is proposed and currently under discussion at the European Commission: under the current status of the proposal several risk levels are identified. The integration of AI in the business process and decision model will likely require explainability, transparency and a conformity assessment, depending on the applicable risk level:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image-2-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In other parts of the world, similar legislations are coming into effect or are currently being proposed.&lt;/p&gt;   
+&lt;p&gt;You can read more details in &lt;a href=&quot;https://medium.com/@greger_ottosson/transparent-ml-in-enterprise-decisions-intro-8c01438c11c5&quot;&gt;this article on Medium&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;With these considerations in mind, we will explore how to leverage rule induction strategies and specific types of machine learning models, with the intent of producing predictive models which can integrate with effective results into this general context.&lt;/p&gt;   
+&lt;h2&gt;Transparent ML with Drools and AIX360&lt;/h2&gt;   
+&lt;p&gt;One way to address some of the problems and requirements highlighted in the previous section is to use Machine Learning to generate specific types of models that are inherently readable and transparent.&lt;/p&gt;   
+&lt;p&gt;As we will see in this blog post, a &lt;em&gt;transparent&lt;/em&gt; predictive model can be handed over easily to the next phase as a decision model, in order to be evaluated as-is, but most importantly for the ability to be inspected and authored directly!&lt;/p&gt;   
+&lt;p&gt;Comparing a Transparent ML approach with the broader general Machine Learning, we can highlight some of its characteristics:&lt;/p&gt;   
+&lt;div class=&quot;wp-block-columns&quot;&gt; 
+ &lt;div class=&quot;wp-block-column&quot; style=&quot;flex-basis:100%&quot;&gt; 
+  &lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+   &lt;figure class=&quot;figure&quot;&gt; 
+    &lt;table&gt; 
+     &lt;tbody&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;&lt;strong&gt;General Machine Learning evaluation&lt;/strong&gt;:&lt;/td&gt; 
+       &lt;td&gt;&lt;strong&gt;Transparent ML approach&lt;/strong&gt;:&lt;/td&gt; 
+      &lt;/tr&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;All supported model types, but black box evaluation&lt;/td&gt; 
+       &lt;td&gt;Model can be inspected, authored, evaluated&lt;/td&gt; 
+      &lt;/tr&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;Accuracy focused&lt;/td&gt; 
+       &lt;td&gt;Transparency focused&lt;/td&gt; 
+      &lt;/tr&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;eXplainable AI complements, such as &lt;a href=&quot;https://kogito.kie.org/trustyai/&quot;&gt;TrustyAI&lt;/a&gt;&lt;/td&gt; 
+       &lt;td&gt;Intrinsically eXplainable&lt;/td&gt; 
+      &lt;/tr&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;MLOps —governed by data science&lt;/td&gt; 
+       &lt;td&gt;Business centric governance&lt;/td&gt; 
+      &lt;/tr&gt; 
+      &lt;tr&gt; 
+       &lt;td class=&quot;has-text-align-left&quot; data-align=&quot;left&quot;&gt;Multiple runtimes&lt;/td&gt; 
+       &lt;td&gt;Potentially single runtime&lt;/td&gt; 
+      &lt;/tr&gt; 
+     &lt;/tbody&gt; 
+    &lt;/table&gt; 
+   &lt;/figure&gt;
+  &lt;/div&gt; 
+ &lt;/div&gt; 
+&lt;/div&gt;   
+&lt;p&gt;Naturally the transparent ML approach has its limitations; we will discuss alternative approaches in the conclusions of this blog post.&lt;/p&gt;   
+&lt;p&gt;An example pipeline can be summarized as follows:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image-3-1024x262.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;For the examples in this blog post, we will use the &lt;a href=&quot;https://archive.ics.uci.edu/ml/datasets/Adult&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://archive.ics.uci.edu/ml/datasets/Adult&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://archive.ics.uci.edu/ml/datasets/Adult&quot;&gt;https://archive.ics.uci.edu/ml/datasets/Adult&lt;/a&gt; dataset&amp;nbsp; (predicting if income exceeds $50K/yr from census data).&lt;/p&gt;   
+&lt;p&gt;Let’s get started!&lt;/p&gt;   
+&lt;h2&gt;Rule Set induction&lt;/h2&gt;   
+&lt;p&gt;In this section we will make use of the &lt;a href=&quot;https://github.com/Trusted-AI/AIX360&quot;&gt;AI Explainability 360 toolkit&lt;/a&gt;, an open-source library that supports interpretability and explainability of datasets and machine learning models.&lt;/p&gt;   
+&lt;p&gt;Our goal in this phase is to generate a predictive model from the UCI Adult dataset, using Machine Learning techniques:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image10-1024x313.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;To generate a &lt;em&gt;transparent&lt;/em&gt; predictive model, we can drive the generation of a RuleSet &lt;a href=&quot;https://blog.kie.org/2021/02/predictions-in-kogito-pmml-endpoints-with-openapi.html&quot;&gt;PMML model&lt;/a&gt;, as explained in the following Jupyter notebook &lt;a href=&quot;https://github.com/Trusted-AI/AIX360/tree/master/examples/rule_induction&quot;&gt;examples at this link&lt;/a&gt;:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image1-1024x664.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As a result of this, we have now generated a set of rules, in the form of a PMML RuleSet, which represents the transparent predictive model for the Adult dataset:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image12-1024x572.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;If you are interested to delve into more details about using AIX360 and related algorithms, you can check out &lt;a href=&quot;https://medium.com/@greger_ottosson/transparent-ml-for-enterprise-decisions-rule-sets-d8f55bee3a00&quot;&gt;this article on Medium&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Drools&lt;/h2&gt;   
+&lt;p&gt;In this section, we will transform the result from the previous steps into an executable decision model, which can also be directly authored.&lt;/p&gt;   
+&lt;p&gt;Please note: in a different context, where the only requirement is the execution of predictive models in general, you can simply make reference to the PMML support for Drools from the &lt;a href=&quot;https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#drools.PMML&quot;&gt;documentation&lt;/a&gt;, or to integration blueprints such as the integration of Drools with IBM Open Prediction Service from a &lt;a href=&quot;https://blog.kie.org/2022/04/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html&quot;&gt;previous blog post&lt;/a&gt;. In this article instead, as premised, we’re interested in the result of a transparent prediction model, which can be fully inspected, authored and (naturally!) evaluated.&lt;/p&gt;   
+&lt;p&gt;Specifically, we will transform the transparent predictive model serialized as a RuleSet, into a DMN model with DMN Decision Tables.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image6-1024x236.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;To perform this transformation, we will make use of the kie-dmn-ruleset2dmn utility; this is available as a developer API, and as a command line utility too.&lt;/p&gt;   
+&lt;p&gt;You can download a published version of the command line utility (executable .jar) from &lt;a href=&quot;https://repo1.maven.org/maven2/org/kie/kie-dmn-ruleset2dmn-cli/8.27.0.Beta/kie-dmn-ruleset2dmn-cli-8.27.0.Beta.jar&quot;&gt;this link&lt;/a&gt;; otherwise, you can lookup a more recent version directly from &lt;a href=&quot;https://mvnrepository.com/artifact/org.kie/kie-dmn-ruleset2dmn-cli&quot;&gt;Maven central here&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;To transform the RuleSet file into a DMN model, you can issue the following command:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;&lt;strong&gt;$ java -jar kie-dmn-ruleset2dmn-cli-8.27.0.Beta.jar adult.pmml --output=adult.dmn&lt;/strong&gt;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;This will result in a .dmn file generated, which you can author with the Kogito Tooling and evaluate as usual with the &lt;a href=&quot;https://www.drools.org/learn/dmn.html&quot;&gt;Drools DMN engine&lt;/a&gt;!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image5-1024x572.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can upload the generated .dmn file onto the &lt;a href=&quot;https://dmn.new&quot;&gt;DMN.new&lt;/a&gt; sandbox:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image2-1024x664.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can make use of the Kie Sandbox extended services, to evaluate locally the DMN model, as-is or authored as needed!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image3-1024x394.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;It’s interesting to note the static analysis of the DMN decision table identifies potential gaps in the table, and subsumptions in the rules inducted during the Machine Learning phase; this is expected, and can be authored directly depending on the overall business requirements.&lt;/p&gt;   
+&lt;p&gt;From the model evaluation perspective, overlapping rules are not a problem, as they would evaluate to the same prediction; this is a quite common scenario when the ML might have identified overlapping “clusters” or grouping over a number of features, leading to the same output.&lt;/p&gt;   
+&lt;p&gt;From a decision table perspective however, overlapping rules can be simplified, as a more compact representation of the same table semantic is often preferable in decision management.&lt;/p&gt;   
+&lt;p&gt;Here it is up to the business to decide if to keep the table as translated from the original predictive model, or to leverage the possibilities offered by the transparent ML approach, and simplify/compact the table for easier read and maintenance by the business analyst.&lt;/p&gt;   
+&lt;h2&gt;Deploy&lt;/h2&gt;   
+&lt;p&gt;We can deploy directly from the KIE Sandbox:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image8-1024x664.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Our Transparent prediction and decision model is available as a deployment on OpenShift !&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image11-1024x640.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As you can see, with just the click of a button in the KIE Sandbox, our transparent ML model has been easily deployed on OpenShift.&lt;/p&gt;   
+&lt;p&gt;If you want to leverage the serverless capabilities of Knative for auto-scaling (including auto scale to zero!) for the same predictive model, you can consider packaging it as a Kogito application. You can find more information in this &lt;a href=&quot;https://blog.kie.org/2022/08/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html&quot;&gt;other blog post and video tutorial&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Conclusion&lt;/h2&gt;   
+&lt;p&gt;We have seen how a Transparent ML approach can provide solutions to some of the business requirements and conformance needs to regulations such as GDPR or AI Act; we have seen how to drive rule induction by generating predictive models which are inherently transparent, can be authored directly as any other decision model, and can be deployed on a cloud-native OpenShift environment.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/09/image7-1024x551.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this post, we have focused ourselves on using directly upstream AIX360 and Drools. You can refer to the above diagram for commercial solutions by IBM and Red Hat that include these projects too, such as &lt;a href=&quot;https://medium.com/ibm-data-ai/transparent-machine-learning-in-ibm-business-automation-b75cd8aed944&quot;&gt;IBM AIMEE&lt;/a&gt;, &lt;a href=&quot;https://developers.redhat.com/products/red-hat-decision-manager/overview&quot;&gt;Red Hat Decision Manager&lt;/a&gt;, &lt;a href=&quot;https://www.ibm.com/cloud/blog/announcements/ibm-expands-business-automation-portfolio-with-open-source-process-and-decision-automation#:~:text=DMN1.4%2Dcompliant%20runtime&quot;&gt;IBM Business Automation Manager Open Edition&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;If you are interested in additional capabilities for eXplainable AI solutions, check-out the &lt;a href=&quot;https://kogito.kie.org/trustyai/&quot;&gt;TrustyAI initiative at this link&lt;/a&gt;!&lt;/p&gt;   
+&lt;p&gt;The Transparent ML predictive model, now available as a decision service, can be integrated in other DMN models and other applications, as needed. For example, the transparent prediction on the Adult dataset (predicting if income exceeds $50K/yr) could become invocable as part of another decision service that decides on the applicability for the requests of issuing a certain type of credit card.&lt;/p&gt;   
+&lt;p&gt;Another possible integration could be to employ a transparent ML predictive model in the form of scorecards, inside a broader DMN model for segmentation; that is, first identify the applicable category/segment based on the input data, and then apply one of several score cards for the specific segment.&lt;/p&gt;   
+&lt;p&gt;Don’t miss on checking out the &lt;a href=&quot;https://decisioncamp2022.wordpress.com/program/&quot;&gt;DecisionCamp 2022 presentations&lt;/a&gt; on related Transparent ML topics!&lt;/p&gt;   
+&lt;p&gt;Hope you have enjoyed this blog post, showcasing integration of several technologies to achieve a transparent ML solution!&lt;/p&gt;   
+&lt;p&gt;Questions? Feedback?&lt;br&gt;Let us know with the comment section below!&lt;/p&gt;   
+&lt;p&gt;Special thanks for Greger Ottosson and Tibor Zimanyi for their help while crafting this content.&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>a DMN FEEL handbook</title>
+      <link>https://matteomortari.com/blog/2022/a-dmn-feel-handbook.html</link>
+      <pubDate>Thu, 18 Aug 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/a-dmn-feel-handbook.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/jPhAynN73Jw a DMN FEEL handbook &amp;quot;promotion&amp;quot; video :)&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;We&apos;re introducing an (experimental) DMN FEEL handbook, an helpful companion for your DMN modeling activities!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/07/Screenshot-2022-07-11-at-09.19.28-2-1024x576.jpg&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;You can access this new helpful resource at the following URL: &lt;a href=&quot;https://kiegroup.github.io/dmn-feel-handbook&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://kiegroup.github.io/dmn-feel-handbook&quot;&gt;https://kiegroup.github.io/dmn-feel-handbook&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;Key features include:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;FEEL built-in functions organised by category&lt;/li&gt;
+ &lt;li&gt;tested and integrated FEEL examples&lt;/li&gt;
+ &lt;li&gt;Responsive design: easily access on Mobile, Tablet and Desktop from your favourite browser!&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;...and many more!&lt;/p&gt;   
+&lt;h2&gt;Implementation details&lt;/h2&gt;   
+&lt;p&gt;For the technically curious, this section will highlight some of the technical implementation choices for the realisation of this handbook.&lt;/p&gt;   
+&lt;p&gt;If you want to just use this handbook, you are free to skip this section! :)&lt;/p&gt;   
+&lt;p&gt;The framework used to render this handbook is called &lt;a href=&quot;https://github.com/slatedocs/slate&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Slate&lt;/a&gt;; it&apos;s very convenient to use it when, in general, you want a neat API documented with use-cases and examples. This makes it a perfect framework candidate to build a technical manual of a &lt;em&gt;very specific aspect&lt;/em&gt; --the FEEL expression language of DMN. Naturally we&apos;re keeping Antora for the general documentation of Drools, which is more powerful for the user-manuals and modularising content.&lt;/p&gt;   
+&lt;p&gt;Then, in order to CI the FEEL snippets and examples in the handbook, we&apos;re leveraging the awesome &lt;a href=&quot;https://www.jbang.dev/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;JBang&lt;/a&gt;! As you can see in the Java_script source (&lt;a href=&quot;https://github.com/kiegroup/dmn-feel-handbook/blob/3a36dc2ea9663a5b7b5100813395c4ee583b13fb/test.java#L97-L124&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;) we&apos;re parsing the content of the Markdown file to search for codeblocks related to FEEL. Each codeblock related to FEEL is then evaluated, to make sure it does not error or misbehave.&lt;/p&gt;   
+&lt;p&gt;This allowed us to catch small typos, &lt;a href=&quot;https://github.com/kiegroup/kie-docs/pull/4218/files&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;such as this one&lt;/a&gt; which we corrected in the main docs. I got the inspiration to implement this approach by reading the Rust manual. If you are familiar with that book, you will likely recognise where &lt;a href=&quot;https://doc.rust-lang.org/book/ch00-00-introduction.html#how-to-use-this-book&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Ferris inspired me&lt;/a&gt; :).&lt;/p&gt;   
+&lt;p&gt;Finally, we integrated the JBang! tests with CI with a &lt;a href=&quot;https://github.com/kiegroup/dmn-feel-handbook/blob/main/.github/workflows/test.yml#L22-L25&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;simple GitHub Action&lt;/a&gt;, and then we serve the content via GitHub Pages.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;Don&apos;t forget to checkout this DMN FEEL handbook today!&lt;/p&gt;   
+&lt;p class=&quot;has-text-align-center&quot;&gt;&lt;a href=&quot;https://kiegroup.github.io/dmn-feel-handbook&quot;&gt;https://kiegroup.github.io/dmn-feel-handbook&lt;/a&gt;&lt;/p&gt;   
+&lt;p&gt;Do you like it? Feedback? Let us know!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Serverless Drools in 3 steps: Kogito, Quarkus, Kubernetes and Knative!</title>
+      <link>https://matteomortari.com/blog/2022/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html</link>
+      <pubDate>Tue, 2 Aug 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/KGXJ_bEyTmo&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;This short tutorial walks you through the configuration and deployment of a simple &lt;a href=&quot;https://www.drools.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools&lt;/a&gt; serverless application, including autoscaling with scale to zero, thanks to &lt;a href=&quot;https://kogito.kie.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kogito&lt;/a&gt;, &lt;a href=&quot;https://quarkus.io/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Quarkus&lt;/a&gt;, OpenShift Serverless with Kubernetes and &lt;a href=&quot;https://knative.dev/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Knative&lt;/a&gt;!&lt;/p&gt;   
+&lt;h2 id=&quot;step1&quot;&gt;Step 1: Drools app creation with code.quarkus.io&lt;/h2&gt;   
+&lt;p&gt;To generate the application as shown in the video, you can use this link: &lt;a href=&quot;https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;e=resteasy-jackson&amp;amp;e=kubernetes&amp;amp;e=container-image-jib&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;e=resteasy-jackson&amp;amp;amp;e=kubernetes&amp;amp;amp;e=container-image-jib&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;amp;e=resteasy-jackson&amp;amp;amp;amp;e=kubernetes&amp;amp;amp;amp;e=container-image-jib&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;amp;amp;e=resteasy-jackson&amp;amp;amp;amp;amp;e=kubernetes&amp;amp;amp;amp;amp;e=container-image-jib&quot;&gt;https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;amp;amp;e=resteasy-jackson&amp;amp;amp;amp;amp;e=kubernetes&amp;amp;amp;amp;amp;e=container-image-jib&lt;/a&gt;&lt;/p&gt;   
+&lt;p&gt;The link will automatically populate for you the basic extensions needed to follow this tutorial.&lt;/p&gt;   
+&lt;h2&gt;Step 2: maintain configuration&lt;/h2&gt;   
+&lt;p&gt;In the &lt;code&gt;application.properties&lt;/code&gt; file, you need to maintain a couple of required configuration, following this guideline:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;quarkus.kubernetes.deployment-target=knative
+    
+    quarkus.container-image.registry=quay.io
+    quarkus.container-image.group=&amp;lt;your own account&amp;gt;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You may decide for the Container Image Registry to opt instead for &lt;code&gt;docker.io&lt;/code&gt; or similar, and you will need to configure &lt;a href=&quot;https://quarkus.io/guides/container-image#container-image-options&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;your own account credentials&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Step 3: deploy your Drools serverless app 🚀&lt;/h2&gt;   
+&lt;p&gt;To deploy on Kubernetes, my preference is to deliberately publish a Container Image on a Registry; to follow this strategy, you just need to issue a couple of commands on the terminal.&lt;/p&gt;   
+&lt;p&gt;The first command will produce a Container Image for our Drools serverless application, and publish it on the Registry:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;mvn clean package -Dquarkus.container-image.push=true&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Then, the second command will effectively deploy that image on the OpenShift cluster:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;kubectl apply -f target/kubernetes/knative.yml&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Thanks to Knative, we have autoscaling including autoscale-to-zero, as it&apos;s shown in the video!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/08/Shotcut_00_06_05_900-1024x576.png&quot; alt=&quot;Autoscale to zero in action on the Drools serverless app&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption class=&quot;wp-element-caption&quot;&gt;
+    Autoscale to zero in action, for the Drools serverless app 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Note: if you are using Windows PowerShell, don&apos;t forget to properly escape the commands, for instance on PowerShell:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;mvn clean package &quot;-Dquarkus.container-image.push=true&quot;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You can pause the video linked above, to follow step-by-step the commands using Windows ;)&lt;/p&gt;   
+&lt;h2&gt;Bonus: Swagger UI OpenAPI&lt;/h2&gt;   
+&lt;p&gt;If you want to use Swagger UI and the OpenAPI web based GUI in your deployed app, simply add &lt;code&gt;quarkus-smallrye-openapi&lt;/code&gt; in the &lt;a href=&quot;#step1&quot;&gt;extensions from step1&lt;/a&gt;, and then maintain the &lt;code&gt;application.properties&lt;/code&gt; configuration:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;quarkus.swagger-ui.always-include=true&lt;/code&gt;&lt;/pre&gt;   
+&lt;h2&gt;Want to learn more?&lt;/h2&gt;   
+&lt;p&gt;We hope you enjoyed this lighthearted tutorial 😄&lt;/p&gt;   
+&lt;p&gt;Did you know that formal training is available from Red Hat? &lt;a href=&quot;https://www.redhat.com/en/services/training/do244-developing-applications-with-red-hat-openshift-serverless-and-knative&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Developing Applications with Red Hat OpenShift Serverless and Knative (DO244)&lt;/a&gt; teaches you how to develop, deploy, and auto-scale event driven serverless applications on the Red Hat OpenShift Container Platform. Read the course page to &lt;a href=&quot;https://www.redhat.com/en/services/training/do244-developing-applications-with-red-hat-openshift-serverless-and-knative&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;learn more&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;We have create a simple Drools serverless app with just 3 steps thanks to Kogito and Quarkus; then, thanks to OpenShift Serverless based on Kubernetes and Knative capabilities, we have autoscaling applied, including scale-to-zero.&lt;/p&gt;   
+&lt;p&gt;You can use your own Kubernetes cluster while following this tutorial, but don&apos;t forget you can use a free &lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;OpenShift Sandbox&lt;/a&gt; to replicate all the steps exactly as shown in the video!&lt;/p&gt;   
+&lt;p&gt;If you enjoyed this simple tutorial, you might be also interested to read this other guide on using the Drools for content based routing on Kafka, using Quarkus and &lt;a href=&quot;https://camel.apache.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt; too! Check it out &lt;a href=&quot;https://blog.kie.org/2022/03/content-based-routing-with-quarkus-and-kogito.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;Looking for additional content on Knative serverless function? Check out this &lt;a href=&quot;https://blog.kie.org/2022/09/creating-your-first-cloud-agnostic-serverless-application-with-java.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;new blog post&lt;/a&gt;!&lt;/p&gt;   
+&lt;p&gt;Questions?&lt;br&gt;Let us know your feedback by leaving a comment below! 👋&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Integrating Drools DMN Engine with IBM Open Prediction Service</title>
+      <link>https://matteomortari.com/blog/2022/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html</link>
+      <pubDate>Thu, 14 Apr 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/integrating-drools-dmn-engine-with-ibm-open-prediction-service.html</guid>
+      	<description>
+	&lt;p&gt;In this blog post we&apos;re going to explore an integration between the &lt;a href=&quot;https://www.drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt; and another open source project from IBM: &quot;&lt;a href=&quot;https://github.com/IBM/open-prediction-service-hub#readme&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Open Prediction Service&lt;/a&gt;&quot; (OPS).&lt;/p&gt;   
+&lt;h2&gt;Introduction&lt;/h2&gt;   
+&lt;p&gt;Integrating symbolic AIs (rule engines, KRR, etc) with Machine Learning predictive models is an effective strategy to achieve pragmatical, and often more eXplainable, AI solutions.&lt;/p&gt;   
+&lt;p&gt;We have also reiterated on this very powerful message across several conferences:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.10.21-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;For the most recent examples, you can reference &lt;a href=&quot;https://www.youtube.com/watch?v=VK99kmwdb_Y&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;DecisionCamp&lt;/a&gt; or the &lt;a href=&quot;https://odsc.com/speakers/54619/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Open Data Science Conference&lt;/a&gt;, or the &lt;a href=&quot;https://www.youtube.com/watch?v=eVQfGtyDrY8&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;All Things Open&lt;/a&gt; presentations.&lt;/p&gt;   
+&lt;p&gt;This is the reason why we believe the &lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;integration&lt;/span&gt;&lt;/strong&gt; between Predictive Models (such as ML or PMML-based solutions) and Decision Models is very, very important.&lt;/p&gt;   
+&lt;p&gt;In this context, we will explore how to integrate the Drools DMN Engine with IBM&apos;s Open Prediction Service hub, to achieve a pragmatic AI solution:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.18.11-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The Open Prediction Service offers us a broker mechanism between several backends for ML evaluation of Predictive Models.&lt;/p&gt;   
+&lt;h2&gt;Building the demo&lt;/h2&gt;   
+&lt;p&gt;In today&apos;s demo, we will develop a simple loan &quot;fast-track&quot; approval service, based on both a Predictive Model to estimate the Risk Score, and a Decision Table in DMN to apply a business policy.&lt;/p&gt;   
+&lt;p&gt;For the Risk Score prediction, you can reference &lt;a href=&quot;https://github.com/IBM/open-prediction-service-hub/tree/main/ops-implementations/ads-ml-service#readme&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;this example&lt;/a&gt; on the IBM OPS repository.&lt;/p&gt;   
+&lt;p&gt;Using the documentation, also available as Swagger / OpenAPI descriptor, we can identify the Predictive Model input features and output scoring.&lt;/p&gt;   
+&lt;p&gt;Now we understand we will need to supply:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;the Credit score&lt;/li&gt;
+ &lt;li&gt;the Income&lt;/li&gt;
+ &lt;li&gt;the Loan Amount requested&lt;/li&gt;
+ &lt;li&gt;the number of instalments&lt;/li&gt;
+ &lt;li&gt;and the Rate&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;As output, we can &lt;em&gt;reference the second predictor&lt;/em&gt; as a measure of Risk Score in our Decision Model.&lt;/p&gt;   
+&lt;p&gt;We can integrate the ML predictive model inside our DMN model to implement the loan &quot;fast-track&quot; approval as usual by defining a BKM node:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-17.43.20-1.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Then, we can define a Decision Table implementing the business policy for the &quot;fast-track&quot; mechanism:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/image-5.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We have completed our modeling activities with DMN and the Predictive Model served via OPS.&lt;/p&gt;   
+&lt;h2&gt;Invoking the OPS service&lt;/h2&gt;   
+&lt;p&gt;On the more technical side, to actually integrate OPS evaluation we can follow two options.&lt;/p&gt;   
+&lt;p&gt;The first solution could be to use the Quarkus&apos; RESTEasy client capabilities. &lt;/p&gt;   
+&lt;p&gt;For this demo, it&apos;s enough to define the interface of the service:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;@Path(&quot;/predictions&quot;)
+@RegisterRestClient
+public interface OPSClient {
+
+    @POST
+    OPSResponse predictions(OPSRequest request);
+}&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You can explore the complete code by referencing the repo of the demo &lt;a href=&quot;https://github.com/tarilabs/demo20220330/tree/ecb2bd7fde8e3d459e86528345560ff94f39f769&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;at this commit&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;Then, you just need to configure the actual URL for the OPS, for example:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;# Connect to OPS Server
+# on quarkus:dev, we use a local Docker run:
+%dev.quarkus.http.port=0
+%dev.org.acme.demo20220330.OPSClient/mp-rest/url=http://localhost:8080
+
+# as default, we are using an app deployed on OpenShift:
+org.acme.demo20220330.OPSClient/mp-rest/url=https://{your sandbox}.openshiftapps.com&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You can reference to &lt;a href=&quot;https://quarkus.io/guides/rest-client&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;this Quarkus guide&lt;/a&gt;, for more details about implementing a REST client with Quarkus.&lt;/p&gt;   
+&lt;h2&gt;Invoking OPS using the Java client SDK&lt;/h2&gt;   
+&lt;p&gt;As a next step, we can replace the RESTEasy client, with the SDK offered by the OPS itself.&lt;/p&gt;   
+&lt;p&gt;In this case, it will be enough to reference the dependency in the Maven pom.xml:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;    &amp;lt;dependency&amp;gt;
+      &amp;lt;groupId&amp;gt;com.ibm.decision&amp;lt;/groupId&amp;gt;
+      &amp;lt;artifactId&amp;gt;ops-client-sdk&amp;lt;/artifactId&amp;gt;
+    &amp;lt;/dependency&amp;gt;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Then, we can just replace the RESTEasy client with the OPS&apos; RunApi, for example:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;RunApi api = new RunApi();
+Prediction prediction = new Prediction();
+// ...
+prediction.setParameters(Arrays.asList(
+    param(&quot;creditScore&quot;, creditScore),
+    param(&quot;income&quot;, income),
+    param(&quot;loanAmount&quot;, loanAmount),
+    param(&quot;monthDuration&quot;, monthDuration),
+    param(&quot;rate&quot;, rate)
+));
+PredictionResponse result = api.prediction(prediction);&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You can explore the complete code by referencing the repo of the demo &lt;a href=&quot;https://github.com/tarilabs/demo20220330/tree/8698337c70251961f5800445c2cd03dea26b5bae&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;at this commit&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Running the demo&lt;/h2&gt;   
+&lt;p&gt;We will run the demo on the Red Hat Developer OpenShift Sandbox. Remember you can &lt;a href=&quot;https://developers.redhat.com/developer-sandbox/get-started&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;apply for a free account yourself&lt;/a&gt;. The free account has some limitations, but they will not block you in replicate this complete solution!&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/image-6-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As you can see in the picture, first I have deployed the OPS demo on the sandbox (left).&lt;/p&gt;   
+&lt;p&gt;Then, I&apos;ve deployed the DMN demo explained in this post, as a Kogito-based application (right).&lt;/p&gt;   
+&lt;p&gt;Then, we will have access to the Swagger OpenAPI code generated by the DMN extension of Kogito:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/image-8-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As you can see, the REST API is automatically generated for the InputData nodes as defined by the DMN model (Prospect and Loan).&lt;/p&gt;   
+&lt;p&gt;Finally, to exercise the demo, we can make use of the automatically generated forms, based on the Swagger OpenAPI:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-21.45.17-1024x591.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this case, as we would expect, the total amount would not classify for the fast-track.&lt;/p&gt;   
+&lt;p&gt;Then, we can exercise for a different amount value:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/04/Screenshot-2022-04-12-at-21.47.22-1024x601.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this case, beyond the expected improvement in the Risk Score prediction from the ML model, we classify for a &quot;fasttrack&quot; as the policy in the Decision Table prescribes.&lt;/p&gt;   
+&lt;p&gt;You can play with different values, showing how the Risk Score prediction is being affected and causing a different final decision.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;In this post, we have explored integrating a Decision Model using DMN with a ML predictive model. Machine Learning and Decision Models together can provide a pragmatic, and eXplainable, AI solution.&lt;/p&gt;   
+&lt;p&gt;Specifically, we have explored integrating the Drools DMN Engine with IBM Open Prediction Service. The advantage of this integration comes from the capability of OPS to interact with several ML providers!&lt;/p&gt;   
+&lt;p&gt;Finally, we have deployed the complete demo on the OpenShift Sandbox.&lt;/p&gt;   
+&lt;p&gt;What do you think of this integration demo?&lt;br&gt;Questions?&lt;/p&gt;   
+&lt;p&gt;Let us know in the comments below!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Using JavaScript and Power Fx with DMN</title>
+      <link>https://matteomortari.com/blog/2022/using-javascript-and-power-fx-with-dmn.html</link>
+      <pubDate>Fri, 25 Mar 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/using-javascript-and-power-fx-with-dmn.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/watch?v=-5VcMF40o_U&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this short update, I want to share with you about an &lt;em&gt;experimental&lt;/em&gt; feature to leverage the extensibility of the DMN specification to evaluate expressions using a plurality of expression languages, such as JavaScript, &lt;a href=&quot;https://github.com/microsoft/Power-Fx&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Power Fx&lt;/a&gt;, and potentially many more!&lt;/p&gt;   
+&lt;p&gt;For the running example in this post, let&apos;s use the Body Mass Index (BMI) calculation described in the &lt;a href=&quot;https://en.wikipedia.org/wiki/Body_mass_index&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Wikipedia page&lt;/a&gt;:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/CodeCogsEqn-2.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can classify the result of the calculation, based on a standard Decision Table:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-7.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The decision table has been simplified if compared to the original article from Wikipedia, but that&apos;s irrelevant for the scope of this example.&lt;/p&gt;   
+&lt;p&gt;The overall DRG of the DMN model looks like this:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-8.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As we expect, &quot;Mass&quot; and &quot;Height&quot; are the InputDatas of the model; then we calculate the BMI with a first Decision node. Finally, we classify the calculated BMI value, accordingly to the Decision Table above.&lt;/p&gt;   
+&lt;p&gt;The last step is to provide the expression for the &quot;Calculate BMI&quot; decision node.&lt;/p&gt;   
+&lt;p&gt;For example, using Power Fx idioms:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-9-1024x504.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;It would result in this final expression for the &quot;Calculate BMI&quot; decision node:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-10-1024x416.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this case, the resulting DMN model evaluates using two expression languages: Power Fx for the first Decision, and the default (FEEL) for the Decision Table.&lt;/p&gt;   
+&lt;p&gt;For another example, we could use idiomatic JavaScript:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/Screenshot-2022-03-24-at-16.03.49-1024x396.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this second case, the resulting DMN model evaluates using two expression languages: JavaScript for the first Decision, and again FEEL for the Decision Table.&lt;/p&gt;   
+&lt;h2&gt;Running the demo&lt;/h2&gt;   
+&lt;p&gt;We can now run the Kogito application.&lt;/p&gt;   
+&lt;p&gt;To demonstrate the BMI calculation, we naturally keep using the Swagger GUI:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img class=&quot;figure-img img-fluid&quot; src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/Screenshot-2022-03-24-at-16.12.46-1024x877.png&quot; alt=&quot;&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;If you are already accustomed in using DMN models with Kogito, you will have noticed there is basically no different in the way this system behaves from an external point of view.&lt;/p&gt;   
+&lt;p&gt;This is what we expect!&lt;/p&gt;   
+&lt;p&gt;We have now defined two DMN models, using a plurality of expression languages. However, our goal is to model our &lt;em&gt;decision services &lt;/em&gt;in the most convenient and effective way possible. In this case, for example, we have used Power Fx, or JavaScript for some calculations.&lt;/p&gt;   
+&lt;p&gt;The code of this demo for the curious, is available &lt;a href=&quot;https://github.com/tarilabs/dmn-js-powerfx-demo&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;Don&apos;t forget to check out the video linked above, for a live demonstration of this experimental capability!&lt;/p&gt;   
+&lt;p&gt;In this post, we have leveraged the extensibility of the DMN specification, in order to evaluate expressions using a plurality of expression languages. We have just used JavaScript and Power Fx with DMN!&lt;/p&gt;   
+&lt;p&gt;Questions?&lt;br&gt;Feedback?&lt;br&gt;Don&apos;t hesitate to let us know!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Content Based Routing with Quarkus and Kogito</title>
+      <link>https://matteomortari.com/blog/2022/content-based-routing-with-quarkus-and-kogito.html</link>
+      <pubDate>Wed, 9 Mar 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/content-based-routing-with-quarkus-and-kogito.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/nXyKM-xds2M&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;This is a second iteration of a &lt;a href=&quot;https://blog.kie.org/2021/06/intelligent-kafka-message-routing-using-drools-dmn-engine-and-apache-camel.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;previous post&lt;/a&gt;, where we implemented EIP patterns using just Drools and Apache Camel.&lt;/p&gt;   
+&lt;p&gt;In this post instead, I want to share with you how to implement a complete, end-to-end &lt;strong&gt;Content Based Routing&lt;/strong&gt; solution using &lt;a href=&quot;https://quarkus.io/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Quarkus&lt;/a&gt; as a developer platform, including: &lt;a href=&quot;https://www.drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN Engine&lt;/a&gt;, &lt;a href=&quot;https://kogito.kie.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kogito&lt;/a&gt;, &lt;a href=&quot;https://camel.apache.org/#apache-camel-projects&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Apache Camel&lt;/a&gt;, &lt;a href=&quot;https://www.atlasmap.io/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;AtlasMap&lt;/a&gt; and Apache Kafka as our message broker.&lt;/p&gt;   
+&lt;p&gt;I will make use of a &lt;strong&gt;Managed Service&lt;/strong&gt; offering for Kafka, which you can try for free yourself too, by using this link: &lt;a href=&quot;https://red.ht/trykafka&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://red.ht/trykafka&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://red.ht/trykafka&quot;&gt;https://red.ht/trykafka&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;I will also make use of the Red Hat Developer &lt;strong&gt;OpenShift Sandbox&lt;/strong&gt; to deploy the application; you can try for free yourself by using this link: &lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.redhat.com/developer-sandbox&quot;&gt;https://developers.redhat.com/developer-sandbox&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Content based routing overview&lt;/h2&gt;   
+&lt;p&gt;Here is the revised Enterprise Integration Pattern diagram of the flow, with the new components:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-1024x431.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    EIP Diagram of the Content Based Routing application 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The application keep the focus on routing healthcare-related messages; for this demo example, messages are routed accordingly to the following decision table rules:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-1.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    Message Routing rules in a DMN decision table 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The table above describes the rules of message routing in terms of the (business) domain model:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;the sending application&lt;/li&gt;
+ &lt;li&gt;the type of message&lt;/li&gt;
+ &lt;li&gt;the type of event&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;For the purpose of this demo, the examples are provided using HL7v2 as the &lt;strong&gt;technical format&lt;/strong&gt; for the message payload. You can read more about HL7v2 on the &lt;a href=&quot;http://www.hl7.org/implement/standards/product_brief.cfm?product_id=185&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;HL7 website&lt;/a&gt; and on this &lt;a href=&quot;https://cloud.google.com/healthcare-api/docs/concepts/hl7v2&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;tutorial page&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;In order to properly translate from the specific technical format HL7v2 into the domain model, we can make use of the AtlasMap capabilities of data-mapping. This allows the stakeholder involved in the content based routing application to more easily inspect and describe the rules, for instance. Here is a visual summary of the AltasMap intent combined with the DMN decision table:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-2-1024x497.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    Using AltasMap in combination with a DMN decision table 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In a &lt;a href=&quot;https://blog.kie.org/2022/01/data-enrichment-use-case-with-dmn-and-bpmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;separate post&lt;/a&gt; about data enhancement, I hinted at combining the capabilities of AltasMap with DMN; I hope this tutorial now provides a very pragmatic example!&lt;/p&gt;   
+&lt;h2&gt;Technical details&lt;/h2&gt;   
+&lt;p&gt;In this section, I want to highlight how the &lt;a href=&quot;https://camel.apache.org/manual/dsl.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Camel DSL&lt;/a&gt; allows to implement the EIP pattern very easily:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;from(&quot;direct:hl7&quot;)
+        .enrich(&quot;direct:label&quot;, aggregationStrategy)
+        .to(&quot;log:org.drools.demo?level=DEBUG&amp;amp;showAll=true&amp;amp;multiline=true&quot;)
+        .routingSlip(header(&quot;whereTo&quot;))
+        .transform(HL7.ack())
+        ;
+    
+    from(&quot;direct:label&quot;)
+        .unmarshal().hl7()
+        .to(&quot;atlasmap:atlasmap-mapping.adm&quot;).unmarshal().json()
+        .process(kogitoDMNEvaluate) // &amp;lt;== Rules as DMN decisions 
+        .setHeader(&quot;topicsHeader&quot;, simple(&quot;${body[topic names]}&quot;))
+    ;&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;As you can see, that&apos;s all needed in order to implement the Enterprise Integration Pattern in a Quarkus application, and integrate it with AltasMap and Kogito. You can access the source code at this git repository: &lt;a href=&quot;https://github.com/tarilabs/quarkus-content-based-routing&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://github.com/tarilabs/quarkus-content-based-routing&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://github.com/tarilabs/quarkus-content-based-routing&quot;&gt;https://github.com/tarilabs/quarkus-content-based-routing&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;Deployment&lt;/h2&gt;   
+&lt;p&gt;After setting up the Managed Kafka and OpenShift Sandbox accounts using the links provided above, the deployment is pretty straightforward.&lt;/p&gt;   
+&lt;p&gt;First, we create the intended Kafka topics on the Managed Kafka console.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-3-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    Creating the topic (queues) in the Managed Kafka 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Second, we deploy the content based routing Quarkus application using the OpenShift console.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-4-1024x576.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    The content based routing application now deployed on OpenShift 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Don&apos;t forget you can easily recreate the same setup yourself and for free, by using the links provided earlier in this post. For instance, I used the very same links myself in order to make sure the demo worked fine using free resources only.&lt;/p&gt;   
+&lt;p&gt;Finally, the deployment and setup is complete, and we can start to make use of our content based routing solution, by sending REST calls to the ingress endpoint; this can be used as a classic webhook or analogous to a &lt;a href=&quot;https://cds-hooks.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;CDS hook&lt;/a&gt;.&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2022/03/image-5-1024x577.png&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+  &lt;figcaption&gt;
+    Invoking the REST API with an EDI message payload in HL7v2 format, and it is routed to the correct queue 
+  &lt;/figcaption&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;To see a demonstration of this setup in action, don&apos;t forget to check out the video linked at the beginning of this post! For example, the video shows the application responding live to the incoming messages in order to route them to the expected Kafka topic.&lt;/p&gt;   
+&lt;p&gt;Finally, I hope this article is helpful to you as a pragmatic example on how to implement a complete content based routing solution using Quarkus, Drools DMN and Apache Camel.&lt;/p&gt;   
+&lt;p&gt;Feedback?&lt;br&gt;Questions?&lt;br&gt;Don&apos;t hesitate to let us know!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>Data enrichment use-case with DMN and BPMN</title>
+      <link>https://matteomortari.com/blog/2022/data-enrichment-use-case-with-dmn-and-bpmn.html</link>
+      <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2022/data-enrichment-use-case-with-dmn-and-bpmn.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/NHigoAz1TRY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this post I want to share an interesting use case of data enrichment, using DMN with BPMN and other open standards.&lt;/p&gt;   
+&lt;p&gt;The typical usage pattern for data enrichment is the following: a complex data structure containing several attributes is provided as input; based on some computations and decision results, the original structure is enriched with &lt;em&gt;additional&lt;/em&gt; attributes. In an even more complex scenario, already existing specific attributes are overridden with new values.&lt;/p&gt;   
+&lt;p&gt;Often this usage pattern is referred to as “mutability”, but speaking about mutability is an improper terminology to be used in the context of DMN; DMN is stateless and mandates that “&lt;em&gt;all decision logic is free of side-effects&lt;/em&gt;” (DMN Specification chapter 5.2.3) among other idempotent and deterministic requirements.&lt;/p&gt;   
+&lt;p&gt;Instead a more important aspect to focus on, while considering this use-case, is that Functional Programming has taught us powerful lessons which can be applied in this context: we can achieve the desired goal by pushing side-effects at the boundaries, or by adopting other FP strategies.&lt;/p&gt;   
+&lt;p&gt;In this post we will see how we don’t strictly need mutability features, in order to effectively achieve data enrichment.&lt;/p&gt;   
+&lt;p&gt;I will demonstrate the pragmatic implementation of this use-case, both by using DMN as a standalone knowledge asset, as well as combining the same DMN model with a BPMN process.&lt;/p&gt;   
+&lt;h2&gt;Introduction&lt;/h2&gt;   
+&lt;p&gt;For the remainder of this post, we will use a running example where the fundamental Domain Model is a structure dealing with an incoming request of Tech Support.&lt;/p&gt;   
+&lt;p&gt;This can be represented as a DMN ItemDefinition, shown in the screenshot below; we can also use the idiomatic Java Pojo representation, following the Kie v7 conventions:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/0R0kXRu9Uc80Wrg16a4a7AAu9wzsx56I3z4cQnbWj1lW2vE8qZcJihLkwIZ8BYDtGMlpKtYFUsOmV7m6umqQaClejI9-8Gj7APF8orjnGHoTg6aCkh15HPq6lle2kpWANvzeV5vP&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;For this example, we can notice most attributes are pertaining to the event of the support request being raised:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;  &quot;Support Request&quot; : {
+        &quot;full name&quot; : &quot;John Doe&quot;,
+        &quot;email&quot; : &quot;info@redhat.com&quot;,
+        &quot;mobile&quot; : &quot;+1&quot;,
+        &quot;mailing address&quot; : &quot;somewhere&quot;,
+        &quot;account&quot; : &quot;47&quot;,
+        &quot;premium&quot; : false,
+        &quot;area&quot; : &quot;tech&quot;,
+        &quot;description&quot; : &quot;app crashed&quot;
+      }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;all except for the &lt;strong&gt;priority&lt;/strong&gt; attribute.&lt;/p&gt;   
+&lt;p&gt;The goal of the business application is to process the support request, establish the appropriate priority level, and then produce a support request with the priority attribute now correctly valorized.&lt;/p&gt;   
+&lt;p&gt;While looking in details at this example, I will keep the decision logic simple and we will &lt;strong&gt;not&lt;/strong&gt; use any complex decision logic to actually determine the priority value; as mentioned, the focus of this post is the processing of the incoming payload, to produce a fully valorized support request, also including the actual priority value.&lt;/p&gt;   
+&lt;h2&gt;Strategy A: combine DMN with BPMN&lt;/h2&gt;   
+&lt;p&gt;A first approach is to combine DMN and BPMN for the best of both worlds: DMN should focus on the decision logic keeping an immutable and stateless approach, while BPMN is used to manage in a stateful manner the different stages of processing for the support request.&lt;/p&gt;   
+&lt;p&gt;The DMN model can focus on the decision logic to establish the appropriate Priority value, depending on the content of the incoming support request:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/v7pwBDYpuoEJJyVTa9eyv3apX0mafRB0-CUVhPE18sSAJ597vwTexvbsyAK4gBINSj2HXuf4Qk69qEVqXfl8MY5LFVu2DZihuQs_XgkfvAalk33Un411CHHFP6Exc7M5wNxjh2zk&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The current decision logic in the example right now is quite simplistic because as mentioned is not the most important aspect, but naturally can be further extended to have a more complex decision table, etc:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh3.googleusercontent.com/1uy8Qy-mezgcZfoF6xBeZI26G1L5aLSCjFD4Z3B6US9K49UCi0qyBc-fz3IC_bgMVvWWtOWRT8n2Xokns12wojnp6iDgSuusE3W9IlnuwVdc1xQElh_ZCm-iJoTD3eV1j-Xs471b&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Now we need to have as output almost the ~same structure we have received as input, and override it with the combination of the key-value pair for Priority, having value either “High” or “Medium”.&lt;/p&gt;   
+&lt;p&gt;We can use for this goal a BPMN process:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/Lu7JshhQCdxnFTmTmaaKylje3wF5a-xQ0lssHZ7Poxt_saxEAvsWNMccYDoLe1xo_clLTXvnJ4rT9H3QfE2G4m558fnCdY0aKAc1SGJHIux-LjvvdKmPRdL4qad1eFS3aCLaEYQp&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The process is started by receiving as input the support request payload, stored as a process variable named “request”.&lt;/p&gt;   
+&lt;p&gt;The first BPMN Task, named “Process Support Request”, is in charge of:&lt;/p&gt;   
+&lt;ol&gt; 
+ &lt;li&gt;Invoke the evaluation of the DMN model, passing the incoming support request (the “request” process variable) as input of the DMN evaluation.&lt;/li&gt; 
+ &lt;li&gt;Take the output decision of the DMN evaluation, “Determine Priority”, and assign it to a temporary process variable called “priority”.&lt;/li&gt; 
+ &lt;li&gt;Modify the “request” process variable, with the value now contained in the “priority” from step2.&lt;/li&gt; 
+&lt;/ol&gt;   
+&lt;p&gt;You can find more details about these three steps of the “Process Support Request” Task in the next section.&lt;/p&gt;   
+&lt;p&gt;Later, the “request” process variable is will be fully valorized as well in the priority attribute, so that can be used in the gateway, as one would naturally expect:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/EhbbWa1gfS-vPA9Vm40Vj1_HZM9Z3smfqtv5ZCXXCp1_0aYcSj4nH1CyIQxTTpbP5Ng_e_eJkWxQEkDj5o_0CT_Wis1rqE6Kc-7Isu7e2DAj0K4-cteEAwLZTLc5bGWepyrr3acy&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This has achieved the original requirements.&lt;/p&gt;   
+&lt;h3&gt;Details&lt;/h3&gt;   
+&lt;p&gt;The final step 3 of the “Process Support Request” BPMN Task in effect mutates the original structure; however, it is important to be noted that the &lt;em&gt;mutation&lt;/em&gt; happens indeed in the context of a BPMN process, which naturally allows for statefulness, mutations, side-effects, etc.&lt;/p&gt;   
+&lt;p&gt;In this strategy, we have kept the DMN model fully focused on the actual decision, that is the determination of the &lt;strong&gt;priority&lt;/strong&gt; for the given support request.&lt;/p&gt;   
+&lt;p&gt;Currently this is implemented on jBPM Kie v7 with the three steps described above, meaning it can be achieved already today by:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;Input “Support Request” &amp;lt;- request (process variable)
+    Output “Determine Priority” -&amp;gt; priority (process variable)&lt;/code&gt;&lt;/pre&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/YvWMp_9rYsu7oxUUiGbcj2mXChF7QJiWcIGc6wC0--jRbV1Ijoy-PkvkiQF6CMVOboSesEVDIcJOLFvqOzcbNJ9_ZV_MLMq_-PN-7qcazE2cDojsGpfg-SvKgxhr9v-gC3lpCYfA&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;Please notice in the screenshot both the assignment in the foreground to a temporary process variable name “priority” (step2) and in the background the modification of the support request in the attribute “priority” using the On Exit Action script (step3).&lt;/p&gt;   
+&lt;p&gt;Step2 and Step3 of the “Process Support Request” Task, &lt;em&gt;in the future&lt;/em&gt;, could be combined in the Data Assignment, directly in the Task’s “Data I/O”, when support for expressions will be fully implemented.&lt;/p&gt;   
+&lt;p&gt;Something that &lt;em&gt;could&lt;/em&gt; potentially look like this:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;Input “Support Request” &amp;lt;- request (process variable)
+    Output “Determine Priority” -&amp;gt; ${request.priority} (expression)&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;Support for expressions is currently being discussed for FEEL in future iterations and might achieve something similar.&lt;/p&gt;   
+&lt;h2&gt;Strategy B: using DMN standalone&lt;/h2&gt;   
+&lt;p&gt;Another approach is to use DMN only; in this case we cannot modify the original InputData value, but we can definitely create an exact copy of the input payload structure but altered only on the desired attribute “priority”.&lt;/p&gt;   
+&lt;p&gt;&lt;strong&gt;Naturally we want to do this without having to replicate manually all the original attributes&lt;/strong&gt;, which would be extremely tedious!&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;NOTE: this approach is still fully compliant with the DMN Specification semantics, meaning free of side-effects and stateless.&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;We introduce a new built-in function called “&lt;kbd&gt;context put&lt;/kbd&gt;”: this function takes 3 parameters:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;“context” of type context (a composite structure in DMN terms)&lt;/li&gt; 
+ &lt;li&gt;“key” of type string&lt;/li&gt; 
+ &lt;li&gt;“value” of Any type&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;and produces a resulting context altered in the key-value pair, or enriched of the new key-value pair.&lt;/p&gt;   
+&lt;p&gt;For example:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;context put({ name: &quot;John Doe&quot; }, &quot;age&quot;, 47)&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;would result in:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{ name: &quot;John Doe&quot;, age: 47 }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;You might have some ideas by now about where this is about to go :)&lt;/p&gt;   
+&lt;p&gt;We can achieve something similar to:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;context put( &amp;lt;request&amp;gt; , &quot;priority&quot;, ... )&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;This in fact it is pretty easy, by taking the previous DMN model and adding just one more Decision to keep the clarity of the decision logics in the DRG:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/vvnpuywq4ZfEkgZ5-ezd4pHeoVFSgSAQS6ic1xa4-8imlp7bNjxXoyNKf7dJS560nr0D0Jhnqfq1cVBeaHfsyJXfnKgZhsx06QXG7jA7C_FLEHzC7BaWUPqDyEB3AY2wxOXFURKx&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this DRD picture I’ve used the same colour to highlight both nodes “Support Request” and “Processed Request” having the same typeRef, meaning both nodes conform to the ItemDefinition “tSupportRequest” originally shown at the beginning of this post.&lt;/p&gt;   
+&lt;p&gt;The decision logic for “Processed Request” is super simple, meaning:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/W184VO4jLBmuoQRjS8zIgMlC9-kSBfVGdkZbdEmIwFJ7k1IWEzk9EaWVx9ZJf5JnphM4h4K2X6s7ZcB-DLAfD4VMl6ZapvZDYuIVuEMYieJcBVviPnZUGbxSAtxGTal4WQ-SHT5V&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;As we have learnt, that means: produce the same structure of the node “Support Request” but altered (or appended) with a new key-value pair, having key “priority” and having value from the “Determine Priority” sub-decision.&lt;/p&gt;   
+&lt;p&gt;So we have achieved the same goal, following another strategy now; we have as output Decision the same structure we see in one of the InputData, but valorized in the new “priority” attribute value!&lt;/p&gt;   
+&lt;p&gt;This would also work in a totally equivalent BPMN process too:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/dS6l_gotFEabCrYVRmwll6o34yCCvhJ8cqS1OdyULs56Nscgaf9tACCWgtWSEJ6HV_3J__2Wy-ayEvpLMenLUbfjmmQPTXEV_obMiP6OA696cONTwa186mFYIMf6UrlTy8GclUYx&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This BPMN process is now simpler in the Task&apos;s Data I/O Assignments, as we no longer need the previously required Step2+Step3.&lt;/p&gt;   
+&lt;p&gt;The BPMN &quot;Process Support Request&quot; Task now simply uses:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;Input “Support Request” &amp;lt;- request (process variable)
+    Output “Processed Request” -&amp;gt; request (process variable)&lt;/code&gt;&lt;/pre&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh5.googleusercontent.com/Fzk0x1YW38HL6cYgz3R5U1wYnuf7SKgaI2K3avmFowanngvfzJgLFBEHbVpyQFwB6Bb1xFsczQUcVZIEevZfFxV-biYCEalocS_JwQBF1kdfj3ShniE8o3C3VDS7aXvI_fIgwW1F&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;This works perfectly thanks to the awesome contributions by Anton Giertli clarifying requirements and work by Enrique Gonzalez Martinez with &lt;a href=&quot;https://issues.redhat.com/browse/JBPM-9783&quot;&gt;JBPM-9783&lt;/a&gt;, allowing a better integration of the DMN results with the jBPM’s BRE Task!&amp;nbsp;&lt;/p&gt;   
+&lt;h3&gt;Details&lt;/h3&gt;   
+&lt;p&gt;Adopting the same JSON originally presented at the beginning of this post, we can use that as a DMN input payload and check the results using this DMN model alone.&lt;/p&gt;   
+&lt;p&gt;DMNContext of INPUT:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+      &quot;Support Request&quot; : {
+        &quot;account&quot; : &quot;47&quot;,
+        &quot;email&quot; : &quot;info@redhat.com&quot;,
+        &quot;mobile&quot; : &quot;+1&quot;,
+        &quot;premium&quot; : false,
+        &quot;area&quot; : &quot;tech&quot;,
+        &quot;description&quot; : &quot;app crashed&quot;,
+        &quot;priority&quot; : null,
+        &quot;full name&quot; : &quot;John Doe&quot;,
+        &quot;mailing address&quot; : &quot;somewhere&quot;
+      }
+    }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;DMNResult of OUTPUT:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;{
+      &quot;Support Request&quot; : {
+        &quot;account&quot; : &quot;47&quot;,
+        &quot;email&quot; : &quot;info@redhat.com&quot;,
+        &quot;mobile&quot; : &quot;+1&quot;,
+        &quot;premium&quot; : false,
+        &quot;area&quot; : &quot;tech&quot;,
+        &quot;description&quot; : &quot;app crashed&quot;,
+        &quot;priority&quot; : null,
+        &quot;full name&quot; : &quot;John Doe&quot;,
+        &quot;mailing address&quot; : &quot;somewhere&quot;
+      },
+      &quot;Determine Priority&quot; : &quot;Medium&quot;,
+      &quot;Processed Request&quot; : {
+        &quot;area&quot; : &quot;tech&quot;,
+        &quot;premium&quot; : false,
+        &quot;mobile&quot; : &quot;+1&quot;,
+        &quot;description&quot; : &quot;app crashed&quot;,
+        &quot;mailing address&quot; : &quot;somewhere&quot;,
+        &quot;full name&quot; : &quot;John Doe&quot;,
+        &lt;strong&gt;&quot;priority&quot; : &quot;Medium&quot;&lt;/strong&gt;,
+        &quot;account&quot; : &quot;47&quot;,
+        &quot;email&quot; : &quot;info@redhat.com&quot;
+      }
+    }&lt;/code&gt;&lt;/pre&gt;   
+&lt;p&gt;This &quot;&lt;kbd&gt;context put&lt;/kbd&gt;&quot; function is not part of the DMN v1.3 specification, so at the time of writing this is to be considered an experimental and extended built-in function, even if it is actually provided as part of the Drools DMN Engine out of the box. The DMN Revision Task Force group might decide to eventually adopt this in a future release of the specification. In fact, this blog post takes inspiration from drawing additional consequences after a Vendor proposal raised similar use-case in the DMN RTF Group: I believe this is a very encouraging demonstration of the power of open standards and their communities, where innovations are generated by the collaboration of different Vendors! Previously, we have been internally experimenting with a similar concept called “&lt;kbd&gt;lambda-update(object,[fields])&lt;/kbd&gt;”, but the ultimate approach presented with this post is much simpler.&lt;/p&gt;   
+&lt;p&gt;In the meantime of that final DMN approval, the usage of this extended built-in function is to be considered experimental.&lt;/p&gt;   
+&lt;p&gt;The DMNContext in the dmn output results contains as expected the two structures, and they both conform to the ItemDefinition defining the content of said structure, as expected. On the Drools DMN Engine Java API however as we have learnt, they are &lt;strong&gt;not&lt;/strong&gt; the same &lt;em&gt;instances&lt;/em&gt; and they are &lt;em&gt;not necessarily&lt;/em&gt; the same Java class: it could be the case the input is supplied as a Pojo and the output resulting as a java.util.Map, or it could also work by having a java.util.Map as input and again as output. Naturally in any case, either the Pojo or either the java.util.Map must conform (or do conform automatically when produced by the engine) to the applicable ItemDefinition(s), meaning they include all the properties expected from the ItemDefinition’s components. This is an implementation detail of the embedded Java API, and it is completely transparent when dealing with REST APIs, such as those code generated on a Kogito based application, or by leveraging the Kie Server’s “Next generation DMN model specific endpoints” (&lt;a href=&quot;https://issues.redhat.com/browse/BAPL-1787&quot;&gt;BAPL-1787&lt;/a&gt;). This is also completely transparent when integrating DMN inside a jBPM BRE Task, as mentioned thanks to the improvement of (&lt;a href=&quot;https://issues.redhat.com/browse/JBPM-9783&quot;&gt;JBPM-9783&lt;/a&gt;).&lt;/p&gt;   
+&lt;p&gt;The same decision logic for the new Decision node could have equivalently be expressed with a boxed function invocation too:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh6.googleusercontent.com/fYJ6x2siAdKXz9dBdZ1xIQGlD3M1dIUxD_Ngn-D9yFKwd2mPMhC88D9OMbHgaJ9gkY_Brf4MZQv0OGewgofM5Kz9lpJjhpuYuRQfQtzarqqNDrkdPzgvAxo717OuFy20SXSZLh5F&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;The same DMN model would indeed code generate the expected REST API endpoint definitions on a Kogito based application too:&lt;/p&gt;   
+&lt;div class=&quot;row justify-content-center text-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://lh4.googleusercontent.com/VQcNad0IW3e7bqvJh0zBjIrsDxxnCGJ9EhfYRaVLdNshGd5QgfO6GgRlbqhsWtrXt1SjJOitb9ylyKR8kj2UT1xUi71cLMBUQyCobrdtwqOnfDO2maEZuMRHeYRZf9sRSXRwkk8T&quot; alt=&quot;&quot; class=&quot;figure-img img-fluid&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;p&gt;We can notice the payload structure both in Request and Response of the Swagger / OpenAPI is the expected one.&lt;/p&gt;   
+&lt;h2&gt;What about data transformation?&lt;/h2&gt;   
+&lt;p&gt;This example naturally draws even closer to additional use-cases which can be integrated in the context of DMN implementation, such as &lt;strong&gt;data transformation&lt;/strong&gt;.&lt;/p&gt;   
+&lt;p&gt;The power of DMN can be fully exploited when using its notation to describe &lt;em&gt;business rules and decision logic&lt;/em&gt;, and while it can be also employed to “transform” data in a way similarly described in this post, using DMN purely for data transformation may not always be the best solution. For the use-case dealing only with pure data transformation requirements, we suggest you also take a look at &lt;a href=&quot;http://www.atlasmap.io&quot;&gt;AtlasMap&lt;/a&gt;, a data mapping solution with interactive web based user interface.&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;/h2&gt;   
+&lt;p&gt;We have learnt how to leverage open standards in the best possible way to achieve the desired goals, even better by considering two very pragmatic strategies:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;Combine DMN with the power of BPMN&lt;/li&gt; 
+ &lt;li&gt;Use DMN standalone and an extended feature&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;We have also seen how integrations and collaborations are foundational elements which allowed us to achieve these important results!&lt;/p&gt;   
+&lt;p&gt;Demo code material is available, which can be used as reference for the content presented in this post, at: &lt;a href=&quot;https://github.com/tarilabs/dmn-data-enrichment-20210804&quot;&gt;https://github.com/tarilabs/dmn-data-enrichment-20210804&lt;/a&gt;&amp;nbsp;&lt;/p&gt;   
+&lt;p&gt;What do you think of these approaches? Let us know in the comments down below!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>How to Capture Business Decisions using DMN: Introduction to Some Basic Patterns and Their Value</title>
+      <link>https://matteomortari.com/blog/2021/how-to-capture-business-decisions-using-dmn-introduction-to-some-basic-patterns-and-their-value.html</link>
+      <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/how-to-capture-business-decisions-using-dmn-introduction-to-some-basic-patterns-and-their-value.html</guid>
+      	<description>
+	&lt;p&gt;I am very glad for the opportunity to have &lt;a href=&quot;https://www.youtube.com/watch?v=0hQEMMRVHjA&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;presented at IIBA this session on DMN patterns&lt;/a&gt; with Denis Gagné CEO &amp;amp; CTO of Trisotech!&lt;/p&gt;   
+&lt;ol&gt; 
+ &lt;li&gt;how business analysts can use the DMN open-standard to capture the requirements for operational business decisions&lt;/li&gt;   
+ &lt;li&gt;some of the recurring basic patterns in modeling (Q&amp;amp;A, Scoring, Classification and Categorisation, Ranking..)&lt;/li&gt;   
+ &lt;li&gt;how to transform these decision models into actual &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;executable business decision services&lt;/a&gt;&lt;/li&gt; 
+&lt;/ol&gt;   
+&lt;p&gt;In the following you can find the recording, as well as a brief summary of some key highlights for the patterns.&lt;/p&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Webinar recording&lt;/h2&gt;   
+&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio-16x9 ratio&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/watch?v=0hQEMMRVHjA IIBA Webinar recording&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;Businesses continuously make Business Decisions. Some of these decisions are strategic business decisions, but a lot are operational business decisions taken every day within every transaction. With the ever-increasing number of laws and regulations that may apply or regulate these operational business decisions, business analysts are more often called upon to document/specify how these business decisions are to be taken in order to provide transparency and to offer auditable traces of the actual decisions taken. In this insightful session, we will introduce how business analysts can use DMN to capture the requirements for operational business decisions, some of the recurring basic patterns in modeling these business decisions and will even show how to transform these decision models into actual executable business decision services.&lt;/p&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Pattern: Q&amp;amp;A&lt;/h2&gt;   
+&lt;p&gt;Not to be confused with the generally applicable multiple-choice paradigm, on of the key aspects of DMN models is that each Decision is meant to answer a question, usually a business related question or a domain question.&lt;/p&gt;   
+&lt;p&gt;This Q&amp;amp;A pattern is a built-in of the DMN standard, thanks to the optional attributes &quot;&lt;em&gt;question&lt;/em&gt;&quot; and &quot;&lt;em&gt;allowedAnswers&lt;/em&gt;&quot;, which business analyst and subject matter expert modelers often use to describe using natural language to complement the modeled decision logic semantic.&lt;/p&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Pattern: Scoring&lt;/h2&gt;   
+&lt;p&gt;Input variables, described as InputData, are often analysed and weighted into a score, typically to be later used in the DMN model with other patterns (such as categorisation) or directly with decision logic such as thresholds.&lt;/p&gt;   
+&lt;p&gt;Examples:&lt;/p&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/image-2-1024x776.png&quot; alt=&quot;&quot; class=&quot;img-fluid figure-img&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/image-3-1024x596.png&quot; alt=&quot;&quot; class=&quot;img-fluid figure-img&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Pattern: Classification&lt;/h2&gt;   
+&lt;p&gt;In this pattern, model variables are recognized, differentiated and classified to be better understood; usually this is done to verbalise classes and often using a Score as an input (ref above).&lt;/p&gt;   
+&lt;p&gt;It is important to be aware of several types of classification:&lt;/p&gt;   
+&lt;ul&gt; 
+ &lt;li&gt;&lt;strong&gt;Classification&lt;/strong&gt;: separating based on class labels&lt;/li&gt;   
+ &lt;li&gt;&lt;strong&gt;Clustering&lt;/strong&gt;: separating based similarities without class labels&lt;/li&gt;   
+ &lt;li&gt;&lt;strong&gt;Categorization&lt;/strong&gt;: subsuming classes (to realize a taxonomy)&lt;/li&gt;   
+ &lt;li&gt;&lt;strong&gt;Segmentation&lt;/strong&gt;: complete and disjunct categorization&lt;/li&gt; 
+&lt;/ul&gt;   
+&lt;p&gt;Examples:&lt;/p&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/image-4.png&quot; alt=&quot;&quot; class=&quot;img-fluid figure-img&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/image-5-1024x258.png&quot; alt=&quot;&quot; class=&quot;img-fluid figure-img&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Pattern: Ranking&lt;/h2&gt;   
+&lt;p&gt;In this pattern, the position, or rank, of each item in a collection is determined. This pattern is usually a bit more complex to implement if compared to the previous one, requiring iteration with sorting. Fortunately the DMN standard gives all the tools to implement this pattern more easily!&lt;/p&gt;   
+&lt;p&gt;For example:&lt;/p&gt;   
+&lt;div class=&quot;row text-center justify-content-center&quot;&gt;
+ &lt;figure class=&quot;figure&quot;&gt; 
+  &lt;img src=&quot;https://blog.kie.org/wp-content/uploads/2021/06/image-6-1024x493.png&quot; alt=&quot;&quot; class=&quot;img-fluid figure-img&quot;&gt; 
+ &lt;/figure&gt;
+&lt;/div&gt;   
+&lt;h2 class=&quot;wp-block-heading&quot;&gt;Transform DMN models into executable business decision services&lt;/h2&gt;   
+&lt;p&gt;Have you found this content interesting? Don&apos;t forget a great advantage of DMN models is that they can be &lt;em&gt;immediately&lt;/em&gt; deployed as executable services, thanks to the &lt;a href=&quot;https://drools.org/learn/dmn.html&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Drools DMN engine&lt;/a&gt; and &lt;a href=&quot;https://kogito.kie.org/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;Kogito&lt;/a&gt;!&lt;/p&gt;
+
+	</description>
+    </item>
+    <item>
+      <title>a KIE JBang! catalog</title>
+      <link>https://matteomortari.com/blog/2021/a-kie-jbang-catalog.html</link>
+      <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2021/a-kie-jbang-catalog.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/gdE5Nb5gT34&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;   
+&lt;p&gt;In this episode, I want to share with you about an experimental &lt;a href=&quot;https://www.jbang.dev/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;JBang&lt;/a&gt; catalog to quickly operate some KIE capabilities such as DMN and FEEL, directly on the Command Line!&lt;/p&gt;   
+&lt;h2&gt;What is JBang!?&lt;/h2&gt;   
+&lt;p&gt;JBang! is a powerful command line and shell capability, allowing you to run jsh and Java &lt;span style=&quot;text-decoration: underline;&quot;&gt;source code&lt;/span&gt; as a script.&lt;/p&gt;   
+&lt;p&gt;
+ &lt;meta charset=&quot;utf-8&quot;&gt;JBang offers a great advantage with Java 8 compatibility and a very smart way to handle dependencies directly within the source of the scripts. You can read more about how 
+ &lt;meta charset=&quot;utf-8&quot;&gt;JBang facilitates Developers, but also Students and Educators create, edit, and run self-contained source-only Java programs &lt;a href=&quot;https://www.jbang.dev/&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;on the Jbang! website&lt;/a&gt;.&lt;/p&gt;   
+&lt;p&gt;You only need 
+ &lt;meta charset=&quot;utf-8&quot;&gt;JBang to be installed on your system in order to follow the steps shown in the video and summarised in this post.&lt;/p&gt;   
+&lt;h2&gt;DMN&lt;/h2&gt;   
+&lt;p&gt;You can use the &lt;kbd&gt;jbang dmn@kiegroup&lt;/kbd&gt; alias to evaluate a&amp;nbsp;&lt;a href=&quot;https://drools.org/learn/dmn.html&quot;&gt;DMN model&lt;/a&gt;&amp;nbsp;using the Drools DMN Engine:&lt;/p&gt;   &lt;a href=&quot;https://asciinema.org/a/433150?autoplay=1&amp;amp;speed=2&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://asciinema.org/a/433150.svg&quot; class=&quot;img-fluid&quot;&gt;&lt;/a&gt;   
+&lt;p&gt;The script takes as input a DMN mode file, and a DMN Context expressed as JSON. It produces as output a JSON of the evaluated DMN result context.&lt;/p&gt;   
+&lt;p&gt;As with most common command line utilities, you can issue &lt;kbd&gt;--help&lt;/kbd&gt; to get usage help information:&lt;/p&gt;   
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;jbang dmn@kiegroup --help&lt;/code&gt;&lt;/pre&gt;   
+&lt;h2&gt;Converter for Excel (.xls/.xlsx) files containing DMN decision tables&lt;/h2&gt;   
+&lt;p&gt;You can use the &lt;kbd&gt;jbang xls2dmn@kiegroup&lt;/kbd&gt; alias to convert Excel (.xls/.xlsx) files containing&amp;nbsp;&lt;a href=&quot;https://drools.org/learn/dmn.html&quot;&gt;DMN decision tables&lt;/a&gt;&amp;nbsp;using the Drools DMN Engine experimental converter:&lt;/p&gt;   &lt;a href=&quot;https://asciinema.org/a/433167?autoplay=1&amp;amp;speed=2&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://asciinema.org/a/433167.svg&quot; class=&quot;img-fluid&quot;&gt;&lt;/a&gt;   
+&lt;p&gt;For more details about the Converter and the conventions to be used in the Excel file, please reference the&amp;nbsp;&lt;a href=&quot;https://github.com/kiegroup/drools/tree/main/kie-dmn/kie-dmn-xls2dmn-cli#readme&quot;&gt;Converter documentation&lt;/a&gt;.&lt;/p&gt;   
+&lt;h2&gt;FEEL&lt;/h2&gt;   
+&lt;p&gt;You can use the &lt;kbd&gt;jbang feel@kiegroup&lt;/kbd&gt; alias to evaluate a&amp;nbsp;&lt;a href=&quot;https://drools.org/learn/dmn.html&quot;&gt;FEEL expression&lt;/a&gt;&amp;nbsp;using the Drools DMN Engine.&lt;/p&gt;   
+&lt;p&gt;This script takes as input a FEEL expression (as a string) and it produces a FEEL representation of the result of evaluating the expression.&lt;/p&gt;   &lt;a href=&quot;https://asciinema.org/a/433154?autoplay=1&amp;amp;speed=2&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://asciinema.org/a/433154.svg&quot; class=&quot;img-fluid&quot;&gt;&lt;/a&gt;   
+&lt;p&gt;This jBang alias can be very handy when you want to quickly try out some FEEL expressions, using the command line for additional fun!&lt;/p&gt;   
+&lt;h2&gt;Conclusions&lt;a href=&quot;https://github.com/kiegroup/jbang-catalog#converter-for-excel-xlsxlsx-files-containing-dmn-decision-tables&quot;&gt;&lt;/a&gt;&lt;/h2&gt;   
+&lt;p&gt;You can reference the video embedded with this post to get an overview of how to use this JBang! catalog. Don&apos;t forget to checkout the &lt;a href=&quot;https://github.com/kiegroup/jbang-catalog#readme&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;README in the repository&lt;/a&gt; for the full details.&lt;/p&gt;   
+&lt;p&gt;For more information on JBang, see:&lt;/p&gt;   
+&lt;ul&gt;
+ &lt;li&gt;&lt;a href=&quot;https://www.jbang.dev/documentation/guide/latest/installation.html&quot;&gt;Installation&lt;/a&gt;&lt;/li&gt;
+ &lt;li&gt;&lt;a href=&quot;https://www.jbang.dev/documentation/guide/latest/usage.html&quot;&gt;Usage&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;   
+&lt;p&gt;Try it out today!&lt;/p&gt;   
+&lt;p&gt;Go to: https://github.com/kiegroup/jbang-catalog&lt;/p&gt;   
+&lt;p&gt;Don&apos;t forget to let us know your feedback using the &lt;a href=&quot;https://kogito.kie.org/community/&quot;&gt;Kogito community&lt;/a&gt; channels!&lt;/p&gt;
+
+	</description>
+    </item>
     <item>
       <title>Integrating DMN Validation on BC, Maven, Kogito, ...and beyond!</title>
       <link>https://matteomortari.com/blog/2021/integrating-dmn-validation-on-bc-maven-kogito-and-beyond.html</link>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" >
+    <meta content="Managing exceptional rules is easy, thanks to Drools and Kogito! In this use-case, we have a base business process and a default knowledge base with rules, which can be overridden by specific ..." name="description"> 
+    <title>Exceptional rules, with Drools and Kogito</title>
+    <link rel="canonical" href="https://blog.kie.org/2023/01/exceptional-rules-with-drools-and-kogito.html" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+.blog-header {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+}
+    </style>
+</head>
+<body>	
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-lg">
+    <div class="container">
+      <a href="https://matteomortari.com" class="navbar-brand d-flex align-items-center">
+        <strong>matteomortari.com</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main><section class="my-2 py-5 container">
+	<div class="page-header">
+		<h1 class="blog-header">Exceptional rules, with Drools and Kogito</h1>
+	</div>
+
+	<p><em>14 January 2023</em></p>
+
+	<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/WGpjuietqmw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>Managing exceptional rules is easy, thanks to Drools and Kogito!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/01/image-4.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>In this use-case, we have a <em>base</em> business process and a <em>default</em> knowledge base with rules, which can be overridden by specific entities or departments as needed.</p>   
+<p>We actually have several architectural options we could implement!</p>   
+<p>The simplest architectural option I can think about, draws inspiration from this book by Alan Fish:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/01/image-1.png" alt="" class="figure-img img-fluid"> 
+  <figcaption class="wp-element-caption"> <sub>"Knowledge Automation: How to Implement Decision Management in Business Processes"<br>Book by Alan N. Fish</sub> 
+  </figcaption> 
+ </figure>
+</div>   
+<p>which is a great book by the way if you <em>also</em> want to understand the main ideas prequel to the DMN standard!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/01/image-3.png" alt="" class="figure-img img-fluid"> 
+  <figcaption class="wp-element-caption"> <sub>Exceptional rules using only DMN</sub> 
+  </figcaption> 
+ </figure>
+</div>   
+<p>In a decision node in DMN, we check if any exception is applicable, and we collect the exceptions in a list.</p>   
+<ul> 
+ <li>If the exception list is <em>empty</em>, we apply the default knowledge and rules.</li>   
+ <li>Otherwise, we apply the rules related to the <em>most relevant</em> exceptions from the list.</li> 
+</ul>   
+<p>You may substitute the BKM nodes with Decision Service, say coming from other DMN models!</p>   
+<p>Another option is to model this with a combination of BPMN and DMN and rules, the idea is similar:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/01/image-5.png" alt="" class="figure-img img-fluid"> 
+  <figcaption class="wp-element-caption"> <sub>Managing exceptional rules with BPMN and DMN</sub> 
+  </figcaption> 
+ </figure>
+</div>   
+<p>The default branch applies the default knowledge base and would be followed, <em>unless</em> in the predetermination task we have evaluated we must follow one of the exceptional types of branches.</p>   
+<p>A final option would be to deploy each knowledge base –the default one, the different exceptional ones– each as its own Kogito microservice on a cloud native environment such as Kubernetes:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/01/image-9-1024x621.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>Then, you can orchestrate them using a Serverless Workflow, which will be in charge of invoking the needed cloud-native decision service.</p>   
+<p>As you have seen, managing exceptional rules is easy, thanks to Drools and Kogito!</p>
+
+
+</section>
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Matteo Mortari. All rights reserved
+      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
+      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
+      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
+      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
+</html>

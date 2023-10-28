@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" >
+    <meta content="This short tutorial walks you through the configuration and deployment of a simple Drools serverless application, including autoscaling with scale to zero, thanks to Kogito, Quarkus, OpenShift ..." name="description"> 
+    <title>Serverless Drools in 3 steps: Kogito, Quarkus, Kubernetes and Knative!</title>
+    <link rel="canonical" href="https://blog.kie.org/2022/08/serverless-drools-in-3-steps-kogito-quarkus-kubernetes-and-knative.html" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+.blog-header {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
+}
+    </style>
+</head>
+<body>	
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-lg">
+    <div class="container">
+      <a href="https://matteomortari.com" class="navbar-brand d-flex align-items-center">
+        <strong>matteomortari.com</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main><section class="my-2 py-5 container">
+	<div class="page-header">
+		<h1 class="blog-header">Serverless Drools in 3 steps: Kogito, Quarkus, Kubernetes and Knative!</h1>
+	</div>
+
+	<p><em>02 August 2022</em></p>
+
+	<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/KGXJ_bEyTmo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>This short tutorial walks you through the configuration and deployment of a simple <a href="https://www.drools.org/" target="_blank" rel="noreferrer noopener">Drools</a> serverless application, including autoscaling with scale to zero, thanks to <a href="https://kogito.kie.org/" target="_blank" rel="noreferrer noopener">Kogito</a>, <a href="https://quarkus.io/" target="_blank" rel="noreferrer noopener">Quarkus</a>, OpenShift Serverless with Kubernetes and <a href="https://knative.dev/" target="_blank" rel="noreferrer noopener">Knative</a>!</p>   
+<h2 id="step1">Step 1: Drools app creation with code.quarkus.io</h2>   
+<p>To generate the application as shown in the video, you can use this link: <a href="https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;e=resteasy-jackson&amp;e=kubernetes&amp;e=container-image-jib" target="_blank" rel="noreferrer noopener"></a><a href="https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;e=resteasy-jackson&amp;amp;e=kubernetes&amp;amp;e=container-image-jib"></a><a href="https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;e=resteasy-jackson&amp;amp;amp;e=kubernetes&amp;amp;amp;e=container-image-jib"></a><a href="https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;amp;e=resteasy-jackson&amp;amp;amp;amp;e=kubernetes&amp;amp;amp;amp;e=container-image-jib">https://code.quarkus.io/?e=org.kie.kogito%3Akogito-quarkus-decisions&amp;amp;amp;amp;e=resteasy-jackson&amp;amp;amp;amp;e=kubernetes&amp;amp;amp;amp;e=container-image-jib</a></p>   
+<p>The link will automatically populate for you the basic extensions needed to follow this tutorial.</p>   
+<h2>Step 2: maintain configuration</h2>   
+<p>In the <code>application.properties</code> file, you need to maintain a couple of required configuration, following this guideline:</p>   
+<pre class="wp-block-code"><code>quarkus.kubernetes.deployment-target=knative
+    
+    quarkus.container-image.registry=quay.io
+    quarkus.container-image.group=&lt;your own account&gt;</code></pre>   
+<p>You may decide for the Container Image Registry to opt instead for <code>docker.io</code> or similar, and you will need to configure <a href="https://quarkus.io/guides/container-image#container-image-options" target="_blank" rel="noreferrer noopener">your own account credentials</a>.</p>   
+<h2>Step 3: deploy your Drools serverless app 🚀</h2>   
+<p>To deploy on Kubernetes, my preference is to deliberately publish a Container Image on a Registry; to follow this strategy, you just need to issue a couple of commands on the terminal.</p>   
+<p>The first command will produce a Container Image for our Drools serverless application, and publish it on the Registry:</p>   
+<pre class="wp-block-code"><code>mvn clean package -Dquarkus.container-image.push=true</code></pre>   
+<p>Then, the second command will effectively deploy that image on the OpenShift cluster:</p>   
+<pre class="wp-block-code"><code>kubectl apply -f target/kubernetes/knative.yml</code></pre>   
+<p>Thanks to Knative, we have autoscaling including autoscale-to-zero, as it's shown in the video!</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2022/08/Shotcut_00_06_05_900-1024x576.png" alt="Autoscale to zero in action on the Drools serverless app" class="figure-img img-fluid"> 
+  <figcaption class="wp-element-caption">
+    Autoscale to zero in action, for the Drools serverless app 
+  </figcaption> 
+ </figure>
+</div>   
+<p>Note: if you are using Windows PowerShell, don't forget to properly escape the commands, for instance on PowerShell:</p>   
+<pre class="wp-block-code"><code>mvn clean package "-Dquarkus.container-image.push=true"</code></pre>   
+<p>You can pause the video linked above, to follow step-by-step the commands using Windows ;)</p>   
+<h2>Bonus: Swagger UI OpenAPI</h2>   
+<p>If you want to use Swagger UI and the OpenAPI web based GUI in your deployed app, simply add <code>quarkus-smallrye-openapi</code> in the <a href="#step1">extensions from step1</a>, and then maintain the <code>application.properties</code> configuration:</p>   
+<pre class="wp-block-code"><code>quarkus.swagger-ui.always-include=true</code></pre>   
+<h2>Want to learn more?</h2>   
+<p>We hope you enjoyed this lighthearted tutorial 😄</p>   
+<p>Did you know that formal training is available from Red Hat? <a href="https://www.redhat.com/en/services/training/do244-developing-applications-with-red-hat-openshift-serverless-and-knative" target="_blank" rel="noreferrer noopener">Developing Applications with Red Hat OpenShift Serverless and Knative (DO244)</a> teaches you how to develop, deploy, and auto-scale event driven serverless applications on the Red Hat OpenShift Container Platform. Read the course page to <a href="https://www.redhat.com/en/services/training/do244-developing-applications-with-red-hat-openshift-serverless-and-knative" target="_blank" rel="noreferrer noopener">learn more</a>.</p>   
+<h2>Conclusions</h2>   
+<p>We have create a simple Drools serverless app with just 3 steps thanks to Kogito and Quarkus; then, thanks to OpenShift Serverless based on Kubernetes and Knative capabilities, we have autoscaling applied, including scale-to-zero.</p>   
+<p>You can use your own Kubernetes cluster while following this tutorial, but don't forget you can use a free <a href="https://developers.redhat.com/developer-sandbox" target="_blank" rel="noreferrer noopener">OpenShift Sandbox</a> to replicate all the steps exactly as shown in the video!</p>   
+<p>If you enjoyed this simple tutorial, you might be also interested to read this other guide on using the Drools for content based routing on Kafka, using Quarkus and <a href="https://camel.apache.org/" target="_blank" rel="noreferrer noopener">Apache Camel</a> too! Check it out <a href="https://blog.kie.org/2022/03/content-based-routing-with-quarkus-and-kogito.html" target="_blank" rel="noreferrer noopener">here</a>.</p>   
+<p>Looking for additional content on Knative serverless function? Check out this <a href="https://blog.kie.org/2022/09/creating-your-first-cloud-agnostic-serverless-application-with-java.html" target="_blank" rel="noreferrer noopener">new blog post</a>!</p>   
+<p>Questions?<br>Let us know your feedback by leaving a comment below! 👋</p>
+
+
+</section>
+</main>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-end mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p>&copy; Matteo Mortari. All rights reserved
+      <br/><a href="https://www.linkedin.com/in/matteomortari" class="text-reset">LinkedIn</a>
+      <br/><a href="https://www.youtube.com/MatteoMortari" class="text-reset">YouTube</a>
+      <br/><a href="https://github.com/tarilabs" class="text-reset">Github</a>
+      <!-- <br/><a href="https://twitter.com/tari_manga" class="text-reset">Twitter</a> -->
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
+</html>
