@@ -25,12 +25,16 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+// code `jbang edit -b scripts/processwp.java`
+// in sandbox: jbang src/processwp.java ~/git/matteomortari/content/blog
+// 
+// old:
 // code `jbang edit scripts/processwp.java`
 @Command(name = "processwp", mixinStandardHelpOptions = true)
 public class processwp implements Callable<Integer> {
     @Parameters(
         index = "0",
-        description = "The message to send",
+        description = "The base path of the content/blog directory",
         defaultValue = "content/blog"
     )
     private File basePath;
