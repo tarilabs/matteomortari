@@ -4,112 +4,44 @@ type=post
 tags=blog
 canonical=https://blog.kie.org/2023/02/cloudevents-labeling-and-classification-with-drools.html
 ~~~~~~
-<!-- wp:embed {"url":"https://youtu.be/v3E_zX3azMw","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"} -->
-<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
-    https://youtu.be/v3E_zX3azMw
-    </div></figure>
-    <!-- /wp:embed -->
-    
-    <!-- wp:paragraph -->
-    <p>This blog post is a quick update on a demo in labeling CNCF’s CloudEvents.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:heading {"level":1} -->
-    <h1>Introduction</h1>
-    <!-- /wp:heading -->
-    
-    <!-- wp:paragraph -->
-    <p>Categorizing events is a general, common use-case; in the context of this post, we will delve into labeling CNCF’s CloudEvents for Intelligent Response Management (IRM) which can find application in several ways.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>One way is to categorize and prioritize different types of events based on their urgency or importance; for example: a SRE team might label an event as "critical" if it involves a major service outage, or "low priority" if it is a minor issue of a sub-system that can be resolved at a later time. This allows the team to quickly respond to the most pressing issues and allocate resources accordingly.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>Additionally, labeling events can also be used to track and analyze patterns in a system (or cluster) behaviors, which can help to identify potential problems before they occur and improve the overall reliability of the system by implementing corrective actions preventively.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>This demo make use of several technologies:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:list -->
-    <ul><!-- wp:list-item -->
-    <li><a href="https://www.drools.org/learn/video.html">Drools</a> and YaRD for the rule definition and evaluation</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://kogito.kie.org/">Kogito</a> for cloud native based decisioning</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://quarkus.io/">Quarkus</a> for cloud native Java development on top of Kubernetes</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://cloudevents.io/">CloudEvents</a> –this is the format of the event data that we want to process</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li>Kafka as an event broker</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li>PostgreSQL as our data store; we're using specifically PostgreSQL for very interesting query capabilities that this RDBMS can offer</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://github.com/vladmihalcea/hibernate-types#readme">Hibernate types</a> to define our custom types on top of PostgreSQL</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/">Quarkus Quinoa</a> extension</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li><a href="https://www.patternfly.org/v4/">Patternfly</a> for the web-based GUI</li>
-    <!-- /wp:list-item --></ul>
-    <!-- /wp:list -->
-    
-    <!-- wp:heading {"level":1} -->
-    <h1>Architecture</h1>
-    <!-- /wp:heading -->
-    
-    <!-- wp:paragraph -->
-    <p>The following is a high level diagram of the overall architecture for this demo:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:image {"id":17919,"sizeSlug":"large","linkDestination":"none"} -->
-    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2023/02/Screenshot-2023-01-25-at-15.51.51-2-1024x576.png" alt="" class="wp-image-17919"/></figure>
-    <!-- /wp:image -->
-    
-    <!-- wp:paragraph -->
-    <p>On the left hand side, the incoming CloudEvents instance that we want to process by labeling, is received by the endpoint which represents one of the possible inputs for this application. The CloudEvents instance is then immediately placed on a kafka topic, which is used to better isolate the ingress portion of this application from the rest of the processing pipeline.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>The processing pipeline starts with a labeling processor: this is the component responsible for applying the rules to enrich the CloudEvents instance with the required and applicable labels. As a result, the received message is now enriched with labeling and it gets persisted inside the data store.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>PostgreSQL is used specifically here as it provides hierarchical labels via <kbd>ltree</kbd> data type and related query capabilities, which are very useful in categorization applications such as this one. These advanced query capabilities are also foundational to potentially re-process the same CloudEvents instance, after some further augmentation or additional manual labeling.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>In the context of this article, the web-based GUI is provisional and will be used only as a practical demonstrator for the rich query capabilities.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:heading {"level":1} -->
-    <h1>Walkthrough</h1>
-    <!-- /wp:heading -->
-    
-    <!-- wp:paragraph -->
-    <p>A CloudEvents instance is submitted to this application, for example:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:code -->
-    <pre class="wp-block-code"><code>{
+<div class="row justify-content-center text-center py-3">
+ <div class="col-lg-6">
+  <div class="ratio ratio-16x9">
+   <iframe src="https://www.youtube.com/embed/v3E_zX3azMw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+ </div>
+</div>   
+<p>This blog post is a quick update on a demo in labeling CNCF’s CloudEvents.</p>   
+<h1>Introduction</h1>   
+<p>Categorizing events is a general, common use-case; in the context of this post, we will delve into labeling CNCF’s CloudEvents for Intelligent Response Management (IRM) which can find application in several ways.</p>   
+<p>One way is to categorize and prioritize different types of events based on their urgency or importance; for example: a SRE team might label an event as "critical" if it involves a major service outage, or "low priority" if it is a minor issue of a sub-system that can be resolved at a later time. This allows the team to quickly respond to the most pressing issues and allocate resources accordingly.</p>   
+<p>Additionally, labeling events can also be used to track and analyze patterns in a system (or cluster) behaviors, which can help to identify potential problems before they occur and improve the overall reliability of the system by implementing corrective actions preventively.</p>   
+<p>This demo make use of several technologies:</p>   
+<ul> 
+ <li><a href="https://www.drools.org/learn/video.html">Drools</a> and YaRD for the rule definition and evaluation</li>   
+ <li><a href="https://kogito.kie.org/">Kogito</a> for cloud native based decisioning</li>   
+ <li><a href="https://quarkus.io/">Quarkus</a> for cloud native Java development on top of Kubernetes</li>   
+ <li><a href="https://cloudevents.io/">CloudEvents</a> –this is the format of the event data that we want to process</li>   
+ <li>Kafka as an event broker</li>   
+ <li>PostgreSQL as our data store; we're using specifically PostgreSQL for very interesting query capabilities that this RDBMS can offer</li>   
+ <li><a href="https://github.com/vladmihalcea/hibernate-types#readme">Hibernate types</a> to define our custom types on top of PostgreSQL</li>   
+ <li><a href="https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/">Quarkus Quinoa</a> extension</li>   
+ <li><a href="https://www.patternfly.org/v4/">Patternfly</a> for the web-based GUI</li> 
+</ul>   
+<h1>Architecture</h1>   
+<p>The following is a high level diagram of the overall architecture for this demo:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/02/Screenshot-2023-01-25-at-15.51.51-2-1024x576.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>On the left hand side, the incoming CloudEvents instance that we want to process by labeling, is received by the endpoint which represents one of the possible inputs for this application. The CloudEvents instance is then immediately placed on a kafka topic, which is used to better isolate the ingress portion of this application from the rest of the processing pipeline.</p>   
+<p>The processing pipeline starts with a labeling processor: this is the component responsible for applying the rules to enrich the CloudEvents instance with the required and applicable labels. As a result, the received message is now enriched with labeling and it gets persisted inside the data store.</p>   
+<p>PostgreSQL is used specifically here as it provides hierarchical labels via <kbd>ltree</kbd> data type and related query capabilities, which are very useful in categorization applications such as this one. These advanced query capabilities are also foundational to potentially re-process the same CloudEvents instance, after some further augmentation or additional manual labeling.</p>   
+<p>In the context of this article, the web-based GUI is provisional and will be used only as a practical demonstrator for the rich query capabilities.</p>   
+<h1>Walkthrough</h1>   
+<p>A CloudEvents instance is submitted to this application, for example:</p>   
+<pre class="wp-block-code"><code>{
       "specversion": "1.0",
       "id": "matteo-8eb9-43b2-9313-22133f2c747a",
       "source": "example",
@@ -120,137 +52,64 @@ canonical=https://blog.kie.org/2023/02/cloudevents-labeling-and-classification-w
         "memPerc": 50,
         "cpuPerc": 20
       }
-    }</code></pre>
-    <!-- /wp:code -->
-    
-    <!-- wp:paragraph -->
-    <p>The data context of the CloudEvents instance pertains to some host which came under supervision due to resource load. We now want to classify this context/case, using some labels. We may have more than one label. Each label is hierarchical (<kbd>root.branch1.branch2.leaf</kbd>).</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>We want to classify the hostname based on its relevance to the department, unit, person or team responsible for it. To do so, a simple decision table provides an easy solution. For example, we can classify the hostname based on geographical location or determine the type of server based on the hostname. Ultimately, we might want to setup a labeling rule for who's on call, something like the following decision table using <a href="https://stedolan.github.io/jq/">JQ expressions</a>:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:code -->
-    <pre class="wp-block-code"><code>   type: DecisionTable
-        inputs: &#91;'.location', '.type']
+    }</code></pre>   
+<p>The data context of the CloudEvents instance pertains to some host which came under supervision due to resource load. We now want to classify this context/case, using some labels. We may have more than one label. Each label is hierarchical (<kbd>root.branch1.branch2.leaf</kbd>).</p>   
+<p>We want to classify the hostname based on its relevance to the department, unit, person or team responsible for it. To do so, a simple decision table provides an easy solution. For example, we can classify the hostname based on geographical location or determine the type of server based on the hostname. Ultimately, we might want to setup a labeling rule for who's on call, something like the following decision table using <a href="https://stedolan.github.io/jq/">JQ expressions</a>:</p>   
+<pre class="wp-block-code"><code>   type: DecisionTable
+        inputs: ['.location', '.type']
         rules:
-        - when: &#91;'startswith("location.emea")', '. == "type.db"']
+        - when: ['startswith("location.emea")', '. == "type.db"']
           then: '"oncall.EMEA.dbadm"'
-        - when: &#91;'startswith("location.emea") | not', '. == "type.db"']
+        - when: ['startswith("location.emea") | not', '. == "type.db"']
           then: '"oncall.CORP.dbadm"'
-        - when: &#91;'true', '. == "type.nas"']
-          then: '"oncall.CORP.it"'</code></pre>
-    <!-- /wp:code -->
-    
-    <!-- wp:paragraph -->
-    <p>For example, a CloudEvents context may be labeled as follows:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:list -->
-    <ul><!-- wp:list-item -->
-    <li>type.db</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li>location.emea.italy.milan</li>
-    <!-- /wp:list-item -->
-    
-    <!-- wp:list-item -->
-    <li>oncall.EMEA.dbadm</li>
-    <!-- /wp:list-item --></ul>
-    <!-- /wp:list -->
-    
-    <!-- wp:paragraph -->
-    <p>For the PostgreSQL DDL we currently have:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:code -->
-    <pre class="wp-block-code"><code>                      Table "public.cecase"
+        - when: ['true', '. == "type.nas"']
+          then: '"oncall.CORP.it"'</code></pre>   
+<p>For example, a CloudEvents context may be labeled as follows:</p>   
+<ul> 
+ <li>type.db</li>   
+ <li>location.emea.italy.milan</li>   
+ <li>oncall.EMEA.dbadm</li> 
+</ul>   
+<p>For the PostgreSQL DDL we currently have:</p>   
+<pre class="wp-block-code"><code>                      Table "public.cecase"
      Column  |          Type          | Collation | Nullable | Default 
     ---------+------------------------+-----------+----------+---------
      id      | bigint                 |           | not null | 
      ceuuid  | character varying(255) |           |          | 
      context | jsonb                  |           |          | 
-     mytag   | ltree&#91;]                |           |          | 
+     mytag   | ltree[]                |           |          | 
     Indexes:
         "cecase_pkey" PRIMARY KEY, btree (id)
         "mytag_gist_idx" gist (mytag)
-        "mytag_idx" btree (mytag)</code></pre>
-    <!-- /wp:code -->
-    
-    <!-- wp:paragraph -->
-    <p>Please notice we’re taking advantage here of PostgreSQL's <kbd>jsonb</kbd> for storing the original CloudEvents context, and <kbd>ltree[]</kbd> data type for searching ad-hoc with indexing the hierarchical labels.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>The latter is extremely helpful also to setup queries making use of <kbd>&lt;@</kbd> and <kbd>~</kbd> operators for PostgreSQL which performs on the <kbd>ltree</kbd><strong> </strong>data type, showcased below.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>As the data flows into the application, we can use the provisional web-based GUI which provide a convenient way to consume the backend REST API(s) developed on Quarkus:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:image {"id":17924,"sizeSlug":"large","linkDestination":"none"} -->
-    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2023/02/image-1024x601.png" alt="" class="wp-image-17924"/></figure>
-    <!-- /wp:image -->
-    
-    <!-- wp:paragraph -->
-    <p>In the screenshot above, you can access all the records from the table, where the labels have been applied by the rule definition.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>We can browse by <em>having at least one label having the specified parent</em>, with a query like:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:code -->
-    <pre class="wp-block-code"><code>SELECT * FROM cecase WHERE mytag &lt;@ 'oncall.CORP'</code></pre>
-    <!-- /wp:code -->
-    
-    <!-- wp:paragraph -->
-    <p>For example, if we want all the records having at least a label for the <kbd>oncall.CORP</kbd> rooting:</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:image {"id":17929,"sizeSlug":"large","linkDestination":"none"} -->
-    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2023/02/image-1-1024x601.png" alt="" class="wp-image-17929"/></figure>
-    <!-- /wp:image -->
-    
-    <!-- wp:paragraph -->
-    <p>We can browse by <em>having at least one label having the specified ltree</em>, with a query like”</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:code -->
-    <pre class="wp-block-code"><code>SELECT * FROM cecase WHERE mytag ~ <span style="background-color: initial; font-family: inherit; font-size: inherit; color: initial;">*.emea.*</span></code></pre>
-    <!-- /wp:code -->
-    
-    <!-- wp:paragraph -->
-    <p>For example, if we want all the records having at least a label for the <em>.emea.</em> (a branch named emea in any point in the hierarchical label):</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:image {"id":17930,"sizeSlug":"large","linkDestination":"none"} -->
-    <figure class="wp-block-image size-large"><img src="https://blog.kie.org/wp-content/uploads/2023/02/image-2-1024x601.png" alt="" class="wp-image-17930"/></figure>
-    <!-- /wp:image -->
-    
-    <!-- wp:paragraph -->
-    <p>Don’t forget to check out the video linked above, as it demonstrates the demo working live as the data is being sent to the application!</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>If you want to checkout the source, here is the code repo: <a href="https://github.com/tarilabs/demo20220715contextlabel#readme"></a><a href="https://github.com/tarilabs/demo20220715contextlabel#readme">https://github.com/tarilabs/demo20220715contextlabel#readme</a> </p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>These advanced query capabilities offered by PostgreSQL can be used as a foundation to identify events due to reprocessing, manual inspection, triggering a workflow, etc. …but that is maybe subject for a second iteration on this demo...</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:heading {"level":1} -->
-    <h1>Conclusions</h1>
-    <!-- /wp:heading -->
-    
-    <!-- wp:paragraph -->
-    <p>This demo showcases the power of combining declarative logic, persistence and other technologies to process and label CloudEvents effectively! We defined our logic using a combination of expression and rules in the form of decision tables, combined with the use of PostgreSQL as a data store thanks to its advanced query capabilities, allowing for a more efficient and effective handling of the events.</p>
-    <!-- /wp:paragraph -->
-    
-    <!-- wp:paragraph -->
-    <p>We hope you enjoyed our demo and look forward to hearing your feedback!</p>
-    <!-- /wp:paragraph -->
+        "mytag_idx" btree (mytag)</code></pre>   
+<p>Please notice we’re taking advantage here of PostgreSQL's <kbd>jsonb</kbd> for storing the original CloudEvents context, and <kbd>ltree[]</kbd> data type for searching ad-hoc with indexing the hierarchical labels.</p>   
+<p>The latter is extremely helpful also to setup queries making use of <kbd>&lt;@</kbd> and <kbd>~</kbd> operators for PostgreSQL which performs on the <kbd>ltree</kbd><strong> </strong>data type, showcased below.</p>   
+<p>As the data flows into the application, we can use the provisional web-based GUI which provide a convenient way to consume the backend REST API(s) developed on Quarkus:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/02/image-1024x601.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>In the screenshot above, you can access all the records from the table, where the labels have been applied by the rule definition.</p>   
+<p>We can browse by <em>having at least one label having the specified parent</em>, with a query like:</p>   
+<pre class="wp-block-code"><code>SELECT * FROM cecase WHERE mytag &lt;@ 'oncall.CORP'</code></pre>   
+<p>For example, if we want all the records having at least a label for the <kbd>oncall.CORP</kbd> rooting:</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/02/image-1-1024x601.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>We can browse by <em>having at least one label having the specified ltree</em>, with a query like”</p>   
+<pre class="wp-block-code"><code>SELECT * FROM cecase WHERE mytag ~ <span style="background-color: initial; font-family: inherit; font-size: inherit; color: initial;">*.emea.*</span></code></pre>   
+<p>For example, if we want all the records having at least a label for the <em>.emea.</em> (a branch named emea in any point in the hierarchical label):</p>   
+<div class="row justify-content-center text-center">
+ <figure class="figure"> 
+  <img src="https://blog.kie.org/wp-content/uploads/2023/02/image-2-1024x601.png" alt="" class="figure-img img-fluid"> 
+ </figure>
+</div>   
+<p>Don’t forget to check out the video linked above, as it demonstrates the demo working live as the data is being sent to the application!</p>   
+<p>If you want to checkout the source, here is the code repo: <a href="https://github.com/tarilabs/demo20220715contextlabel#readme"></a><a href="https://github.com/tarilabs/demo20220715contextlabel#readme">https://github.com/tarilabs/demo20220715contextlabel#readme</a>&nbsp;</p>   
+<p>These advanced query capabilities offered by PostgreSQL can be used as a foundation to identify events due to reprocessing, manual inspection, triggering a workflow, etc. …but that is maybe subject for a second iteration on this demo...</p>   
+<h1>Conclusions</h1>   
+<p>This demo showcases the power of combining declarative logic, persistence and other technologies to process and label CloudEvents effectively! We defined our logic using a combination of expression and rules in the form of decision tables, combined with the use of PostgreSQL as a data store thanks to its advanced query capabilities, allowing for a more efficient and effective handling of the events.</p>   
+<p>We hope you enjoyed our demo and look forward to hearing your feedback!</p>
