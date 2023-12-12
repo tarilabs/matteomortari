@@ -6,9 +6,141 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Sat, 28 Oct 2023 13:27:02 +0000</pubDate>
-    <lastBuildDate>Sat, 28 Oct 2023 13:27:02 +0000</lastBuildDate>
+    <pubDate>Tue, 12 Dec 2023 13:44:43 +0000</pubDate>
+    <lastBuildDate>Tue, 12 Dec 2023 13:44:43 +0000</lastBuildDate>
 
+    <item>
+      <title>Model Registry tech demo 20231121</title>
+      <link>https://matteomortari.com/blog/2023/model-registry-tech-demo-20231121.html</link>
+      <pubDate>Tue, 21 Nov 2023 00:00:00 +0000</pubDate>
+      <guid isPermaLink="false">blog/2023/model-registry-tech-demo-20231121.html</guid>
+      	<description>
+	&lt;div class=&quot;row justify-content-center text-center py-3&quot;&gt;
+ &lt;div class=&quot;col-lg-6&quot;&gt;
+  &lt;div class=&quot;ratio ratio-16x9&quot;&gt;
+   &lt;iframe src=&quot;https://www.youtube.com/embed/grXnjGtDFXg&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;This is a &lt;a href=&quot;https://en.wikipedia.org/wiki/Technology_demonstration&quot;&gt;technical demo&lt;/a&gt; from the &lt;a href=&quot;https://github.com/opendatahub-io/model-registry&quot;&gt;Model Registry&lt;/a&gt; team of &lt;a href=&quot;https://opendatahub.io&quot;&gt;Open Data Hub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Content:&lt;br /&gt;
+- model-registry-operator&lt;br /&gt;
+- Notebook → Model Registry&lt;br /&gt;
+- DS Pipeline → Model Registry&lt;br /&gt;
+- Model Registry → Serving&lt;br /&gt;
+- One More Thing...&lt;br /&gt;
+- Conclusions&lt;/p&gt;
+&lt;p&gt;This post does not go into details of context and background of the Model Registry, for which we invite you to checkout &lt;a href=&quot;https://docs.google.com/document/d/1T3KfOqIfJohp0s1koQ2XrJJQQhj7TECO-m2xPsW59_c/edit?usp=sharing&quot;&gt;this document&lt;/a&gt; instead.&lt;/p&gt;
+&lt;h2&gt;model-registry-operator&lt;/h2&gt;
+&lt;p&gt;We can use the &lt;a href=&quot;https://github.com/opendatahub-io/model-registry-operator&quot;&gt;Model Registry Operator&lt;/a&gt; to install the Model Registry in our Kubernetes platform.&lt;br /&gt;
+Installing the operator is easy, following a few steps as detailed in the README.&lt;/p&gt;
+&lt;p&gt;First, we install a Custom Resource Definition for our Model Registry:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2020.54.21%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Then, we deploy the &lt;code&gt;model-registry-operator&lt;/code&gt; which at present sits in its own namespace:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2020.58.10%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we create a Model Registry instance:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.01.57%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;With an instance of Model Registry now available, we can move to perform some ML training using Notebook in order to later index the resulting models on this model registry instance.&lt;/p&gt;
+&lt;h2&gt;Notebook → Model Registry&lt;/h2&gt;
+&lt;p&gt;For the scope of this technical demo of Model Registry, we will be training and making inference with the &lt;a href=&quot;https://en.wikipedia.org/wiki/MNIST_database&quot;&gt;MNIST dataset&lt;/a&gt;, serving as an &amp;quot;hello world&amp;quot; style of example for neural network usages.&lt;/p&gt;
+&lt;p&gt;We are given some training data set to perform training: given the following image, the training label is defined as &apos;3&apos;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.14.11%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;So, given the following image from the test data set, we would like our ML model (once trained) to successfully predict the label &apos;4&apos;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.15.26%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Notebook → Model Registry: First model version&lt;/h3&gt;
+&lt;p&gt;We can start training a first version of our neural network:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.17.03%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And after some quick dry-run to check the prediction seems reasonable:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.17.32%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can store the trained ML model in an S3-compatible bucket:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.19.46%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And index the model in our Model Registry:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.19.53%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Notebook → Model Registry: Second model version&lt;/h3&gt;
+&lt;p&gt;For the scope of this technical demo, we can now train a second version of our ML model, by defining instead a convolutional neural network:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.22.50%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can perform again some quick dry-run to check the prediction seems reasonable, store the trained model in the S3 bucket, and index the model in the Model Registry:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.24.43%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can notice in the outputs the entities created on the Model Registry.&lt;/p&gt;
+&lt;h3&gt;Notebook → Model Registry: REST APIs&lt;/h3&gt;
+&lt;p&gt;We don&apos;t have yet a GUI web application to display the metadata in our Model Registry, but we can perform this exercise by making use of the REST APIs from the command line.&lt;/p&gt;
+&lt;p&gt;We can display the known RegisteredModel, in this case we called our RegisteredModel &lt;code&gt;MNIST&lt;/code&gt; (as we&apos;ve been using the MNIST dataset):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;MR_HOSTNAME=...
+
+curl --silent -X &apos;GET&apos; \
+  &amp;quot;$MR_HOSTNAME/api/model_registry/v1alpha1/registered_models?pageSize=100&amp;amp;orderBy=ID&amp;amp;sortOrder=DESC&amp;amp;nextPageToken=&amp;quot; \
+  -H &apos;accept: application/json&apos; | jq .items
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.29.58%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can display the two versions we have just indexed, which are referencing as well the models as Stored in S3:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --silent -X &apos;GET&apos; \
+  &amp;quot;$MR_HOSTNAME/api/model_registry/v1alpha1/model_versions?pageSize=100&amp;amp;orderBy=ID&amp;amp;sortOrder=DESC&amp;amp;nextPageToken=&amp;quot; \
+  -H &apos;accept: application/json&apos; | jq .items
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.32.42%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And we can display details for the ModelArtifact corresponding to the latter version:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --silent -X &apos;GET&apos; \
+  &amp;quot;$MR_HOSTNAME/api/model_registry/v1alpha1/model_versions/4/artifacts&amp;quot; \
+  -H &apos;accept: application/json&apos; | jq .items
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.33.59%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can move now to Data Science Pipeline.&lt;/p&gt;
+&lt;h2&gt;DS Pipeline → Model Registry&lt;/h2&gt;
+&lt;p&gt;We can create a Data Science Pipeline (DSP) which performs analogous steps in training, validating, storing and indexing the ML model:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.40.37%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can create a DSP Run, possibly using specific parameters which influence the model training and validation; since the trained model matches the requirements defined in the pipeline, this run successfully completed, the model is stored once again on a S3-compatible bucket and the metadata are indexed on the Model Registry. We have now 3 versions of our ML model:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2021.52.50%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We have now a bunch of of ModelVersion(s) available on the Model Registry, ready to be deployed for inference using Model Serving.&lt;/p&gt;
+&lt;h2&gt;Model Registry → Serving&lt;/h2&gt;
+&lt;p&gt;We can use the following REST API to create an entity for InferenceService on the Model Registry:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -X &apos;POST&apos; \
+  $MR_HOSTNAME&apos;/api/model_registry/v1alpha1/serving_environments/1/inference_services&apos; \
+  -H &apos;accept: application/json&apos; \
+  -H &apos;Content-Type: application/json&apos; \
+  -d &apos;{
+  &amp;quot;name&amp;quot;: &amp;quot;mnist-e2e&amp;quot;,
+  &amp;quot;modelVersionId&amp;quot;: &amp;quot;4&amp;quot;,
+  &amp;quot;runtime&amp;quot;: &amp;quot;mmserver1&amp;quot;,
+  &amp;quot;registeredModelId&amp;quot;: &amp;quot;2&amp;quot;,
+  &amp;quot;servingEnvironmentId&amp;quot;: &amp;quot;1&amp;quot;,
+  &amp;quot;state&amp;quot;: &amp;quot;DEPLOYED&amp;quot;
+}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.05.03%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;It&apos;s important to note the Model Registry is &lt;em&gt;not&lt;/em&gt; an active orchestrator; what actually happens behind the scene is that the K8s Model Controller performs a reconciliation loop and based on the metadata we just created on the Model Registry, create a CR for ModelMesh in order to deploy our ML for Inference:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.09.01%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can as well undeploy the InferenceService by changing flipping the status on the Model Registry; in this case the same reconcilation loop will trigger again, but will proceed accordingly to remove the ModelMesh CR for Serving:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -X &apos;PATCH&apos; \
+  &amp;quot;$MR_HOSTNAME/api/model_registry/v1alpha1/inference_services/6&amp;quot; \
+  -H &apos;accept: application/json&apos; \
+  -H &apos;Content-Type: application/json&apos; \
+  -d &apos;{
+  &amp;quot;modelVersionId&amp;quot;: &amp;quot;4&amp;quot;,
+  &amp;quot;runtime&amp;quot;: &amp;quot;mmserver1&amp;quot;,
+  &amp;quot;state&amp;quot;: &amp;quot;UNDEPLOYED&amp;quot;
+}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.13.00%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;One More Thing...&lt;/h2&gt;
+&lt;p&gt;To wrap-up this technical exercise, we can re-deploy once more our trained ML model and noting the inference service endpoint:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.16.26%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;As we can use it to deploy some Intelligent Application on Kubernetes:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.21.41%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Which in this case is a (very raw cut!) PoC application exercising our ML inference endpoint on ModelMesh for Model Serving; as we draw by hand:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;model-registry-tech-demo-20231121/Screenshot%202023-12-02%20at%2022.23.00%20(2).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We will get back an array of probabilities; since index 2 is the most probable, our intelligent application is predicting we have drawn the &lt;code&gt;number: 2&lt;/code&gt; thanks to the model we just trained, indexed and deployed, all while making use of Model Registry!&lt;/p&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;In this short technical demo we have explored some of the capabilites of the Model Registry by making an end-to-end demo.&lt;/p&gt;
+&lt;p&gt;We have installed the model-registry-operator in order to deploy our instance of Model Registry.&lt;/p&gt;
+&lt;p&gt;We have performed a couple of training of ML neural networks, stored them in an S3 bucket and indexed those model in the Model Registry. We have also performed analogously from the perspective of Data Science Pipelines, which may include parametrization, model validation, etc.&lt;/p&gt;
+&lt;p&gt;We have seen how Model Registry is &lt;em&gt;not&lt;/em&gt; an active orchestrator but a metadata repository; following established Kubernetes best-practices a reconciliation loop from the Model Controller make sure to enact the correct CustomResource deployment and update in the cluster. This mechanism is used to govern deployment of ML models which the Model Registry have previously maintained index, per the previous steps.&lt;/p&gt;
+&lt;p&gt;Finally, we have seen how to leverage the Inference endpoint of the deployed ML model to drive the end-to-end workload of intelligent application on top of Kubernetes!&lt;/p&gt;
+&lt;p&gt;If you found this content interesting, don&apos;t hesitate to join the conversation:&lt;br /&gt;
+- &lt;a href=&quot;https://github.com/kubeflow/kubeflow/issues/7396&quot;&gt;https://github.com/kubeflow/kubeflow/issues/7396&lt;/a&gt;&lt;br /&gt;
+- &lt;a href=&quot;https://www.kubeflow.org/docs/about/community/#kubeflow-community-call&quot;&gt;https://www.kubeflow.org/docs/about/community/#kubeflow-community-call&lt;/a&gt;&lt;/p&gt;
+
+	</description>
+    </item>
     <item>
       <title>Integrate Excel with Drools on OpenShift with Knative and Quarkus!</title>
       <link>https://matteomortari.com/blog/2023/integrate-excel-with-drools-on-openshift-with-knative-and-quarkus.html</link>
