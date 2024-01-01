@@ -6,9 +6,45 @@
     <atom:link href="https://matteomortari.com/feed.xml" rel="self" type="application/rss+xml" />
     <description>I believe there is a whole new range of unexplored applications for Rule Engines (AI/Expert Systems) and Machine Learning; I also believe defining the Business Rules on the BRMS system not only enables knowledge inference from raw data, but most importantly when modeled using the DMN open standard, it helps to shorten the distance between experts and analysts, between developers and end-users, business stakeholders.</description>
     <language>en-gb</language>
-    <pubDate>Tue, 26 Dec 2023 10:19:41 +0000</pubDate>
-    <lastBuildDate>Tue, 26 Dec 2023 10:19:41 +0000</lastBuildDate>
+    <pubDate>Mon, 1 Jan 2024 21:37:08 +0000</pubDate>
+    <lastBuildDate>Mon, 1 Jan 2024 21:37:08 +0000</lastBuildDate>
 
+    <item>
+      <title>Talks</title>
+      <link>https://matteomortari.com/talks.html</link>
+      <pubDate>Mon, 1 Jan 2024 21:36:36 +0000</pubDate>
+      <guid isPermaLink="false">talks.html</guid>
+      	<description>
+	&lt;div class=&quot;container px-4 py-5&quot; id=&quot;talks&quot;&gt;
+    &lt;div class=&quot;row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5&quot;&gt;
+      &lt;#list published_content?filter(x -&gt; x.type == &quot;talk&quot;)?sort_by(&quot;date&quot;)?reverse as content&gt;
+      &lt;div class=&quot;col&quot;&gt;
+        &lt;div class=&quot;card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg&quot; style=&quot;
+        border: none;
+        background: linear-gradient(
+          rgba(0, 0, 0, 0.7), 
+          rgba(0, 0, 0, 0.7)
+        ), url(&apos;${content.preview}&apos;);
+        background-repeat: no-repeat; background-position: center center; background-size: cover;&quot;&gt;
+          &lt;div class=&quot;d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1&quot;&gt;
+            &lt;h2 class=&quot;pt-5 mt-5 mb-4 display-6 lh-1 fw-bold&quot;&gt;&lt;a href=&quot;${content.uri}&quot; class=&quot;text-reset text-decoration-none&quot;&gt;${content.title}&lt;/a&gt;&lt;/h2&gt;
+            &lt;ul class=&quot;d-flex list-unstyled mt-auto&quot;&gt;
+              &lt;li class=&quot;me-auto&quot;&gt;
+                &lt;#if content.icon??&gt;&lt;i class=&quot;${content.icon}&quot;&gt;&lt;/i&gt;&lt;#else&gt;&lt;i class=&quot;bi-youtube&quot;&gt;&lt;/i&gt;&lt;/#if&gt;
+              &lt;/li&gt;
+              &lt;li class=&quot;d-flex align-items-center&quot;&gt;
+                &lt;a class=&quot;btn btn-outline-light btn-sm&quot; href=&quot;${content.uri}&quot; role=&quot;button&quot;&gt;Watch &lt;i class=&quot;bi-chevron-right&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/#list&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+	</description>
+    </item>
     <item>
       <title>Model Registry tech demo 20231121</title>
       <link>https://matteomortari.com/blog/2023/model-registry-tech-demo-20231121.html</link>
