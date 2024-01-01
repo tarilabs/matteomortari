@@ -56,7 +56,7 @@
     <div class="row">
       <div class="col">
         <p class="text-end">
-          <a href="archive.html" class="text-decoration-none">
+          <a href="talks.html" class="text-decoration-none">
             More Talks
             <i class="bi-chevron-right"></i>
           </a>
